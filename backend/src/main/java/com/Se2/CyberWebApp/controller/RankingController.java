@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
-@CrossOrigin(origins = "*") // QUAN TRỌNG: Cho phép Frontend (HTML) gọi API không bị lỗi CORS
+@CrossOrigin(origins = "*")
 public class RankingController {
 
     @Autowired
@@ -24,7 +24,6 @@ public class RankingController {
     public List<RankingDTO> getRanking() {
         List<User> topUsers = userRepository.findTop10ByOrderByPointDesc();
 
-        // Chuyển từ User Entity sang RankingDTO
         return topUsers.stream().map(user -> new RankingDTO(
                 user.getName(),
                 user.getRoleEntity() != null ? user.getRoleEntity().getName() : "MEMBER",

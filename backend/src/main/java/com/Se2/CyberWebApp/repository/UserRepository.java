@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    // Tự động sinh câu lệnh: Lấy Top 10 user sắp xếp theo point giảm dần
     List<User> findTop10ByOrderByPointDesc();
     Optional<User> findByUsername(String username);
 }

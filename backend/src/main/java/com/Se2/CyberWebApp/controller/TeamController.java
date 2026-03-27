@@ -24,7 +24,7 @@ public class TeamController {
     @Autowired
     private UserExperienceRepository experienceRepository;
 
-    // --- API 1: LẤY DANH SÁCH TOÀN BỘ THÀNH VIÊN ---
+    // --- API 1: Take list of all Mem ---
     @GetMapping("/members")
     public ResponseEntity<?> getTeamMembers() {
         List<User> users = userRepository.findAll();
@@ -43,7 +43,7 @@ public class TeamController {
         return ResponseEntity.ok(teamList);
     }
 
-    // --- API 2: LẤY CHI TIẾT 1 THÀNH VIÊN THEO ID ---
+    // --- API 2: Detail of 1 Member ---
     @GetMapping("/members/{id}")
     public ResponseEntity<?> getMemberDetail(@PathVariable Integer id) {
         User user = userRepository.findById(id).orElse(null);
@@ -62,15 +62,12 @@ public class TeamController {
         response.put("phone", user.getPhone() != null ? user.getPhone() : "CLASSIFIED");
         response.put("address", user.getAddress() != null ? user.getAddress() : "UNKNOWN LOCATION");
         response.put("email", user.getEmail() != null ? user.getEmail() : "ENCRYPTED");
-
-        // CẤP NHẬT: TRẢ VỀ SỐ COIN CHO FRONTEND
         response.put("coin", user.getCoin() != null ? user.getCoin() : 0);
 
         return ResponseEntity.ok(response);
     }
 
-    // --- API 3: CẬP NHẬT THÔNG TIN & SỐ COIN ---
-    // Đổi Map<String, String> thành Map<String, Object> để nhận được số nguyên (Integer)
+    // --- API 3: Update info and coin ---
     @PutMapping("/members/{id}")
     public ResponseEntity<?> updateMemberProfile(@PathVariable Integer id, @RequestBody Map<String, Object> updateData) {
         User user = userRepository.findById(id).orElse(null);
@@ -78,7 +75,6 @@ public class TeamController {
             return ResponseEntity.notFound().build();
         }
 
-        // Cập nhật các trường Chuỗi (String)
         if (updateData.containsKey("name")) {
             user.setName(updateData.get("name").toString());
         }
@@ -92,10 +88,8 @@ public class TeamController {
             user.setEmail(updateData.get("email").toString());
         }
 
-        // --- CẬP NHẬT COIN VÀO DATABASE ---
         if (updateData.containsKey("coin")) {
             try {
-                // Chuyển đổi an toàn từ Object sang Integer
                 Integer newCoinBalance = Integer.parseInt(updateData.get("coin").toString());
                 user.setCoin(newCoinBalance);
             } catch (NumberFormatException e) {
@@ -103,10 +97,8 @@ public class TeamController {
             }
         }
 
-        // 3. Lưu lại vào Database
         userRepository.save(user);
 
-        // 4. Trả về thông báo thành công
         Map<String, String> response = new HashMap<>();
         response.put("message", "Tactical Data & Economy updated successfully.");
         return ResponseEntity.ok(response);
@@ -116,7 +108,7 @@ public class TeamController {
         Integer menteeId = requestData.get("menteeId");
         int MENTOR_COST = 500; // Đặt giá thuê Mentor là 500 Coins
 
-        // 1. Tìm người gửi (Mentee) và người nhận (Mentor)
+        // 1. Transfer coin
         User mentee = userRepository.findById(menteeId).orElse(null);
         User mentor = userRepository.findById(mentorId).orElse(null);
 
@@ -124,17 +116,17 @@ public class TeamController {
             return ResponseEntity.badRequest().body(Map.of("message", "Target not found."));
         }
 
-        // 2. Kiểm tra xem người gửi có tự thuê chính mình không
+        // 2. Check if the sender is self-employed
         if (mentee.getId().equals(mentor.getId())) {
             return ResponseEntity.badRequest().body(Map.of("message", "Bạn không thể tự thuê chính mình!"));
         }
 
-        // 3. Kiểm tra số dư Coin
+        // 3. Check if coin is enough
         if (mentee.getCoin() == null || mentee.getCoin() < MENTOR_COST) {
             return ResponseEntity.badRequest().body(Map.of("message", "INSUFFICIENT FUNDS: Không đủ Coin."));
         }
 
-        // 4. Thực hiện trừ tiền người gửi
+        // 4. Minus coin
         mentee.setCoin(mentee.getCoin() - MENTOR_COST);
         userRepository.save(mentee);
 
@@ -146,5 +138,14 @@ public class TeamController {
         response.put("remainingCoins", mentee.getCoin());
 
         return ResponseEntity.ok(response);
+    }
+    @DeleteMapping("/members/{id}")
+    public ResponseEntity<?> deleteMember(@PathVariable Integer id) {
+        // 1. Tìm user
+        return userRepository.findById(id).map(user -> {
+            // 2. Thực hiện xóa
+            userRepository.delete(user);
+            return ResponseEntity.ok(Map.of("message", "Operative terminated successfully."));
+        }).orElse(ResponseEntity.notFound().build());
     }
 }

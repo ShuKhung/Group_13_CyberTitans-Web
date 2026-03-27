@@ -33,15 +33,22 @@ public class SecurityConfig {
                 }))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // 🔥 DÒNG QUAN TRỌNG NHẤT ĐỂ FIX LỖI 403 PREFLIGHT:
+                        // 1. GUEST: Các API mở cửa tự do
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                        // 2. MỞ CỬA CHO LOGIN VÀ DỮ LIỆU CÔNG KHAI
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/team/members").permitAll()
 
-                        // 3. CHỈ CÓ XEM PROFILE CÁ NHÂN HOẶC SỬA DATA MỚI CẦN TOKEN
+                        // 2. ADMIN: Khu vực tuyệt mật
+                        .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/team/members/**")
+                        .hasAnyAuthority("ADMIN", "SUPER ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/v1/team/members/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
+
+                        // 3. MENTOR: Chỉ sư phụ mới có quyền phản hồi request
+                        .requestMatchers("/api/v1/mentor/responses").hasAuthority("MENTOR")
+
+                        // 4. Các quyền cơ bản khi đã đăng nhập
                         .requestMatchers("/api/v1/team/members/**").authenticated()
 
                         .anyRequest().authenticated()

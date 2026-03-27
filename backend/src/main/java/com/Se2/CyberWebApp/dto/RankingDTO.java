@@ -6,7 +6,6 @@ public class RankingDTO {
     private Double point;
     private String avatar;
 
-    // --- Constructor đầy đủ tham số ---
     public RankingDTO(String name, String role, Double point, String avatar) {
         this.name = name;
         this.role = role;
@@ -14,7 +13,6 @@ public class RankingDTO {
         this.avatar = avatar;
     }
 
-    // --- Getters và Setters ---
     public String getName() {
         return name;
     }

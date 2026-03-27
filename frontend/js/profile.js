@@ -19,7 +19,7 @@ async function loadOperativeData() {
             const roleEl = document.getElementById('profile-role');
             if (roleEl) roleEl.innerText = user.role || 'MEMBER';
         } else if (response.status === 403 || response.status === 401) { logout(); }
-    } catch (error) { console.error("[SYSTEM] Lỗi load dữ liệu:", error); }
+    } catch (error) { console.error("[SYSTEM] Error loading user data:", error); }
 }
 
 async function saveAccountProfile() {
@@ -40,7 +40,7 @@ async function saveAccountProfile() {
             body: JSON.stringify(payload)
         });
         if (response.ok) {
-            showToast('Protocol Uploaded! Dữ liệu đã đồng bộ.', 'success');
+            showToast('Protocol Uploaded! Data has been synchronized.', 'success');
             currentUser.name = payload.name;
             const storage = localStorage.getItem('cyber_user') ? localStorage : sessionStorage;
             storage.setItem('cyber_user', JSON.stringify(currentUser));
@@ -55,16 +55,55 @@ async function openProfileModal(id) {
     const modalContent = document.getElementById('profile-modal-content');
     const modalBody = document.getElementById('modal-body');
     
-    if (!token) return showToast("Vui lòng đăng nhập để xem hồ sơ!", "error");
+    // 1. Kịch bản GUEST: Nếu không có token, yêu cầu đăng nhập
+    if (!token) return showToast("Please log in to view profiles!", "error");
 
     modal.classList.remove('hidden');
     setTimeout(() => modalContent.classList.remove('translate-x-full'), 10);
-    modalBody.innerHTML = '<p class="text-primary font-mono animate-pulse text-center mt-20">Fetching operative data...</p>';
+    modalBody.innerHTML = '<p class="text-primary font-mono animate-pulse text-center mt-20">Establishing secure connection... Fetching operative data...</p>';
 
     try {
-        const response = await fetch(`${API_BASE_URL}/team/members/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const response = await fetch(`${API_BASE_URL}/team/members/${id}`, { 
+            headers: { 'Authorization': `Bearer ${token}` } 
+        });
+        
         if (!response.ok) throw new Error("Data access denied.");
-        const user = await response.json();
+        const user = await response.json(); 
+        
+        // --- LOGIC PHÂN QUYỀN HIỂN THỊ NÚT BẤM ---
+        const savedUserStr = sessionStorage.getItem('cyber_user') || localStorage.getItem('cyber_user');
+        const currentUser = JSON.parse(savedUserStr);
+        const viewerRole = currentUser.role; 
+
+        let actionButtonsHTML = '';
+
+        // KỊCH BẢN 1: Tự xem Profile của chính mình
+        if (currentUser.id === user.id) {
+            actionButtonsHTML = `
+                <button onclick="showPage('my-profile'); closeProfileModal();" class="w-full bg-secondary text-black font-bold font-mono tracking-widest py-3.5 hover:bg-white transition-all text-[11px]">
+                    // EDIT MY TACTICAL DATA
+                </button>`;
+        } 
+        // KỊCH BẢN 2: Xem Profile của người khác
+        else {
+            actionButtonsHTML = `
+                <button onclick="handleMentorRequest(${user.id}, '${user.name}')" class="w-full bg-primary text-black font-bold font-mono tracking-widest py-3.5 hover:bg-white transition-all text-[11px] mb-2">
+                    MENTOR REQUEST (500 COINS)
+                </button>
+                <button class="w-full bg-[#111] border border-white/10 text-white font-bold font-mono tracking-widest py-3.5 hover:border-primary transition-all text-[11px]">
+                    MESSAGE
+                </button>`;
+
+            // ĐẶC QUYỀN ADMIN: Hiện thêm nút Xóa đặc vụ
+            if (viewerRole === 'ADMIN' || viewerRole === 'SUPER ADMIN') {
+                actionButtonsHTML += `
+                    <button onclick="adminDeleteUser(${user.id})" class="w-full mt-4 bg-red-600/20 border border-red-500/50 text-red-500 font-bold font-mono tracking-widest py-3.5 hover:bg-red-600 hover:text-white transition-all text-[11px]">
+                        [ADMIN] TERMINATE OPERATIVE
+                    </button>`;
+            }
+        }
+
+        // --- XỬ LÝ TIMELINE KINH NGHIỆM ---
         const defaultAvt = "https://ui-avatars.com/api/?background=222&color=fff&name=";
         const avatarUrl = user.avatar || (defaultAvt + user.name);
 
@@ -97,14 +136,17 @@ async function openProfileModal(id) {
             }).join('');
         }
 
+        // --- RENDER  ---
         modalBody.innerHTML = `
             <div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 mt-4">
                 <div class="space-y-6">
                     <div class="p-1 border border-white/10 bg-[#111] shadow-2xl">
                         <img src="${avatarUrl}" class="w-full aspect-square object-cover grayscale" />
                     </div>
-                    <button onclick="handleMentorRequest(${user.id}, '${user.name}')" class="w-full bg-primary text-black font-bold font-mono tracking-widest py-3.5 hover:bg-white transition-all text-[11px]">MENTOR REQUEST (500 COINS)</button>
-                    <button class="w-full bg-[#111] border border-white/10 text-white font-bold font-mono tracking-widest py-3.5 hover:border-primary transition-all text-[11px]">MESSAGE</button>
+                    
+                    <div id="modal-actions-container">
+                        ${actionButtonsHTML}
+                    </div>
 
                     <div class="bg-[#111] border-y border-r border-white/5 p-6 mt-6 relative overflow-hidden">
                         <div class="absolute left-0 top-0 bottom-0 w-[3px] bg-primary"></div>
@@ -121,15 +163,45 @@ async function openProfileModal(id) {
                     <div class="space-y-2">${experiencesHTML}</div>
                     <div class="mt-10 pt-6 border-t border-white/5">
                          <h4 class="text-gray-500 font-mono text-[10px] uppercase tracking-widest mb-4">Briefing Notes</h4>
-                         <p class="text-gray-400 text-sm leading-relaxed font-mono">${user.description || 'No logs found.'}</p>
+                         <p class="text-gray-400 text-sm leading-relaxed font-mono">${user.description || 'No additional logs found.'}</p>
                     </div>
                 </div>
             </div>`;
-    } catch (error) { modalBody.innerHTML = `<p class="text-red-500 font-mono text-center mt-20">CONNECTION TERMINATED.</p>`; }
+
+    } catch (error) { 
+        modalBody.innerHTML = `<p class="text-red-500 font-mono text-center mt-20">CONNECTION TERMINATED. ${error.message}</p>`; 
+    }
 }
 
 function closeProfileModal() {
     const modalContent = document.getElementById('profile-modal-content');
     if (modalContent) modalContent.classList.add('translate-x-full');
     setTimeout(() => document.getElementById('profile-modal').classList.add('hidden'), 300);
+}
+async function adminDeleteUser(userId) {
+    const confirmation = confirm("⚠️ WARNING: You are sure you want to expel this member from the system?");
+    if (!confirmation) return;
+
+    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/team/members/${userId}`, {
+            method: 'DELETE',
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            showToast("User deleted successfully!", "success");
+            closeProfileModal(); 
+            buildTeam(); 
+        } else {
+            const errorData = await response.json();
+            showToast(`ERROR: ${errorData.message || 'Access denied.'}`, "error");
+        }
+    } catch (error) {
+        showToast("SERVER ERROR: Cannot connect to the server.", "error");
+    }
 }

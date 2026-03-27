@@ -58,9 +58,9 @@ async function buildRanking() {
     } catch (err) { console.error("Ranking error:", err); }
 }
 
-function buildProjects() {} // Code tĩnh cũ của bạn
-function buildPublications() {} // Code tĩnh cũ của bạn
-function buildFaqAndPolicies() {} // Code tĩnh cũ của bạn
+function buildProjects() {} 
+function buildPublications() {} 
+function buildFaqAndPolicies() {} 
 function toggleFaq(index) {
     const ans = document.getElementById(`faq-answer-${index}`);
     const icon = document.getElementById(`faq-icon-${index}`);

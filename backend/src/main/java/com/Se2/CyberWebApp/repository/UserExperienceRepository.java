@@ -7,6 +7,5 @@ import java.util.List;
 
 @Repository
 public interface UserExperienceRepository extends JpaRepository<UserExperience, Integer> {
-    // Lấy danh sách kinh nghiệm của 1 user, sắp xếp cái mới nhất lên đầu
     List<UserExperience> findByUserIdOrderByStartDateDesc(Integer userId);
 }

@@ -16,7 +16,6 @@ public class User {
     @JoinColumn(name = "role", referencedColumnName = "id")
     private Role roleEntity;
 
-    // --- Constructor không tham số (Bắt buộc cho JPA) ---
     public User() {
     }
     @Column(name = "username")
@@ -111,9 +110,12 @@ public class User {
         this.email = email;
     }
     @Column(name = "coin")
-    private Integer coin = 0; // Khởi tạo mặc định bằng 0
+    private Integer coin = 0;
 
-    // Thêm Getter và Setter
-    public Integer getCoin() { return coin; }
-    public void setCoin(Integer coin) { this.coin = coin; }
+    public Integer getCoin() {
+        return coin;
+    }
+    public void setCoin(Integer coin) {
+        this.coin = coin;
+    }
 }

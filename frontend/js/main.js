@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', includeHTML);
 
 function initializeApp() {
-    console.log("[SYSTEM] Khởi động giao diện CyberTitans...");
+    console.log("[SYSTEM] Starting CyberTitans...");
     checkLoginState(); 
     
     if (typeof startCountdown === "function") startCountdown();

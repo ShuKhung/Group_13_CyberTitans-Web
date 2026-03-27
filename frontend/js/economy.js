@@ -31,8 +31,8 @@ async function purchaseTier(tierName, coinsAmount) {
             storage.setItem('cyber_user', JSON.stringify(currentUser));
             showToast(`GIAO DỊCH THÀNH CÔNG!`, 'success');
             applyLoginState(currentUser); 
-        } else { showToast('Lỗi: Từ chối kết nối (403).', 'error'); }
-    } catch (error) { showToast('Lỗi kết nối Server.', 'error'); }
+        } else { showToast('Connection denied.', 'error'); }
+    } catch (error) { showToast('Connection failed.', 'error'); }
 }
 
 async function handleMentorRequest(mentorId, mentorName) {
@@ -63,10 +63,10 @@ async function handleMentorRequest(mentorId, mentorName) {
             applyLoginState(currentUser); 
             showToast(`GIAO DỊCH THÀNH CÔNG! Trừ ${MENTOR_COST} Coins.`, 'success');
 
-            setTimeout(() => { showToast(`[HỆ THỐNG] ${mentorName} đã nhận được yêu cầu!`, 'success'); }, 3000);
+            setTimeout(() => { showToast(`[SYSTEM] ${mentorName} has received your request!`, 'success'); }, 3000);
         } else {
             const errorData = await response.json();
             showToast(`LỖI: ${errorData.message}`, 'error');
         }
-    } catch (error) { showToast('Lỗi Server.', 'error'); }
+    } catch (error) { showToast('Connection failed.', 'error'); }
 }
