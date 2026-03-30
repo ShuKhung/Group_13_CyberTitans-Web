@@ -152,7 +152,7 @@ html, body {
   border-bottom: 1px solid #484847 !important; 
   border-radius: 0 !important; 
   outline: none !important; 
-  box-shadow: none !important; /* Xóa shadow xanh dương mặc định */
+  box-shadow: none !important; 
   font-family: 'JetBrains Mono', monospace; 
   font-size: 0.875rem; 
   padding: 0.75rem 0; 
@@ -162,8 +162,8 @@ html, body {
 
 .data-input:focus { 
   border-bottom-color: #8eff71 !important; 
-  box-shadow: 0 1px 0 0 #8eff71 !important; /* Đổi shadow focus thành màu xanh lá Cyberpunk */
-  background-color: rgba(142, 255, 113, 0.02) !important; /* Sáng nền nhẹ khi click vào */
+  box-shadow: 0 1px 0 0 #8eff71 !important; 
+  background-color: rgba(142, 255, 113, 0.02) !important;
 }
 
 .data-input::placeholder { 
@@ -196,22 +196,18 @@ nav a.nav-active {
 .card-lift:hover { 
   transform: translateY(-2px); 
 }
-/* Màu cho Toast thành công (Xanh neon) */
 #toast.success {
     border-color: #00ff41;
     color: #00ff41;
     background: rgba(0, 255, 65, 0.1);
 }
 
-/* Màu cho Toast thất bại (Đỏ/Cam Cyber) */
 #toast.error {
     border-color: #ff3e3e;
     color: #ff3e3e;
     background: rgba(255, 62, 62, 0.1);
 }
-/* css/team.css */
 
-/* --- Hiệu ứng Matrix/Scanner (Hacker Style) --- */
 @keyframes scanner {
     0% { transform: translateY(-100%); opacity: 0; }
     50% { opacity: 0.1; }
@@ -222,17 +218,16 @@ nav a.nav-active {
     position: relative;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.7);
-    border: 1px solid #333; /* Màu mặc định */
+    border: 1px solid #333; 
     transition: all 0.3s ease;
 }
 
-/* Khung góc Cyber */
 .hack-card::before, .hack-card::after {
     content: '';
     position: absolute;
     width: 15px;
     height: 15px;
-    border-color: #333; /* Màu mặc định */
+    border-color: #333; 
 }
 
 .hack-card::before {
@@ -247,7 +242,6 @@ nav a.nav-active {
     border-right: 2px solid;
 }
 
-/* Khi hover: màu xanh primary */
 .hack-card:hover {
     border-color: #8eff71;
 }
@@ -256,15 +250,34 @@ nav a.nav-active {
     border-color: #8eff71;
 }
 
-/* Hiệu ứng tia quét scanner */
 .hack-card .scanner {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 50%;
     background: linear-gradient(0deg, rgba(142, 255, 113, 0.05), transparent);
     animation: scanner 2s linear infinite;
-    display: none; /* Ẩn mặc định */
+    display: none; 
 }
 
 .hack-card:hover .scanner {
-    display: block; /* Hiện khi hover */
+    display: block;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important; 
+    -webkit-text-fill-color: black !important; 
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.cyber-input {
+    color: black !important;
+    background-color: white !important;
+}
+
+.otp-input {
+    background-color: black !important;
+    color: #8eff71 !important; 
+    -webkit-box-shadow: 0 0 0 30px black inset !important;
+    -webkit-text-fill-color: #8eff71 !important;
 }

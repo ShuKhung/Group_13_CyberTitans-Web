@@ -19,13 +19,16 @@ function showPage(name) {
     window.scrollTo(0, 0);
 }
 
+
 function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
     const text = document.getElementById('toast-text');
     if (!t || !text) return;
-    t.className = `glass-panel border border-primary/20 px-6 py-4 flex items-center gap-4 show ${type}`;
+    
+    t.className = `fixed bottom-5 right-5 z-[9999] glass-panel border px-6 py-4 flex items-center gap-4 transition-transform duration-300 show ${type}`;
     text.textContent = msg;
-    clearTimeout(toastTimer);
+    
+    if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 

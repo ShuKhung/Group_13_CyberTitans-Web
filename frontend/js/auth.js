@@ -22,7 +22,7 @@ function applyLoginState(userData) {
             const currentText = coinDisplay.textContent;
             const startCoin = parseInt(currentText.replace(/,/g, '')) || 0;
             const endCoin = userData.coin || 0;
-            if (startCoin !== endCoin) animateCoinValue('nav-coin-display', startCoin, endCoin, 1500); 
+            if (startCoin !== endCoin && typeof animateCoinValue === 'function') animateCoinValue('nav-coin-display', startCoin, endCoin, 1500); 
             else coinDisplay.textContent = endCoin.toLocaleString(); 
         }
 
@@ -58,21 +58,72 @@ async function doLogin() {
             storage.setItem('cyber_token', userData.token); 
             
             closeModal('login-modal'); applyLoginState(userData);
-            showToast(`ACCESS GRANTED. Chào mừng, ${userData.name}!`, 'success');
+            showToast(`ACCESS GRANTED. Welcome, ${userData.name}!`, 'success');
             userEl.value = ''; passEl.value = '';
-        } else { showToast('ACCESS DENIED: Sai thông tin.', 'error'); }
-    } catch (err) { showToast('SERVER ERROR: Lỗi kết nối.', 'error'); }
+        } else { 
+            showToast('ACCESS DENIED: Wrong credentials.', 'error'); 
+        }
+    } catch (err) { showToast('SERVER ERROR: Connection error.', 'error'); }
 }
 
 function logout() {
     localStorage.removeItem('cyber_user'); localStorage.removeItem('cyber_token');
     sessionStorage.removeItem('cyber_user'); sessionStorage.removeItem('cyber_token');
     isLoggedIn = false;
+    location.reload(); // Reload to clear all states cleanly
+}
 
-    const navGuest = document.getElementById('nav-guest');
-    const navUser = document.getElementById('nav-user');
-    if (navGuest) navGuest.classList.replace('hidden', 'flex');
-    if (navUser) navUser.classList.replace('flex', 'hidden');
+// --- RECOVERY PROTOCOL ---
+async function requestRecoveryOtp() {
+    const username = document.getElementById('recovery-username').value.trim();
+    const email = document.getElementById('recovery-email').value.trim();
 
-    showPage('home'); showToast('DISCONNECTED.', 'success');
+    if (!username || !email) return showToast("SYSTEM ERROR: Identifier and Comms Link required.", "error");
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/forgot-password-request`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showToast(data.message, "success");
+            recoveryTargetUsername = username; 
+            closeModal('recovery-request-modal');
+            openModal('recovery-reset-modal');
+        } else {
+            showToast(`DENIED: ${data.message}`, "error");
+        }
+    } catch (error) { showToast("SERVER UNREACHABLE: Connection terminated.", "error"); }
+}
+
+async function executePasswordReset() {
+    const otpCode = document.getElementById('recovery-otp').value.trim();
+    const newPassword = document.getElementById('recovery-new-pass').value;
+
+    if (otpCode.length !== 6 || !newPassword) return showToast("SYSTEM ERROR: Invalid code format or missing pass-key.", "error");
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/forgot-password-reset`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: recoveryTargetUsername, code: otpCode, newPassword: newPassword })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showToast("OVERRIDE SUCCESSFUL: You may now login.", "success");
+            recoveryTargetUsername = "";
+            document.getElementById('recovery-otp').value = "";
+            document.getElementById('recovery-new-pass').value = "";
+            closeRecoveryModal();
+            openModal('login-modal');
+        } else {
+            showToast(`DENIED: ${data.message}`, "error");
+        }
+    } catch (error) { showToast("SERVER UNREACHABLE: Connection terminated.", "error"); }
 }

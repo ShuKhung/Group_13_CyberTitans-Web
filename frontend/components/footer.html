@@ -16,4 +16,44 @@
       </div>
     </div>
   </div>
+  <div id="signup-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100] backdrop-blur-sm">
+    <div class="bg-[#111] border border-white/10 p-8 w-[400px] shadow-2xl relative">
+        <button onclick="closeSignUpModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        
+        <p class="font-mono text-primary text-[10px] uppercase tracking-widest mb-1"><span class="w-2 h-2 inline-block bg-primary mr-2 animate-pulse"></span>RECRUITMENT_PROTOCOL.EXE</p>
+        <h3 class="text-white font-headline text-2xl mb-6 uppercase font-bold tracking-tight">INITIALIZE OPERATIVE</h3>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">Designation (Full Name)</label>
+                <input type="text" id="signup-name" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none transition-all" placeholder="John Doe">
+            </div>
+            <div>
+                <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">Identity Identifier (Username)</label>
+                <input type="text" id="signup-username" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none transition-all" placeholder="johndoe99">
+            </div>
+            <div>
+                <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">Comms Link (Email)</label>
+                <input type="email" id="signup-email" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none transition-all" placeholder="operative@cybertitans.com">
+            </div>
+            <div>
+                <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">Pass-Key</label>
+                <input type="password" id="signup-password" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none transition-all" placeholder="••••••••">
+            </div>
+        </div>
+
+        <button onclick="executeSignUp()" class="w-full bg-primary text-black font-bold font-mono tracking-widest py-4 mt-8 hover:bg-white transition-all text-xs uppercase">
+            Execute Registration <span class="material-symbols-outlined align-middle text-sm ml-1">how_to_reg</span>
+        </button>
+
+        <div class="mt-6 text-center">
+            <p class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">
+                Already registered? 
+                <a href="#" onclick="switchToLogin()" class="text-primary hover:text-white transition-colors font-bold ml-2">Sign In</a>
+            </p>
+        </div>
+    </div>
+</div>
 </footer>

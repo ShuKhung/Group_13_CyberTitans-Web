@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
+import com.Se2.CyberWebApp.entity.User;
 @Component
 public class JwtUtil {
 
@@ -34,9 +34,17 @@ public class JwtUtil {
     // =========================================================
     // TÍNH NĂNG 1: TẠO TOKEN MỚI (Khi user đăng nhập thành công)
     // =========================================================
-    public String generateToken(String username) {
+    // Thay đổi tham số truyền vào từ String thành đối tượng User
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
+
+        if (user.getRoleEntity() != null) {
+            claims.put("role", user.getRoleEntity().getName());
+        } else {
+            claims.put("role", "MEMBER");
+        }
+
+        return createToken(claims, user.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String userName) {
@@ -65,7 +73,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()

@@ -16,7 +16,6 @@ public class User {
     @JoinColumn(name = "role", referencedColumnName = "id")
     private Role roleEntity;
 
-    // --- Constructor không tham số (Bắt buộc cho JPA) ---
     public User() {
     }
     @Column(name = "username")
@@ -29,8 +28,16 @@ public class User {
 
     @Column(name = "email")
     private String email;
+
     @Column(name = "password_hash")
     private String passwordHash;
+
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Column(name = "is_enabled", columnDefinition = "boolean default false")
+    private boolean isEnabled = false;
+
     public String getUsername() {
         return username;
     }
@@ -46,7 +53,7 @@ public class User {
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
-    // --- Getters và Setters ---
+
     public Integer getId() {
         return id;
     }
@@ -86,7 +93,7 @@ public class User {
     public void setRoleEntity(Role roleEntity) {
         this.roleEntity = roleEntity;
     }
-    // --- Bổ sung Getter và Setter cho Phone, Address, Email ---
+
     public String getPhone() {
         return phone;
     }
@@ -111,9 +118,27 @@ public class User {
         this.email = email;
     }
     @Column(name = "coin")
-    private Integer coin = 0; // Khởi tạo mặc định bằng 0
+    private Integer coin = 0;
 
-    // Thêm Getter và Setter
-    public Integer getCoin() { return coin; }
-    public void setCoin(Integer coin) { this.coin = coin; }
+    public Integer getCoin() {
+        return coin;
+    }
+    public void setCoin(Integer coin) {
+        this.coin = coin;
+    }
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
 }

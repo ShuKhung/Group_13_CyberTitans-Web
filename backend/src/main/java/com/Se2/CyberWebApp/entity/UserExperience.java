@@ -17,7 +17,6 @@ public class UserExperience {
     @Column(name = "organization_name", nullable = false)
     private String organizationName;
 
-    // --- CÁC TRƯỜNG BỔ SUNG THÊM ---
     @Column(name = "organization_logo")
     private String organizationLogo;
 
@@ -89,10 +88,8 @@ public class UserExperience {
     private LocalDateTime updatedAt;
 
 
-    // --- Constructors ---
     public UserExperience() {}
 
-    // --- Getters and Setters ---
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 

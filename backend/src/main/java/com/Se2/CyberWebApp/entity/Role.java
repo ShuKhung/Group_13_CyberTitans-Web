@@ -11,11 +11,9 @@ public class Role {
 
     private String name;
 
-    // --- Constructor không tham số (Bắt buộc cho JPA) ---
     public Role() {
     }
 
-    // --- Getters và Setters ---
     public Integer getId() {
         return id;
     }
