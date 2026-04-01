@@ -25,17 +25,14 @@ function showToast(message, type = 'success') {
     const toastText = document.getElementById('toast-text');
     const toastDot = document.getElementById('toast-dot');
     
-    // Nếu chưa load kịp HTML thì dùng hộp thoại cảnh báo của trình duyệt
     if (!toast || !toastText) {
         alert(message);
         return;
     }
     
-    // 1. Reset trạng thái mặc định, xoá hidden và thêm class show
     toast.className = 'fixed bottom-5 right-5 z-[9999] bg-[#111] px-6 py-4 flex items-center gap-4 transition-transform duration-300 border show';
     toastText.textContent = message;
     
-    // 2. Gắn màu sắc theo loại thông báo (Thành công / Lỗi)
     if (type === 'error') {
         toast.classList.add('border-red-500', 'shadow-[0_0_15px_rgba(239,68,68,0.3)]', 'text-red-500');
         if (toastDot) toastDot.className = 'w-2 h-2 rounded-full animate-pulse bg-red-500';

@@ -1,4 +1,3 @@
-// Dữ liệu Policies (Giữ nguyên của bạn)
 const protocols = [
   { title: 'Zero-Trust Protocol', desc: 'Mọi định danh Operative phải qua xác thực MFA 2 lớp trước khi truy cập Vault.' },
   { title: 'Ethical Engagement', desc: 'Kiến thức từ hệ thống chỉ dùng cho phòng thủ. Mọi hành vi tấn công sẽ bị Terminated.' },
@@ -20,13 +19,11 @@ function initKnowledgeBase() {
   const policyContainer = document.getElementById('policy-container');
   const faqList = document.getElementById('faq-list');
 
-  // NẾU CHƯA TÌM THẤY: Đợi 100ms rồi thử lại (Polling) cho đến khi HTML load xong
   if (!policyContainer || !faqList) {
     setTimeout(initKnowledgeBase, 100); 
     return; 
   }
 
-  // Render Policies
   policyContainer.innerHTML = protocols.map(p => `
     <div class="hack-card p-6">
       <div class="scanner"></div>
@@ -35,7 +32,6 @@ function initKnowledgeBase() {
     </div>
   `).join('');
 
-  // Render FAQ
   faqList.innerHTML = faqs.map((item, i) => `
     <div class="faq-item bg-surface-container-low border border-outline-variant/10 overflow-hidden mb-2" id="faq-item-${i}">
       <button onclick="toggleFaq(${i})" class="w-full flex items-center justify-between px-6 py-5 text-left group hover:bg-surface-container-high transition-colors">
@@ -56,7 +52,6 @@ function toggleFaq(i) {
   
   const isOpen = ans.classList.contains('open');
   
-  // Đóng các cái khác
   document.querySelectorAll('.faq-answer').forEach(el => el.classList.remove('open'));
   document.querySelectorAll('.faq-item').forEach(el => {
       el.classList.remove('active');
@@ -72,6 +67,5 @@ function toggleFaq(i) {
   }
 }
 
-// Khởi chạy
 document.addEventListener('DOMContentLoaded', initKnowledgeBase);
 
