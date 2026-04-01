@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html class="dark" lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, active, headExtra, content, scriptsExtra)">
+<html class="dark" lang="en" xmlns:th="http://www.thymeleaf.org"
+    th:fragment="page(title, active, headExtra, content, scriptsExtra)">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title th:text="${title}">CyberTitans — The Digital Vault</title>
-    
+
     <!-- Tailwind CSS (Dev CDN) -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -19,9 +24,9 @@
     </script>
 
     <!-- Global CSS -->
-    <link rel="stylesheet" th:href="@{/style.css}"/>
-    <link rel="stylesheet" th:href="@{/CSS/modals.css}"/>
-    
+    <link rel="stylesheet" th:href="@{/style.css}" />
+    <link rel="stylesheet" th:href="@{/CSS/modals.css}" />
+
     <!-- Custom Head from child pages -->
     <th:block th:if="${headExtra != null}" th:replace="${headExtra}"></th:block>
 </head>
@@ -30,27 +35,28 @@
 
     <!-- Navbar Fragment -->
     <div th:replace="~{components/navbar :: navbar(active=${active})}"></div>
-    
+
     <!-- Dynamic Page Content -->
     <main id="pages-container" class="min-h-[80vh]">
         <th:block th:replace="${content}"></th:block>
     </main>
-    
+
     <!-- Footer Fragment -->
     <div th:replace="~{components/footer :: footer}"></div>
-    
+
     <!-- Modals Fragment -->
     <div th:replace="~{components/modals :: modals}"></div>
 
     <!-- Global Scripts -->
     <script th:src="@{/js/config.js}"></script>
     <script th:src="@{/js/utils.js}"></script>
-    <script th:src="@{/js/main.js}"></script> 
+    <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/auth.js}"></script>
     <script th:src="@{/js/singin.js}"></script>
     <script th:src="@{/js/economy.js}"></script>
     <script th:src="@{/js/profile.js}"></script>
     <script th:src="@{/js/public-data.js}"></script>
+    <script th:src="@{/js/faq.js}"></script>
 
     <!-- Thêm đoạn script nhỏ để tự active menu theo biến active -->
     <script th:inline="javascript">
@@ -65,4 +71,5 @@
     <!-- Custom Scripts from child pages -->
     <th:block th:if="${scriptsExtra != null}" th:replace="${scriptsExtra}"></th:block>
 </body>
+
 </html>
