@@ -58,8 +58,81 @@ async function buildRanking() {
     } catch (err) { console.error("Ranking error:", err); }
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    buildTeam();
+    buildRanking();
+    buildPublications(); 
+});
+
+async function buildPublications() {
+    const container = document.getElementById('publications-grid');
+    if (!container) return;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/publications`); 
+        const publications = await response.json();
+        
+        container.innerHTML = publications.map(p => {
+            const safeTitle = p.title ? p.title.replace(/'/g, "\\'") : '';
+            const safeAuthors = p.authors ? p.authors.replace(/'/g, "\\'") : '';
+            const safeAbstract = p.abstractText ? p.abstractText.replace(/'/g, "\\'") : '';
+            const safeLink = p.publicationUrl ? p.publicationUrl.replace(/'/g, "\\'") : '';
+            
+            const publishDate = p.publishDate || 'RECENT';
+
+            return `
+            <div onclick="openPublicationModal('${safeTitle}', '${safeAuthors}', '${safeAbstract}', '${safeLink}')" class="group bg-[#0a0a0a] border border-white/10 p-6 relative overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full">
+                <div class="absolute top-0 left-[-100%] w-full h-[2px] bg-primary group-hover:left-0 transition-all duration-500"></div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-primary font-mono text-[10px] tracking-widest uppercase border border-primary/20 px-2 py-0.5 bg-primary/5">INTELLIGENCE</span>
+                    <span class="text-gray-500 font-mono text-[10px] tracking-widest">${publishDate}</span>
+                </div>
+                <h3 class="text-white text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                    ${p.title}
+                </h3>
+                <p class="text-gray-400 text-sm mb-6 line-clamp-3">
+                    ${p.abstractText}
+                </p>
+                <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider">${p.authors}</span>
+                    </div>
+                    <span class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-primary flex items-center gap-1 transition-colors">
+                        DECRYPT <i class="fas fa-arrow-right"></i>
+                    </span>
+                </div>
+            </div>`;
+        }).join('');
+    } catch (err) { 
+        console.error("Publications error:", err); 
+    }
+}
+
+function openPublicationModal(title, authors, abstract, link) {
+    document.getElementById('modal-pub-title').innerText = title || 'No Title';
+    document.getElementById('modal-pub-authors').innerText = authors || 'Unknown';
+    document.getElementById('modal-pub-abstract').innerText = abstract || "Classified or no abstract available.";
+    
+    const linkBtn = document.getElementById('modal-pub-link');
+    if (link && link !== 'null' && link !== '') {
+        linkBtn.href = link;
+        linkBtn.style.display = 'flex';
+    } else {
+        linkBtn.style.display = 'none';
+    }
+
+    const modal = document.getElementById('publication-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closePublicationModal() {
+    const modal = document.getElementById('publication-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
 function buildProjects() {} 
-function buildPublications() {} 
 function buildFaqAndPolicies() {} 
 function toggleFaq(index) {
     const ans = document.getElementById(`faq-answer-${index}`);

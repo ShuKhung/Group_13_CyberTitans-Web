@@ -1,176 +1,299 @@
-<html th:replace="~{layout/layout :: page(title='CyberTitans — Publications', active='publications', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="content">
-<div id="page-publications" class="pt-16">
-  <main class="max-w-7xl mx-auto px-6 md:px-8 py-20">
-    
-    <div class="mb-20">
-        <div class="border-l-4 border-tertiary pl-8 mb-12">
-            <h1 class="text-5xl font-headline font-bold text-white">Intelligence Briefings</h1>
-        </div>
-        
-        <div class="flex flex-wrap gap-4 mt-8 mb-12 border-b border-white/10 pb-4">
-            <button class="text-primary font-mono text-xs uppercase tracking-widest border-b-2 border-primary pb-2">ALL_RECORDS</button>
-            <button class="text-gray-500 hover:text-white font-mono text-xs uppercase tracking-widest border-b-2 border-transparent hover:border-white/30 pb-2 transition-all">CTF_WRITEUPS</button>
-            <button class="text-gray-500 hover:text-white font-mono text-xs uppercase tracking-widest border-b-2 border-transparent hover:border-white/30 pb-2 transition-all">MALWARE_ANALYSIS</button>
-            <button class="text-gray-500 hover:text-white font-mono text-xs uppercase tracking-widest border-b-2 border-transparent hover:border-white/30 pb-2 transition-all">ZERO_DAY</button>
-        </div>
+<div id="page-publications" class="page pt-16 relative">
+    <main class="max-w-7xl mx-auto px-6 md:px-8 py-20">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="publications-grid">
-            
-            <div class="group bg-[#0a0a0a] border border-white/10 p-6 relative overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full">
-                <div class="absolute top-0 left-[-100%] w-full h-[2px] bg-primary group-hover:left-0 transition-all duration-500"></div>
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-primary font-mono text-[10px] tracking-widest uppercase border border-primary/20 px-2 py-0.5 bg-primary/5">MALWARE_ANALYSIS</span>
-                    <span class="text-gray-500 font-mono text-[10px] tracking-widest">26.MAR.2026</span>
-                </div>
-                <h3 class="text-white text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
-                    Reverse Engineering the "Ransom.WannaCry.v3" Payload
-                </h3>
-                <p class="text-gray-400 text-sm mb-6 line-clamp-3">
-                    An in-depth technical analysis of the latest variant of WannaCry ransomware, exploring its advanced obfuscation techniques and lateral movement protocols within enterprise networks.
-                </p>
-                <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-6 h-6 bg-[#222] rounded-full flex items-center justify-center text-[10px] text-white font-bold border border-white/10">VT</div>
-                        <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider">Vũ Sơn Thái</span>
+        <div class="mb-20">
+            <div class="border-l-4 border-primary pl-8 mb-12">
+                <h1 class="text-5xl font-headline font-bold text-white">Intelligence Briefings</h1>
+            </div>
+
+            <div class="flex flex-wrap gap-4 mt-8 mb-12 border-b border-white/10 pb-4">
+                <button
+                    class="text-primary font-mono text-xs uppercase tracking-widest border-b-2 border-primary pb-2">ALL_RECORDS</button>
+                <button
+                    class="text-gray-500 hover:text-white font-mono text-xs uppercase tracking-widest border-b-2 border-transparent hover:border-white/30 pb-2 transition-all">CTF_WRITEUPS</button>
+                <button
+                    class="text-gray-500 hover:text-white font-mono text-xs uppercase tracking-widest border-b-2 border-transparent hover:border-white/30 pb-2 transition-all">MALWARE_ANALYSIS</button>
+                <button
+                    class="text-gray-500 hover:text-white font-mono text-xs uppercase tracking-widest border-b-2 border-transparent hover:border-white/30 pb-2 transition-all">ZERO_DAY</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="publications-grid">
+
+                <div onclick="openPublicationModal('Reverse Engineering the Ransom.WannaCry.v3 Payload', 'Vũ Sơn Thái', 'An in-depth technical analysis of the latest variant of WannaCry ransomware, exploring its advanced obfuscation techniques, memory evasion tactics, and lateral movement protocols within enterprise networks. This paper provides reverse-engineering steps and indicators of compromise (IoCs).', 'https://github.com/cybertitans')"
+                    class="group bg-[#0a0a0a] border border-white/10 p-6 relative overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full">
+                    <div
+                        class="absolute top-0 left-[-100%] w-full h-[2px] bg-primary group-hover:left-0 transition-all duration-500">
                     </div>
-                    <span class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-primary flex items-center gap-1 transition-colors">
-                        DECRYPT <i class="fas fa-arrow-right"></i>
-                    </span>
-                </div>
-            </div>
-
-            <div class="group bg-[#0a0a0a] border border-white/10 p-6 relative overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full">
-                <div class="absolute top-0 left-[-100%] w-full h-[2px] bg-primary group-hover:left-0 transition-all duration-500"></div>
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-purple-400 font-mono text-[10px] tracking-widest uppercase border border-purple-400/20 px-2 py-0.5 bg-purple-400/5">CTF_WRITEUP</span>
-                    <span class="text-gray-500 font-mono text-[10px] tracking-widest">15.MAR.2026</span>
-                </div>
-                <h3 class="text-white text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
-                    Pwn2Own 2026: Exploiting the V8 JavaScript Engine
-                </h3>
-                <p class="text-gray-400 text-sm mb-6 line-clamp-3">
-                    A comprehensive write-up on discovering and exploiting a Type Confusion vulnerability in the Chrome V8 engine, leading to full Remote Code Execution (RCE).
-                </p>
-                <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-6 h-6 bg-[#222] rounded-full flex items-center justify-center text-[10px] text-white font-bold border border-white/10">NS</div>
-                        <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider">Nguyễn Thái Sơn</span>
+                    <div class="flex justify-between items-center mb-4">
+                        <span
+                            class="text-primary font-mono text-[10px] tracking-widest uppercase border border-primary/20 px-2 py-0.5 bg-primary/5">MALWARE_ANALYSIS</span>
+                        <span class="text-gray-500 font-mono text-[10px] tracking-widest">26.MAR.2026</span>
                     </div>
-                    <span class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-primary flex items-center gap-1 transition-colors">
-                        DECRYPT <i class="fas fa-arrow-right"></i>
-                    </span>
-                </div>
-            </div>
-
-            <div class="group bg-[#0a0a0a] border border-white/10 p-6 relative overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full">
-                <div class="absolute top-0 left-[-100%] w-full h-[2px] bg-primary group-hover:left-0 transition-all duration-500"></div>
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-orange-400 font-mono text-[10px] tracking-widest uppercase border border-orange-400/20 px-2 py-0.5 bg-orange-400/5">ZERO_DAY</span>
-                    <span class="text-gray-500 font-mono text-[10px] tracking-widest">02.MAR.2026</span>
-                </div>
-                <h3 class="text-white text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
-                    Bypassing Windows Defender with Custom Syscalls
-                </h3>
-                <p class="text-gray-400 text-sm mb-6 line-clamp-3">
-                    Exploring the methodology of using direct system calls to evade user-land hooking and bypass EDR solutions in modern Windows environments.
-                </p>
-                <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-6 h-6 bg-[#222] rounded-full flex items-center justify-center text-[10px] text-white font-bold border border-white/10">TT</div>
-                        <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider">Triệu Quang Thiện</span>
+                    <h3
+                        class="text-white text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                        Reverse Engineering the "Ransom.WannaCry.v3" Payload
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-6 line-clamp-3">
+                        An in-depth technical analysis of the latest variant of WannaCry ransomware, exploring its
+                        advanced obfuscation techniques and lateral movement protocols...
+                    </p>
+                    <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
+                        <div class="flex items-center gap-2">
+                            <div
+                                class="w-6 h-6 bg-[#222] rounded-full flex items-center justify-center text-[10px] text-white font-bold border border-white/10">
+                                VT</div>
+                            <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider">Vũ Sơn
+                                Thái</span>
+                        </div>
+                        <span
+                            class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-primary flex items-center gap-1 transition-colors">
+                            DECRYPT <i class="fas fa-arrow-right"></i>
+                        </span>
                     </div>
-                    <span class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-primary flex items-center gap-1 transition-colors">
-                        DECRYPT <i class="fas fa-arrow-right"></i>
-                    </span>
+                </div>
+
+                <div onclick="openPublicationModal('Pwn2Own 2026: Exploiting the V8 JavaScript Engine', 'Nguyễn Thái Sơn', 'A comprehensive write-up on discovering and exploiting a Type Confusion vulnerability in the Chrome V8 engine. We demonstrate how to bypass V8 sandbox mitigations to achieve full Remote Code Execution (RCE) on the target machine.', 'https://github.com/cybertitans')"
+                    class="group bg-[#0a0a0a] border border-white/10 p-6 relative overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full">
+                    <div
+                        class="absolute top-0 left-[-100%] w-full h-[2px] bg-primary group-hover:left-0 transition-all duration-500">
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span
+                            class="text-purple-400 font-mono text-[10px] tracking-widest uppercase border border-purple-400/20 px-2 py-0.5 bg-purple-400/5">CTF_WRITEUP</span>
+                        <span class="text-gray-500 font-mono text-[10px] tracking-widest">15.MAR.2026</span>
+                    </div>
+                    <h3
+                        class="text-white text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                        Pwn2Own 2026: Exploiting the V8 JavaScript Engine
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-6 line-clamp-3">
+                        A comprehensive write-up on discovering and exploiting a Type Confusion vulnerability in the
+                        Chrome V8 engine, leading to full Remote Code Execution (RCE).
+                    </p>
+                    <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
+                        <div class="flex items-center gap-2">
+                            <div
+                                class="w-6 h-6 bg-[#222] rounded-full flex items-center justify-center text-[10px] text-white font-bold border border-white/10">
+                                NS</div>
+                            <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider">Nguyễn Thái
+                                Sơn</span>
+                        </div>
+                        <span
+                            class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-primary flex items-center gap-1 transition-colors">
+                            DECRYPT <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div onclick="openPublicationModal('Bypassing Windows Defender with Custom Syscalls', 'Triệu Quang Thiện', 'Exploring the methodology of using direct system calls to evade user-land hooking and bypass EDR solutions in modern Windows environments. This paper covers Hell\'s Gate and Halo\'s Gate techniques implemented in C++.', 'https://github.com/cybertitans')"
+                    class="group bg-[#0a0a0a] border border-white/10 p-6 relative overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full">
+                    <div
+                        class="absolute top-0 left-[-100%] w-full h-[2px] bg-primary group-hover:left-0 transition-all duration-500">
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span
+                            class="text-orange-400 font-mono text-[10px] tracking-widest uppercase border border-orange-400/20 px-2 py-0.5 bg-orange-400/5">ZERO_DAY</span>
+                        <span class="text-gray-500 font-mono text-[10px] tracking-widest">02.MAR.2026</span>
+                    </div>
+                    <h3
+                        class="text-white text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                        Bypassing Windows Defender with Custom Syscalls
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-6 line-clamp-3">
+                        Exploring the methodology of using direct system calls to evade user-land hooking and bypass EDR
+                        solutions in modern Windows environments.
+                    </p>
+                    <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
+                        <div class="flex items-center gap-2">
+                            <div
+                                class="w-6 h-6 bg-[#222] rounded-full flex items-center justify-center text-[10px] text-white font-bold border border-white/10">
+                                TT</div>
+                            <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider">Triệu Quang
+                                Thiện</span>
+                        </div>
+                        <span
+                            class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-primary flex items-center gap-1 transition-colors">
+                            DECRYPT <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="border-t border-white/10 pt-20 mt-10">
-        <div class="flex items-center gap-3 mb-10">
-            <div class="w-2.5 h-2.5 bg-primary"></div>
-            <h2 class="font-headline text-3xl font-bold uppercase tracking-widest text-white">Membership Tiers</h2>
+
+        <div class="border-t border-white/10 pt-20 mt-10">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="w-2.5 h-2.5 bg-primary"></div>
+                <h2 class="font-headline text-3xl font-bold uppercase tracking-widest text-white">Membership Tiers</h2>
+            </div>
+
+            <p class="text-gray-400 mb-12 max-w-2xl text-sm leading-relaxed">
+                Upgrade your operative rank or purchase Cyber Coins to unlock classified documents, practice labs, and
+                use Coins to request 1-on-1 mentorship sessions with top-tier experts.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="border border-white/10 bg-[#0a0a0a] p-8 flex flex-col hover:border-white/30 transition-all">
+                    <div class="text-gray-400 font-mono text-[11px] tracking-[0.2em] uppercase mb-4">Recruit</div>
+                    <div class="flex items-baseline gap-2 mb-3">
+                        <span class="text-4xl font-bold text-white">Free</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8 h-16">
+                        Designed for students and beginners stepping into the cybersecurity field.
+                    </p>
+
+                    <div class="space-y-4 mb-10 flex-grow">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">Public project
+                                access</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">Community
+                                forum</span>
+                        </div>
+                        <div class="flex items-center gap-3 opacity-40">
+                            <div class="w-1.5 h-1.5 bg-gray-600"></div><span class="text-gray-400 text-sm">Private
+                                repositories</span>
+                        </div>
+                        <div class="flex items-center gap-3 opacity-40">
+                            <div class="w-1.5 h-1.5 bg-gray-600"></div><span class="text-gray-400 text-sm">Mentorship
+                                program (Need Coins)</span>
+                        </div>
+                    </div>
+
+                    <button onclick="purchaseTier('RECRUIT', 0)"
+                        class="w-full py-4 border border-white/10 text-white font-bold font-mono text-xs tracking-widest uppercase hover:bg-white/5 transition-all">
+                        Join Free
+                    </button>
+                </div>
+
+                <div
+                    class="border border-primary bg-[#0a0a0a] p-8 flex flex-col relative transform md:-translate-y-2 shadow-[0_0_30px_rgba(163,230,53,0.05)]">
+                    <div
+                        class="absolute top-4 right-4 bg-primary text-black text-[9px] font-bold px-2 py-1 uppercase tracking-widest">
+                        Recommended</div>
+                    <div class="text-primary font-mono text-[11px] tracking-[0.2em] uppercase mb-4">Operative</div>
+
+                    <div class="flex items-baseline gap-2 mb-3">
+                        <span class="text-4xl font-bold text-white">1,000</span>
+                        <span class="text-gray-500 font-mono text-sm">COINS</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8 h-16">
+                        Earn 1000 Cyber Coins to unlock exclusive write-ups, private repos, and request 1-on-1
+                        mentorship sessions.
+                    </p>
+
+                    <div class="space-y-4 mb-10 flex-grow">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">All Recruit
+                                features</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">Private
+                                repositories</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">CTF practice
+                                labs</span>
+                        </div>
+                        <div class="flex items-center gap-3 opacity-40">
+                            <div class="w-1.5 h-1.5 bg-gray-600"></div><span class="text-gray-400 text-sm">Gold advisory
+                                access</span>
+                        </div>
+                    </div>
+
+                    <button onclick="purchaseTier('OPERATIVE', 1000)"
+                        class="w-full py-4 bg-primary text-black font-bold font-mono text-xs tracking-widest uppercase hover:brightness-110 transition-all">
+                        Deploy Now
+                    </button>
+                </div>
+
+                <div
+                    class="border border-[#D4AF37]/50 bg-[#0a0a0a] p-8 flex flex-col hover:border-[#D4AF37] transition-all">
+                    <div class="text-[#D4AF37] font-mono text-[11px] tracking-[0.2em] uppercase mb-4">Master</div>
+
+                    <div class="flex items-baseline gap-2 mb-3">
+                        <span class="text-4xl font-bold text-[#D4AF37]">5,000</span>
+                        <span class="text-gray-500 font-mono text-sm">COINS</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8 h-16">
+                        Ultimate access. Massive Coin allocation to hire top-tier Experts for intensive 1-on-1 guidance.
+                    </p>
+
+                    <div class="space-y-4 mb-10 flex-grow">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-[#D4AF37]"></div><span class="text-white text-sm">All Operative
+                                features</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-[#D4AF37]"></div><span class="text-white text-sm">Unlimited
+                                1-on-1 mentorship</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-[#D4AF37]"></div><span class="text-white text-sm">Gold advisory
+                                access</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 bg-[#D4AF37]"></div><span class="text-white text-sm">Deep-net
+                                clearance</span>
+                        </div>
+                    </div>
+
+                    <button onclick="purchaseTier('MASTER', 5000)"
+                        class="w-full py-4 bg-[#D4AF37] text-black font-bold font-mono text-xs tracking-widest uppercase hover:bg-[#e8c84a] transition-all">
+                        Authorize
+                    </button>
+                </div>
+            </div>
         </div>
-        
-        <p class="text-on-surface-variant mb-12 max-w-2xl text-sm leading-relaxed">
-            Nâng cấp cấp bậc đặc vụ hoặc nạp Cyber Coins để mở khóa các tài liệu mật, phòng Lab thực hành, và sử dụng Coin để gửi yêu cầu thuê Mentor 1-1 hỗ trợ trực tiếp.
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <div class="border border-white/10 bg-[#0a0a0a] p-8 flex flex-col hover:border-white/30 transition-all">
-                <div class="text-gray-400 font-mono text-[11px] tracking-[0.2em] uppercase mb-4">Recruit</div>
-                <div class="flex items-baseline gap-2 mb-3">
-                    <span class="text-4xl font-bold text-white">Free</span>
-                </div>
-                <p class="text-gray-400 text-sm leading-relaxed mb-8 h-16">
-                    Dành cho sinh viên và những người mới bắt đầu bước chân vào lĩnh vực an ninh mạng.
-                </p>
-                
-                <div class="space-y-4 mb-10 flex-grow">
-                    <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">Public project access</span></div>
-                    <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">Community forum</span></div>
-                    <div class="flex items-center gap-3 opacity-40"><div class="w-1.5 h-1.5 bg-gray-600"></div><span class="text-gray-400 text-sm">Private repositories</span></div>
-                    <div class="flex items-center gap-3 opacity-40"><div class="w-1.5 h-1.5 bg-gray-600"></div><span class="text-gray-400 text-sm">Mentorship program (Need Coins)</span></div>
-                </div>
-                
-                <button onclick="purchaseTier('RECRUIT', 0)" class="w-full py-4 border border-white/10 text-white font-bold font-mono text-xs tracking-widest uppercase hover:bg-white/5 transition-all">
-                    Join Free
-                </button>
-            </div>
-
-            <div class="border border-primary bg-[#0a0a0a] p-8 flex flex-col relative transform md:-translate-y-2 shadow-[0_0_30px_rgba(163,230,53,0.05)]">
-                <div class="absolute top-4 right-4 bg-primary text-black text-[9px] font-bold px-2 py-1 uppercase tracking-widest">Recommended</div>
-                <div class="text-primary font-mono text-[11px] tracking-[0.2em] uppercase mb-4">Operative</div>
-                
-                <div class="flex items-baseline gap-2 mb-3">
-                    <span class="text-4xl font-bold text-white">1,000</span>
-                    <span class="text-gray-500 font-mono text-sm">COINS</span>
-                </div>
-                <p class="text-gray-400 text-sm leading-relaxed mb-8 h-16">
-                    Earn 1000 Cyber Coins to unlock exclusive write-ups, private repos, and request 1-on-1 mentorship sessions with our elite Operatives.
-                </p>
-                
-                <div class="space-y-4 mb-10 flex-grow">
-                    <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">All Recruit features</span></div>
-                    <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">Private repositories</span></div>
-                    <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-primary"></div><span class="text-white text-sm">CTF practice labs</span></div>
-                    <div class="flex items-center gap-3 opacity-40"><div class="w-1.5 h-1.5 bg-gray-600"></div><span class="text-gray-400 text-sm">Gold advisory access</span></div>
-                </div>
-                
-                <button onclick="purchaseTier('OPERATIVE', 1000)" class="w-full py-4 bg-primary text-black font-bold font-mono text-xs tracking-widest uppercase hover:brightness-110 transition-all">
-                    Deploy Now
-                </button>
-            </div>
-
-            <div class="border border-[#D4AF37]/50 bg-[#0a0a0a] p-8 flex flex-col hover:border-[#D4AF37] transition-all">
-                <div class="text-[#D4AF37] font-mono text-[11px] tracking-[0.2em] uppercase mb-4">Master</div>
-                
-                <div class="flex items-baseline gap-2 mb-3">
-                    <span class="text-4xl font-bold text-[#D4AF37]">5,000</span>
-                    <span class="text-gray-500 font-mono text-sm">COINS</span>
-                </div>
-                <p class="text-gray-400 text-sm leading-relaxed mb-8 h-16">
-                    Truy cập tối thượng. Lượng Coin khổng lồ đủ để thuê các Chuyên gia hàng đầu 1-on-1.
-                </p>
-                
-                <div class="space-y-4 mb-10 flex-grow">
-                    <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-[#D4AF37]"></div><span class="text-white text-sm">All Operative features</span></div>
-                    <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-[#D4AF37]"></div><span class="text-white text-sm">Unlimited 1-on-1 mentorship</span></div>
-                    <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-[#D4AF37]"></div><span class="text-white text-sm">Gold advisory access</span></div>
-                    <div class="flex items-center gap-3"><div class="w-1.5 h-1.5 bg-[#D4AF37]"></div><span class="text-white text-sm">Deep-net clearance</span></div>
-                </div>
-                
-                <button onclick="purchaseTier('MASTER', 5000)" class="w-full py-4 bg-[#D4AF37] text-black font-bold font-mono text-xs tracking-widest uppercase hover:bg-[#e8c84a] transition-all">
-                    Authorize
-                </button>
-            </div>
-
-        </div>
-    </div>
     </main>
-</div>
 
+    <div id="publication-modal"
+        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4 transition-opacity duration-300">
+        <div
+            class="bg-[#0a0a0a] border border-primary w-full max-w-2xl relative shadow-[0_0_30px_rgba(163,230,53,0.15)] flex flex-col max-h-[90vh]">
+
+            <div class="border-b border-white/10 p-6">
+                <div class="flex justify-between items-start mb-2">
+                    <span
+                        class="text-primary font-mono text-[10px] tracking-widest uppercase border border-primary/20 px-2 py-0.5 bg-primary/5">INTELLIGENCE_RECORD</span>
+                    <button onclick="closePublicationModal()" class="text-gray-500 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <h2 id="modal-pub-title" class="text-2xl font-bold text-white mb-3">Publication Title</h2>
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    <span class="text-gray-400 font-mono text-xs uppercase tracking-wider">Author(s): <span
+                            id="modal-pub-authors" class="text-white">Author Name</span></span>
+                </div>
+            </div>
+
+            <div class="p-6 overflow-y-auto">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-1.5 h-1.5 bg-primary"></div>
+                    <h3 class="text-white font-mono text-sm uppercase tracking-widest">Abstract Content</h3>
+                </div>
+                <p id="modal-pub-abstract" class="text-gray-400 text-sm leading-relaxed text-justify">
+                    Loading abstract...
+                </p>
+            </div>
+
+            <div class="border-t border-white/10 p-6 flex justify-end gap-4 bg-black/40 mt-auto">
+                <button onclick="closePublicationModal()"
+                    class="px-6 py-3 border border-white/10 text-white font-mono text-xs uppercase tracking-widest hover:bg-white/5 transition-colors">
+                    Close
+                </button>
+                <a id="modal-pub-link" href="#" target="_blank"
+                    class="px-6 py-3 bg-primary text-black font-bold font-mono text-xs uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2">
+                    Access Full Record <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
-</html>
