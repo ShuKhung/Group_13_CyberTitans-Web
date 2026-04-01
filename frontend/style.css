@@ -119,16 +119,26 @@ html, body {
   color: #D4AF37; 
 }
 
-.faq-answer { 
-  max-height: 0; 
-  overflow: hidden; 
-  transition: max-height 0.3s ease; 
-  will-change: max-height; 
+.faq-item {
+    border: 1px solid rgba(72, 72, 71, 0.3);
+    transition: all 0.3s ease;
 }
 
-.faq-answer.open { 
-  max-height: 500px; 
+.faq-item:hover, .faq-item.active {
+    border-color: #8eff71;
+    background: rgba(14, 14, 14, 0.8);
 }
+
+.faq-item.active h3 {
+    color: #8eff71; 
+}
+
+.faq-icon {
+    transition: transform 0.3s ease;
+}
+.faq-item.active .faq-icon {
+    transform: rotate(180deg);
+} 
 
 #toast { 
   position: fixed; 
