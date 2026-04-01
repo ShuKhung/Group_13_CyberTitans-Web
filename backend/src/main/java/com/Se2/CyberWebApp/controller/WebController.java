@@ -51,10 +51,6 @@ public class WebController {
         return "pages/ranking";
     }
 
-    @GetMapping("/services")
-    public String services() {
-        return "pages/services";
-    }
 
     @GetMapping("/team")
     public String team() {

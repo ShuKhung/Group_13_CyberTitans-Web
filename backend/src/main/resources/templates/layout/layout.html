@@ -19,11 +19,13 @@
     </script>
 
     <!-- Global CSS -->
-    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link rel="stylesheet" th:href="@{/style.css}">
     <link rel="stylesheet" th:href="@{/CSS/modals.css}"/>
     
     <!-- Custom Head from child pages -->
-    <th:block th:if="${headExtra != null}" th:replace="${headExtra}"></th:block>
+    <th:block th:if="${headExtra != null}">
+        <th:block th:replace="${headExtra}"></th:block>
+    </th:block>
 </head>
 
 <body class="bg-[#0e0e0e] text-on-surface font-body selection:bg-primary selection:text-[#0d6100] overflow-x-hidden">
@@ -63,6 +65,8 @@
     </script>
 
     <!-- Custom Scripts from child pages -->
-    <th:block th:if="${scriptsExtra != null}" th:replace="${scriptsExtra}"></th:block>
+    <th:block th:if="${scriptsExtra != null}">
+        <th:block th:replace="${scriptsExtra}"></th:block>
+    </th:block>
 </body>
 </html>

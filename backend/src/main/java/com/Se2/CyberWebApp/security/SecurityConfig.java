@@ -22,7 +22,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                // 1. CẤU HÌNH CORS CHUẨN
+                // 1. CẤU HÌNH CORS (Giữ nguyên của bạn)
                 .cors(cors -> cors.configurationSource(request -> {
                     var cache = new org.springframework.web.cors.CorsConfiguration();
                     cache.setAllowedOrigins(java.util.List.of("http://127.0.0.1:5500", "http://localhost:5500"));
@@ -33,37 +33,38 @@ public class SecurityConfig {
                 }))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // --- MỞ KHÓA TÀI NGUYÊN TĨNH (Sửa lại cho đúng chuẩn) ---
+                        .requestMatchers(
+                                "/", "/home", "/services/**",
+                                "/projects/**", "/team/**", "/ranking/**", "/faq/**",
+                                "/publications/**",
+                                "/login", "/error", "/CSS/**", "/js/**", "/images/**",
+                                "/**/*.css", "/**/*.js", "/favicon.ico"
+                        ).permitAll()
+
                         // 1. GUEST: Các API mở cửa tự do
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/team/members").permitAll()
 
-                        // Giao diện (Web routes & Thymeleaf templates)
-                        .requestMatchers("/", "/home", "/admin", "/faq", "/permissions", "/profile", "/projects", "/publications", "/ranking", "/services", "/team").permitAll()
-                        .requestMatchers("/CSS/**", "/js/**", "/components/**", "/pages/**", "/**/*.html", "/**/*.css", "/**/*.js", "/error").permitAll()
-
-                        // 2. ADMIN: Khu vực tuyệt mật
+                        // 2. ADMIN & MENTOR (Giữ nguyên)
                         .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/team/members/**")
-                        .hasAnyAuthority("ADMIN", "SUPER ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/v1/team/members/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
-
-                        // 3. MENTOR: Chỉ sư phụ mới có quyền phản hồi request
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/team/members/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
                         .requestMatchers("/api/v1/mentor/responses").hasAuthority("MENTOR")
 
-                        // 4. Các quyền cơ bản khi đã đăng nhập
-                        .requestMatchers("/api/v1/team/members/**").authenticated()
-
+                        // 3. Các quyền còn lại
                         .anyRequest().authenticated()
                 )
+                // LƯU Ý: Nếu bạn dùng Thymeleaf (Web truyền thống), nên cân nhắc bỏ STATELESS
+                // hoặc đảm bảo JwtAuthFilter không chặn các request tới file .css/.js
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
 }

@@ -92,3 +92,56 @@ function closeRecoveryModal() {
     closeModal('recovery-request-modal');
     closeModal('recovery-reset-modal');
 }
+
+// Biến lưu trữ timer để tránh việc gõ chữ chồng chéo khi mở nhanh nhiều modal
+let typewriterTimer;
+
+function handleServiceClick(element) {
+    // 1. Lấy dữ liệu từ các thuộc tính data- của Thymeleaf
+    const title = element.getAttribute('data-title');
+    const description = element.getAttribute('data-description');
+    // Ưu tiên lấy content_detail, nếu không có thì lấy description tạm
+    const fullContent = element.getAttribute('data-content') || description;
+
+    // 2. Trỏ đến các Element trong file modals.html
+    const modal = document.getElementById('service-modal');
+    const titleEl = document.getElementById('modal-service-title');
+    const bodyEl = document.getElementById('modal-service-body');
+
+    if (!modal || !titleEl || !bodyEl) return;
+
+    // 3. Hiển thị Modal (Xóa class hidden)
+    modal.classList.remove('hidden');
+    titleEl.innerText = title;
+    bodyEl.innerHTML = ""; // Xóa nội dung cũ để gõ mới
+
+    // 4. Hiệu ứng gõ chữ Hacker Style
+    clearTimeout(typewriterTimer);
+    let i = 0;
+    function type() {
+        if (i < fullContent.length) {
+            bodyEl.innerHTML += fullContent.charAt(i);
+            i++;
+            // Tốc độ gõ 15ms mỗi ký tự (có thể điều chỉnh cho nhanh/chậm)
+            typewriterTimer = setTimeout(type, 15);
+        }
+    }
+    type();
+}
+
+// Hàm đóng Modal
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.add('hidden');
+        // Nếu đóng service-modal thì dừng luôn hiệu ứng gõ chữ
+        if (id === 'service-modal') clearTimeout(typewriterTimer);
+    }
+}
+
+// Đóng khi click vào vùng tối bên ngoài modal
+function handleBackdropClick(event, id) {
+    if (event.target.id === id) {
+        closeModal(id);
+    }
+}
