@@ -14,22 +14,26 @@ function applyLoginState(userData) {
     if (navUser) {
         navUser.classList.remove('hidden'); navUser.classList.add('flex');
         
-        const nameSpan = navUser.querySelector('span.truncate'); 
-        if (nameSpan) nameSpan.textContent = userData.name;
+        // Set name
+        const nameSpan = navUser.querySelector('span.truncate');
+        if (nameSpan) nameSpan.textContent = userData.name || '';
+
+        // If Thymeleaf already set it via sec:authentication="name", that's fine too
+        // Fallback: try setting it anyway
         
+        // Set coins
         const coinDisplay = document.getElementById('nav-coin-display');
         if (coinDisplay) {
-            const currentText = coinDisplay.textContent;
-            const startCoin = parseInt(currentText.replace(/,/g, '')) || 0;
+            const startCoin = parseInt(coinDisplay.textContent.replace(/,/g, '')) || 0;
             const endCoin = userData.coin || 0;
             if (startCoin !== endCoin && typeof animateCoinValue === 'function') animateCoinValue('nav-coin-display', startCoin, endCoin, 1500); 
             else coinDisplay.textContent = endCoin.toLocaleString(); 
         }
 
-        const avatarDiv = navUser.querySelector('.w-7.h-7');
-        if (avatarDiv) {
-            const initials = userData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            avatarDiv.innerHTML = `<span class="text-black font-bold text-[10px] font-mono">${initials}</span>`;
+        // Set avatar initials
+        const initialsEl = document.getElementById('nav-avatar-initials');
+        if (initialsEl && userData.name) {
+            initialsEl.textContent = userData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
         }
     }
 }
@@ -55,22 +59,32 @@ async function doLogin() {
 
             const storage = keepPersistentEl && keepPersistentEl.checked ? localStorage : sessionStorage;
             storage.setItem('cyber_user', JSON.stringify(userData));
-            storage.setItem('cyber_token', userData.token); 
+            storage.setItem('cyber_token', userData.token);
             
-            closeModal('login-modal'); applyLoginState(userData);
+            closeModal('login-modal');
             showToast(`ACCESS GRANTED. Welcome, ${userData.name}!`, 'success');
             userEl.value = ''; passEl.value = '';
-        } else { 
-            showToast('ACCESS DENIED: Wrong credentials.', 'error'); 
+            
+            // Reload page after brief delay so Thymeleaf re-renders with cookie (shows Admin Panel etc.)
+            setTimeout(() => window.location.reload(), 800);
+        } else {
+            showToast('ACCESS DENIED: Wrong credentials.', 'error');
         }
     } catch (err) { showToast('SERVER ERROR: Connection error.', 'error'); }
 }
 
-function logout() {
+async function logout() {
+    // 1. Clear client-side storage
     localStorage.removeItem('cyber_user'); localStorage.removeItem('cyber_token');
     sessionStorage.removeItem('cyber_user'); sessionStorage.removeItem('cyber_token');
+    // 2. Try to clear the HttpOnly cookie via JS (works if not HttpOnly)
+    document.cookie = 'cyber_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+    // 3. Call server to clear HttpOnly cookie properly
+    try {
+        await fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST' });
+    } catch (e) { /* ignore */ }
     isLoggedIn = false;
-    location.reload(); // Reload to clear all states cleanly
+    window.location.href = '/home';
 }
 
 // --- RECOVERY PROTOCOL ---

@@ -5,30 +5,36 @@
     <a th:href="@{/}" class="text-xl font-bold text-[#D4AF37] tracking-widest font-headline uppercase hover:text-[#e8c84a] transition-colors block">CyberTitans</a>
     
     <nav class="hidden lg:flex items-center gap-7 font-headline text-sm tracking-tight uppercase">
-      <a th:href="@{/home}" data-page="home" class="nav-link text-on-surface-variant hover:text-white transition-colors">Home</a>
-      <a th:href="@{/services}" data-page="services" class="nav-link text-on-surface-variant hover:text-white transition-colors">Services</a>
-      <a th:href="@{/projects}" data-page="projects" class="nav-link text-on-surface-variant hover:text-white transition-colors">Projects</a>
-      <a th:href="@{/team}" data-page="team" class="nav-link text-on-surface-variant hover:text-white transition-colors">Team</a>
-      <a th:href="@{/publications}" data-page="publications" class="nav-link text-on-surface-variant hover:text-white transition-colors">Publications</a>
-      <a th:href="@{/faq}" data-page="faq" class="nav-link text-on-surface-variant hover:text-white transition-colors">FAQ</a>
+      <a th:href="@{/home}" data-page="home" th:classappend="${active == 'home'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Home</a>
+      <a th:href="@{/services}" data-page="services" th:classappend="${active == 'services'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Services</a>
+      <a th:href="@{/projects}" data-page="projects" th:classappend="${active == 'projects'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Projects</a>
+      <a th:href="@{/publications}" data-page="publications" th:classappend="${active == 'publications'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Publications</a>
+      <a th:href="@{/faq}" data-page="faq" th:classappend="${active == 'faq'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">FAQ</a>
+      
+      <!-- Admin Links -->
+      <a sec:authorize="hasAnyAuthority('ADMIN', 'SUPER ADMIN')" th:href="@{/admin}" data-page="admin" th:classappend="${active == 'admin'} ? 'nav-active' : ''" class="nav-link text-[#D4AF37] hover:text-white transition-colors">Admin Panel</a>
+      <a sec:authorize="hasAuthority('SUPER ADMIN')" th:href="@{/permissions}" data-page="permissions" th:classappend="${active == 'permissions'} ? 'nav-active' : ''" class="nav-link text-error hover:text-white transition-colors">Permissions</a>
+      
       <a th:href="@{/ranking}" data-page="ranking" class="nav-link text-[#D4AF37] font-bold hover:brightness-125 transition-colors">Ranking</a>
     </nav>
     
     <div class="flex items-center gap-3">
       
+      <!-- GUEST STATE (toggled by JS) -->
       <div id="nav-guest" class="flex items-center gap-4">
         <button onclick="openModal('login-modal')" class="text-xs font-mono text-white hover:text-primary transition-colors uppercase tracking-widest">Login</button>
         <button onclick="switchToSignUp()" class="bg-primary text-black px-4 py-1.5 text-xs font-mono font-bold uppercase tracking-widest hover:brightness-110 transition-all">Join</button>
       </div>
 
+      <!-- AUTHENTICATED STATE (toggled by JS) -->
       <div id="nav-user" class="hidden items-center gap-5">
         
         <a th:href="@{/profile}" data-page="profile" class="nav-link flex items-center gap-3 cursor-pointer group">
             <div class="flex flex-col items-end">
                 <div class="flex items-center gap-2">
                     <span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
-                    <span class="hidden md:block text-xs font-mono text-white group-hover:text-primary transition-colors uppercase tracking-widest truncate max-w-[120px]">
-                        </span>
+                    <span class="hidden md:block text-xs font-mono text-white group-hover:text-primary transition-colors uppercase tracking-widest truncate max-w-[120px]" 
+                          sec:authentication="name">Operative</span>
                 </div>
                 <div class="hidden md:flex items-center gap-1 mt-0.5 pr-0.5">
                     <span class="material-symbols-outlined text-[#D4AF37] text-[12px]">toll</span>
@@ -37,7 +43,7 @@
             </div>
             
             <div class="w-7 h-7 bg-primary flex items-center justify-center border border-white/20 group-hover:border-primary transition-colors shadow-[0_0_10px_rgba(77,255,136,0.2)]">
-                <!-- User Avatar icon could go here -->
+                <span class="text-black font-bold text-[10px] font-mono" id="nav-avatar-initials">CT</span>
             </div>
         </a>
 
@@ -57,6 +63,7 @@
     <a th:href="@{/home}" class="block text-sm font-headline uppercase text-on-surface-variant hover:text-primary py-2">Home</a>
     <a th:href="@{/services}" class="block text-sm font-headline uppercase text-on-surface-variant hover:text-primary py-2">Services</a>
     <a th:href="@{/ranking}" class="block text-sm font-headline uppercase text-[#D4AF37] py-2">Ranking</a>
+    <a sec:authorize="hasAnyAuthority('ADMIN', 'SUPER ADMIN')" th:href="@{/admin}" class="block text-sm font-headline uppercase text-[#D4AF37] py-2">Admin Panel</a>
   </div>
 </header>
 </th:block>

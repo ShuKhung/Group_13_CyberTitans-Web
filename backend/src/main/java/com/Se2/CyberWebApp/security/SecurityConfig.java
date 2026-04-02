@@ -48,16 +48,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/team/members").permitAll()
 
-                        // 2. ADMIN & MENTOR (Giữ nguyên)
-                        .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/team/members/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
-                        .requestMatchers("/api/v1/mentor/responses").hasAuthority("MENTOR")
+                        // 2. ADMIN, SUPER ADMIN & MENTOR
+                        .requestMatchers("/admin/**", "/api/v1/admin/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
+                        .requestMatchers("/api/v1/super-admin/**", "/permissions/**").hasAuthority("SUPER ADMIN")
+                        .requestMatchers("/api/v1/mentor/**").hasAnyAuthority("MENTOR", "ADMIN", "SUPER ADMIN")
 
-                        // 3. Các quyền còn lại
-                        .anyRequest().authenticated()
+                        // 3. SECURE PROFILE
+                        .requestMatchers("/profile", "/api/v1/user/**").authenticated()
+
+                        // 4. Default fallthrough
+                        .anyRequest().permitAll()
                 )
-                // LƯU Ý: Nếu bạn dùng Thymeleaf (Web truyền thống), nên cân nhắc bỏ STATELESS
-                // hoặc đảm bảo JwtAuthFilter không chặn các request tới file .css/.js
+                // We enable FORM LOGIN or at least standard session support if we use Cookies for SSR
+                // But since we use JwtAuthFilter with Cookies, STATELESS can usually stay, 
+                // but let's ensure the Filter is properly ordered.
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

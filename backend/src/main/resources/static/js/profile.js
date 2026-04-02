@@ -7,17 +7,32 @@ async function loadOperativeData() {
     const nameInput = document.getElementById('input-name');
     if (!nameInput) return; 
 
+    // Pre-fill username immediately from stored session (no API needed)
+    const usernameInput = document.getElementById('input-username');
+    if (usernameInput) usernameInput.value = currentUser.username || '';
+
     try {
-        const response = await fetch(`${API_BASE_URL}/team/members/${currentUser.id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const response = await fetch(`${API_BASE_URL}/team/members/${currentUser.id}`, { 
+            headers: { 'Authorization': `Bearer ${token}` } 
+        });
         if (response.ok) {
             const user = await response.json();
             nameInput.value = user.name || '';
             if (document.getElementById('input-email')) document.getElementById('input-email').value = user.email || '';
-            if (document.getElementById('input-phone')) document.getElementById('input-phone').value = user.phone || '';
+            // Phone should contain actual phone number, not username
+            const phoneInput = document.getElementById('input-phone');
+            if (phoneInput) phoneInput.value = user.phone || '';
             if (document.getElementById('input-bio')) document.getElementById('input-bio').value = user.description || '';
-            if (document.getElementById('input-username')) document.getElementById('input-username').value = currentUser.username || "@unknown";
+
+            // Show actual role from DB
             const roleEl = document.getElementById('profile-role');
-            if (roleEl) roleEl.innerText = user.role || 'MEMBER';
+            if (roleEl) roleEl.innerText = user.role || currentUser.role || 'MENTEE';
+
+            // Update avatar with name
+            const avatarImg = document.getElementById('profile-avatar');
+            if (avatarImg && user.name) {
+                avatarImg.src = user.avatar || `https://ui-avatars.com/api/?background=111111&color=4dff88&name=${encodeURIComponent(user.name)}&bold=true`;
+            }
         } else if (response.status === 403 || response.status === 401) { logout(); }
     } catch (error) { console.error("[SYSTEM] Error loading user data:", error); }
 }

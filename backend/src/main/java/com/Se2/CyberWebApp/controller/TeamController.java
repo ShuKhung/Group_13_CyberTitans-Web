@@ -59,10 +59,11 @@ public class TeamController {
         response.put("avatar", user.getAvatar());
         response.put("role", (user.getRoleEntity() != null) ? user.getRoleEntity().getName() : "MEMBER");
         response.put("experiences", experiences);
-        response.put("phone", user.getPhone() != null ? user.getPhone() : "CLASSIFIED");
-        response.put("address", user.getAddress() != null ? user.getAddress() : "UNKNOWN LOCATION");
-        response.put("email", user.getEmail() != null ? user.getEmail() : "ENCRYPTED");
+        response.put("phone", user.getPhone() != null ? user.getPhone() : "");
+        response.put("address", user.getAddress() != null ? user.getAddress() : "");
+        response.put("email", user.getEmail() != null ? user.getEmail() : "");
         response.put("coin", user.getCoin() != null ? user.getCoin() : 0);
+        response.put("description", ""); // bio field placeholder
 
         return ResponseEntity.ok(response);
     }
