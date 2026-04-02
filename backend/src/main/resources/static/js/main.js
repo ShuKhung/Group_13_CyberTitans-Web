@@ -20,6 +20,39 @@ function initializeApp() {
 // --- GLOBAL TOAST SYSTEM ---
 let toastTimeout; 
 
+function startCountdown() {
+    const daysEl = document.getElementById('cd-days');
+    const hoursEl = document.getElementById('cd-hours');
+    const minsEl = document.getElementById('cd-mins');
+    const secsEl = document.getElementById('cd-secs');
+
+    if (!daysEl || !hoursEl || !minsEl || !secsEl) return;
+
+    let d = parseInt(daysEl.innerText) || 0;
+    let h = parseInt(hoursEl.innerText) || 0;
+    let m = parseInt(minsEl.innerText) || 0;
+    let s = parseInt(secsEl.innerText) || 0;
+
+    let totalSeconds = (d * 86400) + (h * 3600) + (m * 60) + s;
+
+    setInterval(() => {
+        if (totalSeconds <= 0) return;
+        totalSeconds--;
+        
+        let rem = totalSeconds;
+        const newD = Math.floor(rem / 86400); rem %= 86400;
+        const newH = Math.floor(rem / 3600); rem %= 3600;
+        const newM = Math.floor(rem / 60); rem %= 60;
+        const newS = rem;
+
+        daysEl.innerText = newD.toString().padStart(2, '0');
+        hoursEl.innerText = newH.toString().padStart(2, '0');
+        minsEl.innerText = newM.toString().padStart(2, '0');
+        secsEl.innerText = newS.toString().padStart(2, '0');
+    }, 1000);
+}
+
+
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     const toastText = document.getElementById('toast-text');

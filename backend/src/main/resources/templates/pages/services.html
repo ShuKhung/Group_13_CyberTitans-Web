@@ -1,14 +1,7 @@
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/layout :: page(
-          'Services',
-          'services',
-          null,
-          ~{::content},
-          null
-      )}">
+<html th:replace="~{layout/layout :: page(title='Services', active='services', headExtra=~{}, content=~{pages/services :: content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
 
 <div th:fragment="content">
-    <div id="page-services" class="pt-16">
+    <div id="page-services" class="page active pt-16">
         <main class="max-w-7xl mx-auto px-6 md:px-8 py-20">
 
             <div class="border-l-4 border-[#8eff71] pl-8 mb-16">

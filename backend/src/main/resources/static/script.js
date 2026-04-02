@@ -20,8 +20,8 @@ function initKnowledgeBase() {
   const faqList = document.getElementById('faq-list');
 
   if (!policyContainer || !faqList) {
-    setTimeout(initKnowledgeBase, 100); 
-    return; 
+    setTimeout(initKnowledgeBase, 100);
+    return;
   }
 
   policyContainer.innerHTML = protocols.map(p => `
@@ -49,13 +49,13 @@ function toggleFaq(i) {
   const item = document.getElementById(`faq-item-${i}`);
   const ans = document.getElementById(`faq-answer-${i}`);
   const icon = document.getElementById(`faq-icon-${i}`);
-  
+
   const isOpen = ans.classList.contains('open');
-  
+
   document.querySelectorAll('.faq-answer').forEach(el => el.classList.remove('open'));
   document.querySelectorAll('.faq-item').forEach(el => {
-      el.classList.remove('active');
-      el.style.borderColor = 'rgba(72, 72, 71, 0.1)';
+    el.classList.remove('active');
+    el.style.borderColor = 'rgba(72, 72, 71, 0.1)';
   });
   document.querySelectorAll('.faq-icon').forEach(el => el.textContent = 'add');
 

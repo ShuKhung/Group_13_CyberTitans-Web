@@ -28,9 +28,9 @@ async function buildRanking() {
         const response = await fetch(`${API_BASE_URL}/ranking`);
         const rankingData = await response.json();
         const layout = [
-            { idx: 1, color: '#e5e7eb', shadow: 'rgba(229,231,235,0.4)', pad: 'pt-16 pb-4' }, 
-            { idx: 0, color: '#fbbf24', shadow: 'rgba(251,191,36,0.5)', pad: 'pt-20 pb-6' },  
-            { idx: 2, color: '#f97316', shadow: 'rgba(249,115,22,0.4)', pad: 'pt-14 pb-4' }   
+            { idx: 1, color: '#e5e7eb', shadow: 'rgba(229,231,235,0.4)', pad: 'pt-16 pb-4' },
+            { idx: 0, color: '#fbbf24', shadow: 'rgba(251,191,36,0.5)', pad: 'pt-20 pb-6' },
+            { idx: 2, color: '#f97316', shadow: 'rgba(249,115,22,0.4)', pad: 'pt-14 pb-4' }
         ];
         podiumContainer.innerHTML = layout.map(pos => {
             const u = rankingData[pos.idx];
@@ -58,26 +58,26 @@ async function buildRanking() {
     } catch (err) { console.error("Ranking error:", err); }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    buildTeam();
-    buildRanking();
-    buildPublications(); 
-});
+
 
 async function buildPublications() {
     const container = document.getElementById('publications-grid');
     if (!container) return;
-    
+
     try {
-        const response = await fetch(`${API_BASE_URL}/api/publications`); 
+        const response = await fetch(`/api/publications`);
         const publications = await response.json();
-        
+
+        if (!Array.isArray(publications) || publications.length === 0) {
+            return;
+        }
+
         container.innerHTML = publications.map(p => {
-            const safeTitle = p.title ? p.title.replace(/'/g, "\\'") : '';
-            const safeAuthors = p.authors ? p.authors.replace(/'/g, "\\'") : '';
-            const safeAbstract = p.abstractText ? p.abstractText.replace(/'/g, "\\'") : '';
-            const safeLink = p.publicationUrl ? p.publicationUrl.replace(/'/g, "\\'") : '';
-            
+            const safeTitle = encodeURIComponent(p.title || '').replace(/'/g, "%27");
+            const safeAuthors = encodeURIComponent(p.authors || '').replace(/'/g, "%27");
+            const safeAbstract = encodeURIComponent(p.abstractText || '').replace(/'/g, "%27");
+            const safeLink = encodeURIComponent(p.publicationUrl || '').replace(/'/g, "%27");
+
             const publishDate = p.publishDate || 'RECENT';
 
             return `
@@ -103,16 +103,21 @@ async function buildPublications() {
                 </div>
             </div>`;
         }).join('');
-    } catch (err) { 
-        console.error("Publications error:", err); 
+    } catch (err) {
+        console.error("Publications error:", err);
     }
 }
 
-function openPublicationModal(title, authors, abstract, link) {
+function openPublicationModal(encodedTitle, encodedAuthors, encodedAbstract, encodedLink) {
+    const title = decodeURIComponent(encodedTitle);
+    const authors = decodeURIComponent(encodedAuthors);
+    const abstract = decodeURIComponent(encodedAbstract);
+    const link = decodeURIComponent(encodedLink);
+
     document.getElementById('modal-pub-title').innerText = title || 'No Title';
     document.getElementById('modal-pub-authors').innerText = authors || 'Unknown';
     document.getElementById('modal-pub-abstract').innerText = abstract || "Classified or no abstract available.";
-    
+
     const linkBtn = document.getElementById('modal-pub-link');
     if (link && link !== 'null' && link !== '') {
         linkBtn.href = link;
@@ -132,8 +137,8 @@ function closePublicationModal() {
     modal.classList.remove('flex');
 }
 
-function buildProjects() {} 
-function buildFaqAndPolicies() {} 
+function buildProjects() { }
+function buildFaqAndPolicies() { }
 function toggleFaq(index) {
     const ans = document.getElementById(`faq-answer-${index}`);
     const icon = document.getElementById(`faq-icon-${index}`);

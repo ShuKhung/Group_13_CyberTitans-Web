@@ -4,11 +4,21 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "services")
-public class ServiceEntity {
+public class Service {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String title;
+
+    @Column(name = "content_detail", columnDefinition = "TEXT")
+    private String contentDetail;
+
+    @Column(length = 500)
+    private String description;
+    private String iconClass;
+    private String linkUrl;
 
     public String getContentDetail() {
         return contentDetail;
@@ -17,14 +27,6 @@ public class ServiceEntity {
     public void setContentDetail(String contentDetail) {
         this.contentDetail = contentDetail;
     }
-
-    private String title;
-
-    @Column(columnDefinition = "TEXT")
-    private String contentDetail;
-
-    @Column(length = 500)
-    private String description;
 
     public String getLinkUrl() {
         return linkUrl;
@@ -66,10 +68,6 @@ public class ServiceEntity {
         this.description = description;
     }
 
-    private String iconClass;
-    private String linkUrl;
-
-    // --- Constructor không tham số (Bắt buộc phải có đối với Entity) ---
-    public ServiceEntity() {
+    public Service() {
     }
-    }
+}

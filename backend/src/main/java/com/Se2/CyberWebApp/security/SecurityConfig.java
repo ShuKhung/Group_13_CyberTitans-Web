@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/", "/home", "/services/**",
                                 "/projects/**", "/team/**", "/ranking/**", "/faq/**",
-                                "/publications/**",
+                                "/publications/**", "/api/publications/**",
                                 "/login", "/error", "/CSS/**", "/js/**", "/images/**",
                                 "/**/*.css", "/**/*.js", "/favicon.ico"
                         ).permitAll()

@@ -1,8 +1,8 @@
 <html
-  th:replace="~{layout/layout :: page(title='CyberTitans — FAQ', active='faq', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}"
+  th:replace="~{layout/layout :: page(title='CyberTitans — FAQ', active='faq', headExtra=~{}, content=~{pages/faq :: content}, scriptsExtra=~{})}"
   xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="content">
-  <div id="page-faq" class="pt-16">
+  <div id="page-faq" class="page active pt-16">
     <main class="max-w-4xl mx-auto px-6 md:px-8 py-20">
       <div class="border-l-4 border-secondary pl-8 mb-16">
         <p class="font-mono text-secondary text-sm tracking-widest mb-2">/KNOWLEDGE/BASE_&_PROTOCOLS</p>
