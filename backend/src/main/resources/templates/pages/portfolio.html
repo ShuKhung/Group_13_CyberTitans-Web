@@ -105,7 +105,8 @@
         <div class="w-32 h-32 rounded-full border-2 border-primary/30 p-2 flex items-center justify-center bg-black/40">
           <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-surface-container-highest">
             <img th:if="${user.avatar != null}" th:src="${user.avatar}" class="w-full h-full object-cover">
-            <span th:unless="${user.avatar != null}" class="text-4xl font-headline font-bold text-white/40" th:text="${user.name != null ? user.name.substring(0, 1) : 'O'}">O</span>
+            <span th:unless="${user.avatar != null}" class="text-4xl font-headline font-bold text-white/40" 
+                  th:text="${user.name != null && !user.name.isEmpty() ? user.name.substring(0, 1) : 'O'}">O</span>
           </div>
         </div>
       </div>
@@ -116,7 +117,8 @@
           <span class="px-3 py-1 bg-tertiary/20 text-tertiary border border-tertiary/30 text-[10px] font-mono font-bold tracking-widest uppercase rounded" th:text="${user.roleEntity != null ? user.roleEntity.name : 'MEMBER'}">SUPER ADMIN</span>
         </div>
         <p class="font-mono text-xs text-on-surface-variant mb-4 uppercase tracking-widest">
-          UID#<span th:text="${user.id != null ? #numbers.formatInteger(user.id, 6) : '000000'}">908881</span> — ROLE: [[${user.roleEntity != null ? user.roleEntity.name : 'MEMBER'}]]
+          UID#<span th:text="${user.id != null ? #numbers.formatInteger(user.id, 6) : '000000'}">908881</span> 
+          — ROLE: <span th:text="${user.roleEntity != null ? user.roleEntity.name : 'MEMBER'}">MEMBER</span>
         </p>
         <p class="font-mono text-xs text-on-surface-variant/80 italic leading-relaxed whitespace-pre-wrap" 
            th:text="${(user.description == null || user.description == '') ? 'No briefing notes on file.' : user.description}">
@@ -189,7 +191,7 @@
             <th:block th:each="exp : ${experiences}">
                <th:block th:if="${exp.tags != null}" th:each="tag : ${exp.tags.split(',')}">
                   <span th:if="${exp.type == 'PROJECT'}" class="tag-verified px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded">
-                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> [[${tag.trim()}]]
+                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> <span th:text="${tag.trim()}">Java</span>
                   </span>
                </th:block>
             </th:block>
@@ -210,7 +212,7 @@
             <th:block th:each="exp : ${experiences}">
                <th:block th:if="${exp.tags != null}" th:each="tag : ${exp.tags.split(',')}">
                   <span th:if="${exp.type != 'PROJECT'}" class="tag-skill px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded">
-                    <span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> [[${tag.trim()}]]
+                    <span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> <span th:text="${tag.trim()}">Java</span>
                   </span>
                </th:block>
             </th:block>

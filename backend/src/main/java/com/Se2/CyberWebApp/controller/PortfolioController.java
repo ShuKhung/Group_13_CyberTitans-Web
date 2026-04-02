@@ -86,13 +86,13 @@ public class PortfolioController {
                 .count();
 
         // Rank Calculation
-        long rank = userRepository.countByPointGreaterThan(user.getPoint()) + 1;
-        model.addAttribute("rank", rank);
-
         if (user.getPoint() == null) {
-             model.addAttribute("reputation", "0");
+            model.addAttribute("rank", "N/A");
+            model.addAttribute("reputation", "0");
         } else {
-             model.addAttribute("reputation", String.format("%,.0f", user.getPoint()));
+            long rank = userRepository.countByPointGreaterThan(user.getPoint()) + 1;
+            model.addAttribute("rank", rank);
+            model.addAttribute("reputation", String.format("%,.0f", user.getPoint()));
         }
 
         model.addAttribute("user", user);

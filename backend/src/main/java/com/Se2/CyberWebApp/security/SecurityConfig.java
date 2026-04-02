@@ -38,8 +38,7 @@ public class SecurityConfig {
                                 "/", "/home", "/services/**",
                                 "/projects/**", "/team/**", "/ranking/**", "/faq/**",
                                 "/publications/**", "/api/publications/**",
-                                "/login", "/error", "/CSS/**", "/js/**", "/images/**",
-                                "/**/*.css", "/**/*.js", "/favicon.ico"
+                                "/login", "/error", "/CSS/**", "/js/**", "/images/**", "/favicon.ico"
                         ).permitAll()
 
                         // 1. GUEST: Các API mở cửa tự do
