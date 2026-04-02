@@ -37,7 +37,7 @@ CREATE TABLE `user` (
   `verification_code` varchar(255) DEFAULT NULL,
   `is_enabled` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +46,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Triệu Quang Thiện',NULL,3636366,1,'superadmin1','qqqweasd12345','0941156936',NULL,'bangbong2232@gmail.com',36000,NULL,1),(2,'Mai Tuấn Minh',NULL,1231,1,'admin2','123456',NULL,NULL,NULL,0,NULL,1),(10,'Ngô Văn Quyền',NULL,15890,1,'nvquyen2404','123456',NULL,NULL,NULL,0,NULL,1),(11,'Nguyễn Thái Sơn',NULL,12450,1,'thaison','123456','11','22','33',0,NULL,1),(12,'Vũ Sơn Thái',NULL,11200,4,'sonthai','123456',NULL,NULL,NULL,0,NULL,1),(13,'Đặng Phương Nam',NULL,1200,2,'Cam','123456','ád',NULL,'ENCRYPTED',0,NULL,1),(16,'QQQQ',NULL,0,4,'Test','111111',NULL,NULL,'123',100,NULL,1);
+INSERT INTO `user` VALUES (1,'Triệu Quang Thiện',NULL,3636366,1,'superadmin1','qqqweasd12345','0941156936','1 Dai Co Viet, Hanoi','trieuquangthien@gmail.com',36000,NULL,1),(2,'Mai Tuấn Minh',NULL,1231,1,'admin2','123456','0987654321','Km 10, Nguyen Trai, Hanoi','maituanminh@cybertitans.com',0,NULL,1),(10,'Ngô Văn Quyền',NULL,15890,1,'nvquyen2404','123456','0912345678','207 Giai Phong, Hanoi','ngovanquyen@cybertitans.com',0,NULL,1),(11,'Nguyễn Thái Sơn',NULL,12450,1,'thaison','123456','0933334444','Km 9, Nguyen Trai, Hanoi','nguyenthaison@cybertitans.com',0,NULL,1),(12,'Vũ Sơn Thái',NULL,11200,1,'sonthai','123456','0944445555','Hoa Lac IT Park, Hanoi','vusonthai@cybertitans.com',0,NULL,1),(13,'Đặng Phương Nam',NULL,1200,2,'Cam','123456','0955556666','144 Xuan Thuy, Hanoi','dangphuongnam@cybertitans.com',0,NULL,1),(16,'QQQQ',NULL,0,4,'Test','111111','0999999999','Unknown, Hanoi','qqqq@cybertitans.com',100,NULL,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

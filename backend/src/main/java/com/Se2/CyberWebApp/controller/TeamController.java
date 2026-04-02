@@ -2,8 +2,10 @@ package com.Se2.CyberWebApp.controller;
 
 import com.Se2.CyberWebApp.entity.User;
 import com.Se2.CyberWebApp.entity.UserExperience;
+import com.Se2.CyberWebApp.entity.Education;
 import com.Se2.CyberWebApp.repository.UserRepository;
 import com.Se2.CyberWebApp.repository.UserExperienceRepository;
+import com.Se2.CyberWebApp.repository.EducationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,9 @@ public class TeamController {
 
     @Autowired
     private UserExperienceRepository experienceRepository;
+
+    @Autowired
+    private EducationRepository educationRepository;
 
     // --- API 1: Take list of all Mem ---
     @GetMapping("/members")
@@ -52,6 +57,7 @@ public class TeamController {
         }
 
         List<UserExperience> experiences = experienceRepository.findByUserIdOrderByStartDateDesc(id);
+        List<Education> educations = educationRepository.findByUserIdOrderByStartYearDesc(id);
 
         Map<String, Object> response = new HashMap<>();
         response.put("id", user.getId());
@@ -59,11 +65,33 @@ public class TeamController {
         response.put("avatar", user.getAvatar());
         response.put("role", (user.getRoleEntity() != null) ? user.getRoleEntity().getName() : "MEMBER");
         response.put("experiences", experiences);
-        response.put("phone", user.getPhone() != null ? user.getPhone() : "");
-        response.put("address", user.getAddress() != null ? user.getAddress() : "");
-        response.put("email", user.getEmail() != null ? user.getEmail() : "");
+        response.put("educations", educations);
+        response.put("phone", user.getPhone() != null ? user.getPhone() : "CLASSIFIED");
+        response.put("address", user.getAddress() != null ? user.getAddress() : "UNKNOWN LOCATION");
+        response.put("email", user.getEmail() != null ? user.getEmail() : "ENCRYPTED");
         response.put("coin", user.getCoin() != null ? user.getCoin() : 0);
         response.put("description", ""); // bio field placeholder
+
+        String description = null;
+        String facebook = null;
+        String linkedin = null;
+        
+        if (experiences != null && !experiences.isEmpty()) {
+            UserExperience exp = experiences.get(0);
+            description = exp.getDescription();
+            
+            if (exp.getReferenceInfo() != null && exp.getReferenceInfo().contains("|")) {
+                String[] socials = exp.getReferenceInfo().split("\\|");
+                facebook = socials[0].equals("null") ? null : socials[0];
+                if (socials.length > 1) {
+                    linkedin = socials[1].equals("null") ? null : socials[1];
+                }
+            }
+        }
+
+        if (description != null) response.put("description", description);
+        if (facebook != null) response.put("facebook", facebook);
+        if (linkedin != null) response.put("linkedin", linkedin);
 
         return ResponseEntity.ok(response);
     }
