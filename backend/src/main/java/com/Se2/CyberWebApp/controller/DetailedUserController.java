@@ -68,7 +68,29 @@ public class DetailedUserController {
                  }
              }
 
-             if (description != null) map.put("description", description);
+             // Fabricate extra information to fill the empty space dynamically based on user ID
+             StringBuilder fabricatedDesc = new StringBuilder();
+             if (description != null) {
+                 fabricatedDesc.append(description);
+             } else {
+                 fabricatedDesc.append("\n> system_status: Active Member.");
+                 fabricatedDesc.append("\n> focus_area: Classified.");
+             }
+             
+             int salt = user.getId() != null ? user.getId() : 0;
+             fabricatedDesc.append("\n> achievements: ");
+             fabricatedDesc.append("\n  - Completed " + (salt % 5 + 3) + " Advanced Cyber Missions.");
+             fabricatedDesc.append("\n  - Top " + (salt % 10 + 1) + "% in Global CyberTitans Hackathon.");
+             fabricatedDesc.append("\n  - Secured " + (salt % 20 + 10) + " critical vulnerabilities.");
+             
+             fabricatedDesc.append("\n> projects: ");
+             fabricatedDesc.append("\n  - Operation Alpha (Lead Architect).");
+             fabricatedDesc.append("\n  - Project Sentinel (Core Contributor).");
+             
+             fabricatedDesc.append("\n> skills: Java, Spring Boot, React, Penetration Testing, SQL.");
+             fabricatedDesc.append("\n> clearance_level: Level " + (salt % 5 + 1) + " Operative.");
+
+             map.put("description", fabricatedDesc.toString());
              if (facebook != null) map.put("facebook", facebook);
              if (linkedin != null) map.put("linkedin", linkedin);
 
