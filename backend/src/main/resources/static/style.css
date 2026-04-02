@@ -144,6 +144,14 @@ body {
   transform: rotate(180deg);
 }
 
+.faq-answer {
+  display: none;
+}
+
+.faq-answer.open {
+  display: block;
+}
+
 #toast {
   position: fixed;
   bottom: 2rem;
