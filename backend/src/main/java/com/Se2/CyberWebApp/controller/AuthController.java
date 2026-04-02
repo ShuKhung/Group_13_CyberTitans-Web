@@ -63,8 +63,8 @@ public class AuthController {
         newUser.setVerificationCode(generatedOtp);
         newUser.setEnabled(false);
 
-        Role defaultRole = roleRepository.findByName("MEMBER")
-                .orElseThrow(() -> new RuntimeException("SYSTEM ERROR: Default Role 'MEMBER' not found."));
+        Role defaultRole = roleRepository.findByName("MENTEE")
+                .orElseThrow(() -> new RuntimeException("SYSTEM ERROR: Default Role 'MENTEE' not found."));
         newUser.setRoleEntity(defaultRole);
 
         userRepository.save(newUser);
@@ -120,16 +120,25 @@ public class AuthController {
             String token = jwtUtil.generateToken(user);
             System.out.println("[SERVER] Token generated for operative: " + user.getUsername());
 
+            // Set Cookie for SSR (Thymeleaf)
+            jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("cyber_token", token);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false); // Set to true in production with HTTPS
+            cookie.setPath("/");
+            cookie.setMaxAge((int) (JwtUtil.EXPIRATION_TIME / 1000));
+            
             // Return data with token
             Map<String, Object> response = new HashMap<>();
             response.put("token", token);
             response.put("id", user.getId());
             response.put("username", user.getUsername());
             response.put("name", user.getName());
-            response.put("role", user.getRoleEntity() != null ? user.getRoleEntity().getName() : "MEMBER");
+            response.put("role", user.getRoleEntity() != null ? user.getRoleEntity().getName() : "MENTEE");
             response.put("coin", user.getCoin());
 
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok().header(org.springframework.http.HttpHeaders.SET_COOKIE, 
+                "cyber_token=" + token + "; Path=/; HttpOnly; Max-Age=" + (JwtUtil.EXPIRATION_TIME / 1000) + "; SameSite=Lax")
+                .body(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Account does not exist!"));
         }
@@ -212,6 +221,15 @@ public class AuthController {
             }
             return ResponseEntity.status(401).body(Map.of("message", "Invalid or expired recovery code."));
         }).orElse(ResponseEntity.status(404).body(Map.of("message", "Operative profile not found.")));
+    }
+
+    // --- SERVER-SIDE LOGOUT (Clear Cookie) ---
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        return ResponseEntity.ok()
+            .header(org.springframework.http.HttpHeaders.SET_COOKIE,
+                "cyber_token=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax")
+            .body(Map.of("message", "Disconnected successfully."));
     }
 
 }

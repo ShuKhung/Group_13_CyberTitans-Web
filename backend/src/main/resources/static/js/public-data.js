@@ -28,9 +28,9 @@ async function buildRanking() {
         const response = await fetch(`${API_BASE_URL}/ranking`);
         const rankingData = await response.json();
         const layout = [
-            { idx: 1, color: '#e5e7eb', shadow: 'rgba(229,231,235,0.4)', pad: 'pt-16 pb-4' }, 
-            { idx: 0, color: '#fbbf24', shadow: 'rgba(251,191,36,0.5)', pad: 'pt-20 pb-6' },  
-            { idx: 2, color: '#f97316', shadow: 'rgba(249,115,22,0.4)', pad: 'pt-14 pb-4' }   
+            { idx: 1, color: '#e5e7eb', shadow: 'rgba(229,231,235,0.4)', pad: 'pt-16 pb-4' },
+            { idx: 0, color: '#fbbf24', shadow: 'rgba(251,191,36,0.5)', pad: 'pt-20 pb-6' },
+            { idx: 2, color: '#f97316', shadow: 'rgba(249,115,22,0.4)', pad: 'pt-14 pb-4' }
         ];
         podiumContainer.innerHTML = layout.map(pos => {
             const u = rankingData[pos.idx];
@@ -58,9 +58,87 @@ async function buildRanking() {
     } catch (err) { console.error("Ranking error:", err); }
 }
 
-function buildProjects() {} 
-function buildPublications() {} 
-function buildFaqAndPolicies() {} 
+
+
+async function buildPublications() {
+    const container = document.getElementById('publications-grid');
+    if (!container) return;
+
+    try {
+        const response = await fetch(`/api/publications`);
+        const publications = await response.json();
+
+        if (!Array.isArray(publications) || publications.length === 0) {
+            return;
+        }
+
+        container.innerHTML = publications.map(p => {
+            const safeTitle = encodeURIComponent(p.title || '').replace(/'/g, "%27");
+            const safeAuthors = encodeURIComponent(p.authors || '').replace(/'/g, "%27");
+            const safeAbstract = encodeURIComponent(p.abstractText || '').replace(/'/g, "%27");
+            const safeLink = encodeURIComponent(p.publicationUrl || '').replace(/'/g, "%27");
+
+            const publishDate = p.publishDate || 'RECENT';
+
+            return `
+            <div onclick="openPublicationModal('${safeTitle}', '${safeAuthors}', '${safeAbstract}', '${safeLink}')" class="group bg-[#0a0a0a] border border-white/10 p-6 relative overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col h-full">
+                <div class="absolute top-0 left-[-100%] w-full h-[2px] bg-primary group-hover:left-0 transition-all duration-500"></div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-primary font-mono text-[10px] tracking-widest uppercase border border-primary/20 px-2 py-0.5 bg-primary/5">INTELLIGENCE</span>
+                    <span class="text-gray-500 font-mono text-[10px] tracking-widest">${publishDate}</span>
+                </div>
+                <h3 class="text-white text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
+                    ${p.title}
+                </h3>
+                <p class="text-gray-400 text-sm mb-6 line-clamp-3">
+                    ${p.abstractText}
+                </p>
+                <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider">${p.authors}</span>
+                    </div>
+                    <span class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-primary flex items-center gap-1 transition-colors">
+                        DECRYPT <i class="fas fa-arrow-right"></i>
+                    </span>
+                </div>
+            </div>`;
+        }).join('');
+    } catch (err) {
+        console.error("Publications error:", err);
+    }
+}
+
+function openPublicationModal(encodedTitle, encodedAuthors, encodedAbstract, encodedLink) {
+    const title = decodeURIComponent(encodedTitle);
+    const authors = decodeURIComponent(encodedAuthors);
+    const abstract = decodeURIComponent(encodedAbstract);
+    const link = decodeURIComponent(encodedLink);
+
+    document.getElementById('modal-pub-title').innerText = title || 'No Title';
+    document.getElementById('modal-pub-authors').innerText = authors || 'Unknown';
+    document.getElementById('modal-pub-abstract').innerText = abstract || "Classified or no abstract available.";
+
+    const linkBtn = document.getElementById('modal-pub-link');
+    if (link && link !== 'null' && link !== '') {
+        linkBtn.href = link;
+        linkBtn.style.display = 'flex';
+    } else {
+        linkBtn.style.display = 'none';
+    }
+
+    const modal = document.getElementById('publication-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closePublicationModal() {
+    const modal = document.getElementById('publication-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+function buildProjects() { }
+function buildFaqAndPolicies() { }
 function toggleFaq(index) {
     const ans = document.getElementById(`faq-answer-${index}`);
     const icon = document.getElementById(`faq-icon-${index}`);

@@ -70,6 +70,7 @@ public class TeamController {
         response.put("address", user.getAddress() != null ? user.getAddress() : "UNKNOWN LOCATION");
         response.put("email", user.getEmail() != null ? user.getEmail() : "ENCRYPTED");
         response.put("coin", user.getCoin() != null ? user.getCoin() : 0);
+        response.put("description", ""); // bio field placeholder
 
         String description = null;
         String facebook = null;

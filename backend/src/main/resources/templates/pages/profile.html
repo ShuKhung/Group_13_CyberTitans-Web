@@ -1,6 +1,6 @@
-<html th:replace="~{layout/layout :: page(title='CyberTitans — Profile', active='profile', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout/layout :: page(title='CyberTitans — Profile', active='profile', headExtra=~{}, content=~{pages/profile :: content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="content">
-<div id="page-my-profile" class="pt-16">
+<div id="page-my-profile" class="page active pt-16">
   <div class="max-w-5xl mx-auto px-6 md:px-8 py-16">
     
     <div class="flex items-center justify-between mb-12">
