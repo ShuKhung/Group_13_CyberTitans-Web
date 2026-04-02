@@ -1,0 +1,391 @@
+/* ==========================================================
+   PROFILE MODAL — ENHANCED STYLES
+   Matches the "Member Profile" detailed view design.
+   This file adds NEW classes; it does not override existing ones.
+   ========================================================== */
+
+/* ── Modal Header ─────────────────────────────────────────── */
+.pm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pm-header-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.05em;
+}
+
+.pm-header-title span {
+  color: #ffffff;
+}
+
+/* ── Avatar Block ─────────────────────────────────────────── */
+.pm-avatar-wrapper {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #111;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.pm-avatar-wrapper img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(100%);
+  transition: filter 0.4s ease;
+}
+
+.pm-avatar-wrapper:hover img {
+  filter: grayscale(0%);
+}
+
+/* ── Social Links ─────────────────────────────────────────── */
+.pm-social-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pm-social-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.25s ease;
+}
+
+.pm-social-link:hover {
+  color: #8eff71;
+}
+
+.pm-social-link svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+/* ── Action Buttons ───────────────────────────────────────── */
+.pm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.pm-btn {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pm-btn-primary {
+  background-color: #8eff71;
+  color: #000;
+}
+.pm-btn-primary:hover {
+  background-color: #ffffff;
+  color: #000;
+}
+
+.pm-btn-ghost {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+.pm-btn-ghost:hover {
+  border-color: #8eff71;
+  color: #8eff71;
+}
+
+.pm-btn-danger {
+  background-color: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  margin-top: 0.75rem;
+}
+.pm-btn-danger:hover {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+/* ── Tactical Data Sidebar ────────────────────────────────── */
+.pm-tactical {
+  background: #111;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #8eff71;
+  padding: 1.25rem 1rem 1.25rem 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.pm-tactical-heading {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: #8eff71;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.pm-tactical-item {
+  margin-bottom: 1rem;
+}
+
+.pm-tactical-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(156, 163, 175, 0.7);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.pm-tactical-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  word-break: break-all;
+}
+
+/* ── Right Panel: Experience ──────────────────────────────── */
+.pm-section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Timeline item */
+.pm-exp-item {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.pm-exp-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 16px;
+  bottom: -40px;
+  width: 1px;
+}
+
+.pm-exp-item.active::before {
+  background-color: rgba(142, 255, 113, 0.3);
+}
+
+.pm-exp-item.past::before {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.pm-exp-dot {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+}
+
+.pm-exp-item.active .pm-exp-dot {
+  background-color: #8eff71;
+}
+
+.pm-exp-item.past .pm-exp-dot {
+  background-color: #6b7280;
+}
+
+.pm-exp-org {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+.pm-exp-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 0.3rem;
+}
+
+.pm-exp-item.active .pm-exp-meta {
+  color: #8eff71;
+}
+
+.pm-exp-item.past .pm-exp-meta {
+  color: #6b7280;
+}
+
+.pm-exp-meta-sep {
+  color: #374151;
+  margin: 0 0.35rem;
+}
+
+/* Course tags block */
+.pm-courses-block {
+  margin-top: 0.9rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.75rem;
+}
+
+.pm-courses-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(156, 163, 175, 0.6);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.pm-courses-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.pm-tag-active {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 0.25rem 0.6rem;
+  letter-spacing: 0.05em;
+}
+
+.pm-tag-past {
+  color: rgba(156, 163, 175, 0.7);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 0.2rem 0;
+  letter-spacing: 0.04em;
+}
+
+/* ── Terminal Description Box ─────────────────────────────── */
+.pm-terminal {
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  padding: 1.25rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.9;
+  color: rgba(156, 163, 175, 0.8);
+  margin-top: 1.5rem;
+  position: relative;
+}
+
+.pm-terminal::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  display: flex;
+  gap: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 14px 0 0 #fbbf24, 28px 0 0 #8eff71;
+}
+
+.pm-terminal-body {
+  margin-top: 1.2rem;
+}
+
+.pm-terminal-line {
+  display: block;
+  padding: 0.1rem 0;
+}
+
+.pm-terminal-key {
+  color: #8eff71;
+}
+
+.pm-terminal-value {
+  color: rgba(186, 211, 252, 0.85);
+}
+
+/* ── Briefing Notes (fallback plain text) ─────────────────── */
+.pm-briefing-section {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pm-briefing-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(156, 163, 175, 0.5);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.pm-briefing-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: rgba(156, 163, 175, 0.8);
+  line-height: 1.75;
+}
+
+/* ── Empty state ──────────────────────────────────────────── */
+.pm-empty {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: rgba(107, 114, 128, 0.7);
+}
+
+/* ── Responsive: stack on small screens ───────────────────── */
+@media (max-width: 768px) {
+  .pm-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .pm-section-title {
+    font-size: 1.5rem;
+  }
+}
