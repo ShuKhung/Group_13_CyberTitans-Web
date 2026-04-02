@@ -93,7 +93,49 @@ function renderAdminTable(users) {
         const roleClass = getRoleClass(u.role);
         const isActive = u.enabled;
         const coinDisplay = (u.coin || 0).toLocaleString();
+        const isSuperAdmin = u.role === 'SUPER ADMIN';
 
+        // SUPER ADMIN row — visible but read-only, no actions
+        if (isSuperAdmin) {
+            return `<tr class="border-b border-[#D4AF37]/20 bg-[#D4AF37]/[0.02] group" data-name="${(u.name || '').toLowerCase()}" data-username="${(u.username || '').toLowerCase()}">
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-[#D4AF37]/10 border border-[#D4AF37]/40 flex items-center justify-center font-mono text-[11px] font-bold text-[#D4AF37] flex-shrink-0">
+                            ${initials}
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-white">${u.name || 'Unknown'}</p>
+                            <p class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">@${u.username || 'N/A'}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 hidden md:table-cell">
+                    <span class="px-2 py-0.5 border font-mono text-[10px] tracking-widest uppercase ${roleClass}">
+                        ${u.role || 'MENTEE'}
+                    </span>
+                </td>
+                <td class="px-6 py-4 hidden lg:table-cell">
+                    <span class="flex items-center gap-1 font-mono text-[11px] text-[#D4AF37]">
+                        <span class="material-symbols-outlined text-[12px]">toll</span>
+                        ${coinDisplay}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="flex items-center gap-1.5 font-mono text-[10px] tracking-widest uppercase ${isActive ? 'text-primary' : 'text-error'}">
+                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ${isActive ? 'bg-primary animate-pulse' : 'bg-error'}"></span>
+                        ${isActive ? 'Online' : 'Terminated'}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 border border-[#D4AF37]/30 text-[#D4AF37] font-mono text-[9px] uppercase tracking-widest" title="Super Admin — protected account">
+                        <span class="material-symbols-outlined text-[11px]">shield_lock</span>
+                        PROTECTED
+                    </span>
+                </td>
+            </tr>`;
+        }
+
+        // Normal user row — fully interactive
         return `<tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group" data-name="${(u.name || '').toLowerCase()}" data-username="${(u.username || '').toLowerCase()}">
             <td class="px-6 py-4">
                 <div class="flex items-center gap-3">

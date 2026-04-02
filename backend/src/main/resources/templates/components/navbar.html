@@ -10,6 +10,7 @@
       <a th:href="@{/projects}" data-page="projects" th:classappend="${active == 'projects'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Projects</a>
       <a th:href="@{/publications}" data-page="publications" th:classappend="${active == 'publications'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Publications</a>
       <a th:href="@{/faq}" data-page="faq" th:classappend="${active == 'faq'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">FAQ</a>
+      <a th:href="@{/team}" data-page="team" th:classappend="${active == 'team'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Team</a>
       
       <!-- Admin Links -->
       <a sec:authorize="hasAnyAuthority('ADMIN', 'SUPER ADMIN')" th:href="@{/admin}" data-page="admin" th:classappend="${active == 'admin'} ? 'nav-active' : ''" class="nav-link text-[#D4AF37] hover:text-white transition-colors">Admin Panel</a>
@@ -62,6 +63,7 @@
   <div id="mobile-menu" class="hidden lg:hidden bg-surface-container-low border-t border-outline-variant/10 px-6 py-4 space-y-3">
     <a th:href="@{/home}" class="block text-sm font-headline uppercase text-on-surface-variant hover:text-primary py-2">Home</a>
     <a th:href="@{/services}" class="block text-sm font-headline uppercase text-on-surface-variant hover:text-primary py-2">Services</a>
+    <a th:href="@{/team}" class="block text-sm font-headline uppercase text-on-surface-variant hover:text-primary py-2">Team</a>
     <a th:href="@{/ranking}" class="block text-sm font-headline uppercase text-[#D4AF37] py-2">Ranking</a>
     <a sec:authorize="hasAnyAuthority('ADMIN', 'SUPER ADMIN')" th:href="@{/admin}" class="block text-sm font-headline uppercase text-[#D4AF37] py-2">Admin Panel</a>
   </div>
