@@ -70,7 +70,7 @@ public class TeamController {
         response.put("address", user.getAddress() != null ? user.getAddress() : "UNKNOWN LOCATION");
         response.put("email", user.getEmail() != null ? user.getEmail() : "ENCRYPTED");
         response.put("coin", user.getCoin() != null ? user.getCoin() : 0);
-        response.put("description", ""); // bio field placeholder
+        response.put("description", user.getDescription() != null ? user.getDescription() : "");
 
         String description = null;
         String facebook = null;
@@ -115,6 +115,9 @@ public class TeamController {
         }
         if (updateData.containsKey("email")) {
             user.setEmail(updateData.get("email").toString());
+        }
+        if (updateData.containsKey("description")) {
+            user.setDescription(updateData.get("description").toString());
         }
 
         if (updateData.containsKey("coin")) {

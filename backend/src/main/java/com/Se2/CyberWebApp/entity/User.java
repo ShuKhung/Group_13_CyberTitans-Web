@@ -11,6 +11,8 @@ public class User {
     private String name;
     private String avatar;
     private Double point;
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role", referencedColumnName = "id")
@@ -140,5 +142,13 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

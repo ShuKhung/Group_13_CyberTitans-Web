@@ -1,0 +1,269 @@
+<html
+  th:replace="~{layout/layout :: page(title='CyberTitans — Portfolio', active='profile', headExtra=~{::head}, content=~{::content}, scriptsExtra=~{})}"
+  xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head">
+  <style>
+    .cyber-card {
+      background: rgba(26, 26, 26, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .cyber-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(142, 255, 113, 0.3), transparent);
+    }
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.05em;
+    }
+    .timeline-line {
+      width: 2px;
+      background: linear-gradient(to bottom, #8eff71 0%, #8eff71 20%, rgba(142, 255, 113, 0.1) 100%);
+    }
+    .tag-verified {
+      background: rgba(142, 255, 113, 0.1);
+      border: 1px solid rgba(142, 255, 113, 0.3);
+      color: #8eff71;
+    }
+    .tag-skill {
+      background: rgba(213, 117, 255, 0.1);
+      border: 1px solid rgba(213, 117, 255, 0.3);
+      color: #d575ff;
+    }
+
+    /* Print Styles for CV Generation */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .pt-24 { padding-top: 1rem !important; }
+      nav, footer, .gap-2, button, a[href='/profile'], .material-symbols-outlined {
+        display: none !important;
+      }
+      .cyber-card {
+        background: white !important;
+        border: 1px solid #ddd !important;
+        color: black !important;
+        box-shadow: none !important;
+        padding: 1rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      .stat-value, h1, h2, h3, h4, p, span {
+        color: black !important;
+        text-shadow: none !important;
+      }
+      h1 { font-size: 1.5rem !important; line-height: 1.2 !important; }
+      .stat-value { font-size: 1.2rem !important; }
+      .tag-verified, .tag-skill {
+        background: #eee !important;
+        border: 1px solid #ccc !important;
+        color: #333 !important;
+        padding: 2px 6px !important;
+        font-size: 9px !important;
+      }
+      .timeline-line {
+        background: #ddd !important;
+      }
+      .max-w-5xl {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .grid-cols-1 {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 0.5rem !important;
+      }
+      .mb-16, .mb-12, .mb-8 {
+        margin-bottom: 0.75rem !important;
+      }
+      .mb-6 { margin-bottom: 0.25rem !important; }
+      .w-32, .h-32 {
+        width: 4rem !important;
+        height: 4rem !important;
+      }
+      /* Ensure the page title is clean */
+      @page {
+        margin: 1cm;
+      }
+    }
+  </style>
+</head>
+
+<div th:fragment="content" class="pt-24 pb-20">
+  <div class="max-w-5xl mx-auto px-6">
+    
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
+      <div class="relative">
+        <div class="w-32 h-32 rounded-full border-2 border-primary/30 p-2 flex items-center justify-center bg-black/40">
+          <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-surface-container-highest">
+            <img th:if="${user.avatar != null}" th:src="${user.avatar}" class="w-full h-full object-cover">
+            <span th:unless="${user.avatar != null}" class="text-4xl font-headline font-bold text-white/40" th:text="${user.name != null ? user.name.substring(0, 1) : 'O'}">O</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex-1 text-center md:text-left">
+        <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-2">
+          <h1 class="text-4xl font-headline font-bold tracking-tight" th:text="${user.name}">Triệu Quang Thiện</h1>
+          <span class="px-3 py-1 bg-tertiary/20 text-tertiary border border-tertiary/30 text-[10px] font-mono font-bold tracking-widest uppercase rounded" th:text="${user.roleEntity != null ? user.roleEntity.name : 'MEMBER'}">SUPER ADMIN</span>
+        </div>
+        <p class="font-mono text-xs text-on-surface-variant mb-4 uppercase tracking-widest">
+          UID#<span th:text="${user.id != null ? #numbers.formatInteger(user.id, 6) : '000000'}">908881</span> — ROLE: [[${user.roleEntity != null ? user.roleEntity.name : 'MEMBER'}]]
+        </p>
+        <p class="font-mono text-xs text-on-surface-variant/80 italic leading-relaxed whitespace-pre-wrap" 
+           th:text="${(user.description == null || user.description == '') ? 'No briefing notes on file.' : user.description}">
+           No briefing notes on file.
+        </p>
+      </div>
+
+      <div class="flex gap-2">
+        <a th:href="@{/profile}" class="px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-xs font-mono tracking-widest uppercase flex items-center gap-2">
+           // EDIT
+        </a>
+        <button onclick="window.print()" class="px-4 py-2 bg-primary/20 text-primary border border-primary/40 hover:bg-primary transition-all hover:text-black font-mono text-xs tracking-widest uppercase flex items-center gap-2">
+           <span class="material-symbols-outlined text-sm">download</span> GEN_CV.EXE
+        </button>
+      </div>
+    </div>
+
+    <!-- Reputation Stats -->
+    <div class="mb-8">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-px bg-white/10 flex-1"></div>
+        <h3 class="font-mono text-[10px] text-primary tracking-[0.4em] uppercase font-bold text-center">Reputation</h3>
+        <div class="h-px bg-white/10 flex-1"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- XP Card -->
+        <div class="cyber-card p-6 flex flex-col items-center justify-center group hover:border-primary/40 transition-all">
+          <div class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-xs text-primary">emoji_events</span> Reputation
+          </div>
+          <div class="stat-value text-2xl font-bold text-primary mb-1" th:text="${reputation}">3,636,366</div>
+          <div class="text-[9px] font-mono text-on-surface-variant/50 uppercase tracking-widest">XP Accumulated</div>
+          <div class="mt-4 text-[9px] font-mono text-primary/60 uppercase" th:text="'Rank #' + ${rank}">Rank #1</div>
+        </div>
+        <!-- Deployments Card -->
+        <div class="cyber-card p-6 flex flex-col items-center justify-center group hover:border-white/20 transition-all">
+          <div class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-xs">terminal</span> Deployments
+          </div>
+          <div class="stat-value text-2xl font-bold text-white mb-1" th:text="${deployments}">15</div>
+          <div class="text-[9px] font-mono text-on-surface-variant/50 uppercase tracking-widest">Projects Completed</div>
+          <div class="mt-4 text-[9px] font-mono text-on-surface-variant/40 uppercase">Active Operations</div>
+        </div>
+        <!-- Training Card -->
+        <div class="cyber-card p-6 flex flex-col items-center justify-center group hover:border-tertiary/40 transition-all">
+          <div class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-xs text-tertiary">school</span> Training
+          </div>
+          <div class="stat-value text-2xl font-bold text-tertiary mb-1" th:text="${training}">8</div>
+          <div class="text-[9px] font-mono text-on-surface-variant/50 uppercase tracking-widest">Workshops Attended</div>
+          <div class="mt-4 text-[9px] font-mono text-tertiary/60 uppercase">Skills Certified</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="mb-8">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-px bg-white/10 flex-1"></div>
+        <h3 class="font-mono text-[10px] text-tertiary tracking-[0.4em] uppercase font-bold text-center">Tech Stack</h3>
+        <div class="h-px bg-white/10 flex-1"></div>
+      </div>
+      
+      <div class="space-y-8">
+        <div>
+          <h4 class="font-mono text-[9px] text-on-surface-variant uppercase tracking-widest mb-4 flex items-center gap-2">
+            <span class="w-1 h-1 bg-primary"></span> Verified Skills
+          </h4>
+          <div class="flex flex-wrap gap-2">
+            <th:block th:each="exp : ${experiences}">
+               <th:block th:if="${exp.tags != null}" th:each="tag : ${exp.tags.split(',')}">
+                  <span th:if="${exp.type == 'PROJECT'}" class="tag-verified px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded">
+                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> [[${tag.trim()}]]
+                  </span>
+               </th:block>
+            </th:block>
+            <th:block th:if="${experiences.isEmpty() || #lists.isEmpty(experiences)}">
+              <span class="tag-verified px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded"><span class="w-1.5 h-1.5 bg-primary rounded-full"></span> JavaFX)</span>
+              <span class="tag-verified px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded"><span class="w-1.5 h-1.5 bg-primary rounded-full"></span> Git)</span>
+              <span class="tag-verified px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded"><span class="w-1.5 h-1.5 bg-primary rounded-full"></span> NodeJS)</span>
+              <span class="tag-verified px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded"><span class="w-1.5 h-1.5 bg-primary rounded-full"></span> React Native)</span>
+            </th:block>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-mono text-[9px] text-on-surface-variant uppercase tracking-widest mb-4 flex items-center gap-2">
+            <span class="w-1.5 h-1.5 bg-tertiary"></span> Skills
+          </h4>
+          <div class="flex flex-wrap gap-2">
+            <th:block th:each="exp : ${experiences}">
+               <th:block th:if="${exp.tags != null}" th:each="tag : ${exp.tags.split(',')}">
+                  <span th:if="${exp.type != 'PROJECT'}" class="tag-skill px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded">
+                    <span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> [[${tag.trim()}]]
+                  </span>
+               </th:block>
+            </th:block>
+            <th:block th:if="${experiences.isEmpty() || #lists.isEmpty(experiences)}">
+              <span class="tag-skill px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded"><span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> Java Core</span>
+              <span class="tag-skill px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded"><span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> Spring Boot</span>
+              <span class="tag-skill px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded"><span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> Docker</span>
+            </th:block>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="mb-8">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="h-px bg-white/10 flex-1"></div>
+        <h3 class="font-mono text-[10px] text-gold tracking-[0.4em] uppercase font-bold text-center">Experience</h3>
+        <div class="h-px bg-white/10 flex-1"></div>
+      </div>
+
+      <div class="space-y-12 relative">
+        <div class="absolute left-[7px] top-4 bottom-0 timeline-line"></div>
+        
+        <div th:each="exp : ${experiences}" class="relative pl-12 group">
+          <div class="absolute left-0 top-1 w-4 h-4 bg-black border-2 border-primary rounded-sm z-10 group-hover:bg-primary transition-all"></div>
+          
+          <div class="flex flex-wrap items-center gap-3 mb-2">
+            <span class="px-2 py-0.5 bg-primary/20 text-primary text-[8px] font-mono font-bold uppercase rounded border border-primary/30">Active</span>
+            <span class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest" th:text="${exp.startDate + ' — ' + (exp.endDate == null ? 'PRESENT' : exp.endDate)}">01/11/2023 — PRESENT</span>
+            <div class="flex-1"></div>
+            <button class="px-3 py-1 border border-white/10 text-[9px] font-mono uppercase hover:bg-white/5 flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">visibility</span> View
+            </button>
+          </div>
+          
+          <h4 class="text-xl font-headline font-bold text-white mb-1" th:text="${exp.organizationName}">Hanoi University (HanU)</h4>
+          <p class="text-[11px] font-mono text-primary uppercase font-bold tracking-widest mb-4" th:text="${exp.positionTitle}">LECTURER</p>
+          
+          <div class="flex flex-wrap gap-2">
+            <span th:if="${exp.tags != null}" th:each="tag : ${exp.tags.split(',')}" 
+                  class="px-2 py-0.5 bg-white/5 border border-white/10 text-[9px] font-mono text-on-surface-variant rounded" th:text="${tag.trim()}">
+              Java Core
+            </span>
+          </div>
+        </div>
+
+        <div th:if="${experiences.isEmpty() || #lists.isEmpty(experiences)}" class="relative pl-12 group opacity-50">
+           <p class="font-mono text-xs text-on-surface-variant">No operational history detected in neural link.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</html>

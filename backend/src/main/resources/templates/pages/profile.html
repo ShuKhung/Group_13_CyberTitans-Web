@@ -1,86 +1,206 @@
-<html th:replace="~{layout/layout :: page(title='CyberTitans — Profile', active='profile', headExtra=~{}, content=~{pages/profile :: content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
+<html
+  th:replace="~{layout/layout :: page(title='CyberTitans — Profile', active='profile', headExtra=~{}, content=~{pages/profile :: content}, scriptsExtra=~{})}"
+  xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="content">
-<div id="page-my-profile" class="page active pt-16">
-  <div class="max-w-5xl mx-auto px-6 md:px-8 py-16">
-    
-    <div class="flex items-center justify-between mb-12">
-      <div>
-        <p class="font-mono text-primary text-xs uppercase tracking-widest mb-1">/MY_PROFILE</p>
-        <h1 class="font-headline text-3xl font-bold">Account Settings</h1>
-      </div>
-      <div class="flex items-center gap-4">
-        <button onclick="openPassModal()" class="px-6 py-3 bg-red-600/20 border border-red-500/50 text-red-500 text-xs font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all">
-          CHANGE PASSWORD
-        </button>
-        <button onclick="saveAccountProfile()" class="px-6 py-3 bg-primary text-[#0d6100] text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-all">
-          SAVE CHANGES
-        </button>
-      </div>
-    </div>
+  <div id="page-my-profile" class="page active pt-16">
+    <div class="max-w-5xl mx-auto px-6 md:px-8 py-16">
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-      <div class="lg:col-span-4 space-y-8">
-        <div class="relative aspect-square bg-surface-container-highest overflow-hidden border border-outline-variant/30 group">
-          <img id="profile-avatar" class="w-full h-full object-cover grayscale" src="https://ui-avatars.com/api/?background=222&color=fff&name=Operative" alt="Profile"/>
-          <button onclick="showToast('Upload dialog would open')" class="absolute bottom-4 right-4 p-2 bg-surface-container-high border border-outline-variant/30 hover:bg-surface-bright transition-colors">
-            <span class="material-symbols-outlined text-sm">photo_camera</span>
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+
+        <div class="space-y-2">
+          <p class="font-mono text-primary text-xs uppercase tracking-[0.3em] flex items-center gap-2">
+            <span class="w-2 h-2 bg-primary animate-pulse"></span>
+            /MY_PROFILE
+          </p>
+          <h1 class="font-headline text-5xl font-bold text-white tracking-tighter">Profile Settings</h1>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+
+          <a th:href="@{/portfolio/me}"
+            class="h-10 px-4 flex items-center gap-2 border border-primary text-primary hover:bg-primary/10 transition-all font-mono text-[10px] uppercase tracking-widest">
+            <span class="material-symbols-outlined text-sm">verified_user</span>
+            MY PORTFOLIO
+          </a>
+
+          <button onclick="openDeleteModal()"
+            class="h-10 px-4 flex items-center gap-2 border border-error/40 text-error hover:bg-error/10 hover:border-error transition-all font-mono text-[10px] uppercase tracking-widest">
+            <span class="material-symbols-outlined text-sm">person_remove</span>
+            DELETE
           </button>
-        </div>
-        <div class="bg-surface-container p-6 border-l-2 border-primary/40 space-y-4">
-          <h4 class="text-[10px] font-mono text-primary uppercase tracking-[0.2em]">Clearance Status</h4>
-          <div class="flex items-center gap-2"><span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span><span id="profile-role" class="font-mono text-sm text-primary">OPERATIVE</span></div>
-          <div class="text-[10px] font-mono text-on-surface-variant">System active and encrypted</div>
+
+          <button onclick="openModal('change-password-modal')"
+            class="h-10 px-4 border border-error/20 bg-error/5 text-error hover:bg-error/20 transition-all font-mono text-[10px] uppercase tracking-widest">
+            CHANGE PASSWORD
+          </button>
+
+          <button type="submit" form="profile-form"
+            class="h-10 px-6 bg-primary text-black font-bold hover:brightness-110 transition-all font-mono text-[11px] uppercase tracking-widest shadow-[0_0_20px_rgba(142,255,113,0.3)]">
+            SAVE CHANGES
+          </button>
+
         </div>
       </div>
 
-      <div class="lg:col-span-8 space-y-10">
-        <div>
-          <h3 class="font-headline text-lg font-bold uppercase tracking-tight mb-6 flex items-center gap-4"><span class="w-2 h-2 bg-primary"></span>Identity Data</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div><label class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Full Name</label><input type="text" id="input-name" class="data-input w-full bg-black border border-white/20 text-white font-mono p-2"/></div>
-            <div><label class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Username</label><input type="text" id="input-username" class="data-input w-full bg-black border border-white/20 text-white font-mono p-2" disabled placeholder="Can't be changed"/></div>
-            <div><label class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Email</label><input type="email" id="input-email" class="data-input w-full bg-black border border-white/20 text-white font-mono p-2"/></div>
-            <div><label class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Phone</label><input type="tel" id="input-phone" class="data-input w-full bg-black border border-white/20 text-white font-mono p-2"/></div>
+      <div class="w-full h-px bg-white/5 mb-12"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="lg:col-span-4 space-y-8">
+          <div
+            class="relative aspect-square bg-surface-container-highest overflow-hidden border border-outline-variant/30 group">
+            <img id="profile-avatar" class="w-full h-full object-cover grayscale"
+              src="https://ui-avatars.com/api/?background=222&color=fff&name=Operative" alt="Profile" />
+            <button onclick="showToast('Upload dialog would open')"
+              class="absolute bottom-4 right-4 p-2 bg-surface-container-high border border-outline-variant/30 hover:bg-surface-bright transition-colors">
+              <span class="material-symbols-outlined text-sm">photo_camera</span>
+            </button>
+          </div>
+          <div class="bg-surface-container p-6 border-l-2 border-primary/40 space-y-4">
+            <h4 class="text-[10px] font-mono text-primary uppercase tracking-[0.2em]">Clearance Status</h4>
+            <div class="flex items-center gap-2"><span
+                class="w-2 h-2 bg-primary rounded-full animate-pulse"></span><span id="profile-role"
+                class="font-mono text-sm text-primary">OPERATIVE</span></div>
+            <div class="text-[10px] font-mono text-on-surface-variant">System active and encrypted</div>
           </div>
         </div>
-        <div>
-          <h3 class="font-headline text-lg font-bold uppercase tracking-tight mb-6 flex items-center gap-4"><span class="w-2 h-2 bg-tertiary"></span>Specialization</h3>
+
+        <div class="lg:col-span-8 space-y-10">
           <div>
-            <label class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Bio</label>
-            <textarea id="input-bio" class="data-input w-full bg-black border border-white/20 text-white font-mono p-2 resize-none" rows="4"></textarea>
+            <h3 class="font-headline text-lg font-bold uppercase tracking-tight mb-6 flex items-center gap-4"><span
+                class="w-2 h-2 bg-primary"></span>Identity Data</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div><label
+                  class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Full
+                  Name</label><input type="text" id="input-name"
+                  class="data-input w-full bg-black border border-white/20 text-white font-mono p-2" /></div>
+              <div><label
+                  class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Username</label><input
+                  type="text" id="input-username"
+                  class="data-input w-full bg-black border border-white/20 text-white font-mono p-2" disabled
+                  placeholder="Can't be changed" /></div>
+              <div><label
+                  class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Email</label><input
+                  type="email" id="input-email"
+                  class="data-input w-full bg-black border border-white/20 text-white font-mono p-2" /></div>
+              <div><label
+                  class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Phone</label><input
+                  type="tel" id="input-phone"
+                  class="data-input w-full bg-black border border-white/20 text-white font-mono p-2" /></div>
+            </div>
           </div>
-          <div class="flex flex-wrap gap-2 mt-6">
-            <span class="px-3 py-1 tag-primary text-[11px] font-mono bg-primary/20 text-primary border border-primary/30">SAD</span>
-            <span class="px-3 py-1 tag-secondary text-[11px] font-mono bg-white/10 text-white border border-white/20">Web Dev</span>
-            <button onclick="showToast('Tag editor coming soon')" class="px-3 py-1 bg-surface-container border border-outline-variant/30 text-[11px] font-mono hover:bg-surface-bright transition-colors">+ Add Tag</button>
+          <div>
+            <h3 class="font-headline text-lg font-bold uppercase tracking-tight mb-6 flex items-center gap-4"><span
+                class="w-2 h-2 bg-tertiary"></span>Specialization</h3>
+            <div>
+              <label
+                class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest block mb-2">Bio</label>
+              <textarea id="input-bio"
+                class="data-input w-full bg-black border border-white/20 text-white font-mono p-2 resize-none"
+                rows="4"></textarea>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-6">
+              <span
+                class="px-3 py-1 tag-primary text-[11px] font-mono bg-primary/20 text-primary border border-primary/30">SAD</span>
+              <span
+                class="px-3 py-1 tag-secondary text-[11px] font-mono bg-white/10 text-white border border-white/20">Web
+                Dev</span>
+              <button onclick="showToast('Tag editor coming soon')"
+                class="px-3 py-1 bg-surface-container border border-outline-variant/30 text-[11px] font-mono hover:bg-surface-bright transition-colors">+
+                Add Tag</button>
+            </div>
           </div>
+          
+          <div class="mt-16">
+            <h3 class="font-headline text-lg font-bold uppercase tracking-tight mb-8 flex items-center justify-between gap-4">
+              <span class="flex items-center gap-4"><span class="w-2 h-2 bg-primary"></span>Professional Records</span>
+              <button onclick="openExperienceModal()" class="px-4 py-1.5 bg-primary/20 text-primary border border-primary/40 hover:bg-primary transition-all hover:text-black font-mono text-[10px] tracking-widest uppercase">
+                + NEW RECORD
+              </button>
+            </h3>
+            
+            <div id="experience-list" class="space-y-6">
+               <p class="text-[10px] font-mono text-on-surface-variant/40 uppercase tracking-[0.2em] animate-pulse italic">Connecting to neural database... Fetching records...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Experience Modal -->
+    <div id="experience-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[100] backdrop-blur-sm">
+      <div class="bg-[#111] border border-white/10 p-8 w-[500px] shadow-2xl relative">
+        <h3 id="exp-modal-title" class="text-primary font-mono text-lg mb-8 uppercase tracking-tighter font-bold border-b border-white/5 pb-4">// ADD RECORD</h3>
+        
+        <input type="hidden" id="exp-id" />
+
+        <div class="space-y-6 max-h-[60vh] overflow-y-auto pr-4 custom-scrollbar">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="col-span-2">
+              <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">Organization Name</label>
+              <input type="text" id="exp-org" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none">
+            </div>
+            <div class="col-span-2">
+              <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">Position Title</label>
+              <input type="text" id="exp-title" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none">
+            </div>
+            <div>
+              <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">Start Date</label>
+              <input type="text" id="exp-start" placeholder="Jan 2024" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none">
+            </div>
+            <div>
+              <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">End Date</label>
+              <input type="text" id="exp-end" placeholder="Present" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none">
+            </div>
+            <div class="col-span-2">
+              <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">Record Type</label>
+              <select id="exp-type" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-xs focus:border-primary outline-none">
+                <option value="JOB">Operational (Job)</option>
+                <option value="PROJECT">Mission (Project)</option>
+                <option value="TRAINING">Instruction (Training)</option>
+              </select>
+            </div>
+            <div class="col-span-2">
+              <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold tracking-widest">Skills/Tags <span class="text-gray-600">(Comma separated)</span></label>
+              <input type="text" id="exp-tags" placeholder="Java, SQL, React" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 flex gap-4">
+          <button onclick="saveExperience()" class="flex-1 bg-primary text-black font-bold py-3 text-[11px] hover:bg-white transition-all uppercase tracking-[0.2em]">SYNC RECORD</button>
+          <button onclick="closeExperienceModal()" class="px-6 bg-transparent border border-white/10 text-white py-3 text-[11px] hover:bg-red-600 transition-all uppercase tracking-[0.2em]">ABORT</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="password-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[100]">
+      <div class="bg-[#111] border border-white/10 p-8 w-[400px] shadow-2xl relative">
+        <h3 class="text-primary font-mono text-lg mb-6 uppercase tracking-tighter font-bold">// UPDATE ACCESS KEY</h3>
+
+        <div class="space-y-4">
+          <div>
+            <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold">Current Password</label>
+            <input type="password" id="old-pass"
+              class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none">
+          </div>
+          <div>
+            <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold">New Security Key</label>
+            <input type="password" id="new-pass"
+              class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none">
+          </div>
+        </div>
+
+        <div class="mt-8 flex gap-4">
+          <button onclick="submitChangePassword()"
+            class="flex-1 bg-primary text-black font-bold py-3 text-[11px] hover:bg-white transition-all uppercase">CONFIRM
+            UPDATE</button>
+          <button onclick="closePassModal()"
+            class="flex-1 bg-transparent border border-white/10 text-white py-3 text-[11px] hover:bg-red-600 transition-all uppercase">CANCEL</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="password-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[100]">
-    <div class="bg-[#111] border border-white/10 p-8 w-[400px] shadow-2xl relative">
-      <h3 class="text-primary font-mono text-lg mb-6 uppercase tracking-tighter font-bold">// UPDATE ACCESS KEY</h3>
-      
-      <div class="space-y-4">
-        <div>
-          <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold">Current Password</label>
-          <input type="password" id="old-pass" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none">
-        </div>
-        <div>
-          <label class="text-[9px] text-gray-500 block mb-1 uppercase font-bold">New Security Key</label>
-          <input type="password" id="new-pass" class="w-full bg-black border border-white/10 p-3 text-white font-mono text-sm focus:border-primary outline-none">
-        </div>
-      </div>
-
-      <div class="mt-8 flex gap-4">
-        <button onclick="submitChangePassword()" class="flex-1 bg-primary text-black font-bold py-3 text-[11px] hover:bg-white transition-all uppercase">CONFIRM UPDATE</button>
-        <button onclick="closePassModal()" class="flex-1 bg-transparent border border-white/10 text-white py-3 text-[11px] hover:bg-red-600 transition-all uppercase">CANCEL</button>
-      </div>
-    </div>
-  </div>
 </div>
 
-</div>
 </html>

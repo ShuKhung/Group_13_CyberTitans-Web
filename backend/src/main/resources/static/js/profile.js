@@ -35,6 +35,160 @@ async function loadOperativeData() {
             }
         } else if (response.status === 403 || response.status === 401) { logout(); }
     } catch (error) { console.error("[SYSTEM] Error loading user data:", error); }
+    
+    // Load Professional Records
+    loadExperiences();
+}
+
+// --- EXPERIENCE MANAGEMENT PROTOCOL ---
+let userExperiences = [];
+
+async function loadExperiences() {
+    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
+    const listEl = document.getElementById('experience-list');
+    if (!listEl || !token) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/experience/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+            userExperiences = await response.json();
+            renderExperienceList();
+        }
+    } catch (error) { console.error("[SYSTEM] Error loading experiences:", error); }
+}
+
+function renderExperienceList() {
+    const listEl = document.getElementById('experience-list');
+    if (userExperiences.length === 0) {
+        listEl.innerHTML = '<p class="text-[10px] font-mono text-on-surface-variant/40 uppercase tracking-widest italic">No professional records found. Initialize your history to optimize your profile.</p>';
+        return;
+    }
+
+    listEl.innerHTML = userExperiences.map(exp => `
+        <div class="bg-white/5 border border-white/10 p-5 group hover:border-primary/40 transition-all">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h4 class="text-white font-bold text-lg">${exp.organizationName}</h4>
+                    <p class="text-primary font-mono text-[10px] uppercase tracking-widest mt-1">${exp.positionTitle}</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openExperienceModal(${exp.id})" class="p-2 bg-white/5 hover:bg-white/10 text-white transition-all border border-white/10">
+                        <span class="material-symbols-outlined text-sm">edit</span>
+                    </button>
+                    <button onclick="deleteExperience(${exp.id})" class="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-all border border-red-500/20">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-[10px] font-mono text-on-surface-variant mb-4 uppercase">
+                <span class="material-symbols-outlined text-xs">calendar_today</span>
+                ${exp.startDate} — ${exp.endDate || 'PRESENT'}
+                <span class="mx-2 text-white/10">|</span>
+                <span class="${exp.type === 'PROJECT' ? 'text-tertiary' : 'text-secondary'} font-bold">${exp.type}</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                ${(exp.tags || '').split(',').filter(t => t.trim()).map(tag => `
+                    <span class="px-2 py-0.5 bg-black border border-white/10 text-[9px] font-mono text-on-surface-variant">${tag.trim()}</span>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+}
+
+function openExperienceModal(id = null) {
+    const modal = document.getElementById('experience-modal');
+    const title = document.getElementById('exp-modal-title');
+    const idInput = document.getElementById('exp-id');
+    
+    // Clear fields
+    idInput.value = id || '';
+    document.getElementById('exp-org').value = '';
+    document.getElementById('exp-title').value = '';
+    document.getElementById('exp-start').value = '';
+    document.getElementById('exp-end').value = '';
+    document.getElementById('exp-type').value = 'JOB';
+    document.getElementById('exp-tags').value = '';
+
+    if (id) {
+        title.innerText = "// EDIT RECORD";
+        const exp = userExperiences.find(e => e.id === id);
+        if (exp) {
+            document.getElementById('exp-org').value = exp.organizationName || '';
+            document.getElementById('exp-title').value = exp.positionTitle || '';
+            document.getElementById('exp-start').value = exp.startDate || '';
+            document.getElementById('exp-end').value = exp.endDate || '';
+            document.getElementById('exp-type').value = exp.type || 'JOB';
+            document.getElementById('exp-tags').value = exp.tags || '';
+        }
+    } else {
+        title.innerText = "// ADD RECORD";
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closeExperienceModal() {
+    document.getElementById('experience-modal').classList.add('hidden');
+}
+
+async function saveExperience() {
+    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
+    const id = document.getElementById('exp-id').value;
+    
+    const payload = {
+        organizationName: document.getElementById('exp-org').value,
+        positionTitle: document.getElementById('exp-title').value,
+        startDate: document.getElementById('exp-start').value,
+        endDate: document.getElementById('exp-end').value,
+        type: document.getElementById('exp-type').value,
+        tags: document.getElementById('exp-tags').value
+    };
+
+    if (!payload.organizationName || !payload.positionTitle || !payload.startDate) {
+        return showToast("Critical fields missing: Name, Title, and Start Date are required.", "error");
+    }
+
+    try {
+        const url = id ? `${API_BASE_URL}/experience/${id}` : `${API_BASE_URL}/experience`;
+        const method = id ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            showToast("Record synchronized successfully.", "success");
+            closeExperienceModal();
+            loadExperiences(); // Refresh list
+        } else {
+            showToast("Failed to synchronize record.", "error");
+        }
+    } catch (error) { showToast("Server connection error.", "error"); }
+}
+
+async function deleteExperience(id) {
+    if (!confirm("⚠️ WARNING: Permanent deletion initiated. Are you sure?")) return;
+    
+    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
+    try {
+        const response = await fetch(`${API_BASE_URL}/experience/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+            showToast("Record terminated and deleted.", "success");
+            loadExperiences();
+        } else {
+            showToast("Deletion failed.", "error");
+        }
+    } catch (error) { showToast("Server connection error.", "error"); }
 }
 
 async function saveAccountProfile() {
