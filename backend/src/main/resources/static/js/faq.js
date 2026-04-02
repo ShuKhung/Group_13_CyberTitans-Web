@@ -1,18 +1,18 @@
 const protocols = [
-    { title: 'Zero-Trust Protocol', desc: 'Mọi định danh Operative phải qua xác thực MFA 2 lớp trước khi truy cập Vault.' },
-    { title: 'Ethical Engagement', desc: 'Kiến thức từ hệ thống chỉ dùng cho phòng thủ. Mọi hành vi tấn công sẽ bị Terminated.' },
-    { title: 'Data Sovereignty', desc: 'Dữ liệu cá nhân được mã hóa đầu cuối (E2EE) và không bao giờ chia sẻ cho Third-party.' },
-    { title: 'Clearance Level', desc: 'Thành viên phải duy trì hoạt động để giữ vững cấp độ Operative hoặc Master.' }
+    { title: 'Member Conduct', desc: 'All members must provide accurate information, treat others with respect, and use the platform only for legitimate club learning activities.' },
+    { title: 'Data Security', desc: 'All member data is securely stored. Passwords are hashed using BCrypt. Authentication uses zero-trust JWT token controls.' },
+    { title: 'Account Termination', desc: 'Administrators reserve the right to suspend any account that violates terms, engages in misconduct, or is inactive without notice.' },
+    { title: 'Portfolio & Data', desc: 'Portfolio data is generated from verified system records. All project contributions and CTF results are validated by administrators.' }
 ];
 
 const faqs = [
-    { q: 'What is CyberTitans?', a: 'CyberTitans is an elite cybersecurity club and professional network connecting cryptographers, engineers, and digital architects.' },
-    { q: 'How do I join the club?', a: 'Click "Join" in the navigation, create a Recruit account, and complete your profile for admin verification.' },
-    { q: 'What is the Operative tier?', a: 'Operative members get access to private repositories, CTF practice labs, and internal mentorship channels.' },
-    { q: 'Can I request a mentor?', a: 'Yes — Operative and Master tier members can submit mentor requests.' },
-    { q: 'How is member data protected?', a: 'All data is end-to-end encrypted. We implement zero-trust access controls.' },
-    { q: 'What is the Gold / Master tier for?', a: 'Master tier grants Gold-level advisory access and deep-net clearance.' },
-    { q: 'Are events available online?', a: 'Yes — all workshops are streamed to Operative members.' }
+    { q: 'What is CyberTitans?', a: 'CyberTitans is an elite cybersecurity club and professional network connecting cryptographers, engineers, and digital architects to learn and grow together.' },
+    { q: 'How do I join the club?', a: 'Click "Join" in the navigation, create a Recruit account with your basic details, and complete your profile for admin verification.' },
+    { q: 'What is the Operative tier?', a: 'Operative members get enhanced privileges including access to private repositories, CTF practice labs, and internal mentorship channels.' },
+    { q: 'Can I request a mentor?', a: 'Yes. Authorized members (Operative and Master tiers) can use Cyber Coins to submit 1-on-1 mentor guidance requests.' },
+    { q: 'How is member data protected?', a: 'All data is end-to-end encrypted. We never share or sell personal information to any third parties whatsoever.' },
+    { q: 'What is the Master tier for?', a: 'The Master tier grants ultimate system access, Gold-level advisory tools, and deep-net clearance for top-tier members.' },
+    { q: 'Are events available online?', a: 'Yes. All of our technical workshops and training sessions are recorded and streamed for our Operative members to review.' }
 ];
 
 function initKnowledgeBase() {
