@@ -2,6 +2,8 @@ package com.Se2.CyberWebApp.controller;
 
 import com.Se2.CyberWebApp.entity.ClubEvent;
 import com.Se2.CyberWebApp.repository.ClubEventRepository;
+import com.Se2.CyberWebApp.entity.Announcement;
+import com.Se2.CyberWebApp.repository.AnnouncementRepository;
 import com.Se2.CyberWebApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,9 @@ public class SuperAdminApiController {
 
     @Autowired
     private ClubEventRepository clubEventRepository;
+
+    @Autowired
+    private AnnouncementRepository announcementRepository;
 
     @PostMapping("/users/{id}/role")
     public ResponseEntity<?> updateUserRole(@PathVariable Integer id, @RequestBody Map<String, String> request) {
@@ -45,6 +50,15 @@ public class SuperAdminApiController {
             return ResponseEntity.badRequest().body(Map.of("message", "Event title is required."));
         }
         clubEventRepository.save(event);
+        
+        // Auto-generate notification
+        Announcement notif = new Announcement(
+                "New Event: " + event.getTitle(),
+                "A new event has been scheduled. Check it out and register!",
+                "EVENT"
+        );
+        announcementRepository.save(notif);
+
         return ResponseEntity.ok(Map.of("message", "Event created successfully.", "event", event));
     }
 
