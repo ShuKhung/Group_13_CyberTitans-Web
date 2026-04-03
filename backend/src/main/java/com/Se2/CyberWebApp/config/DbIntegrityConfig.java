@@ -21,7 +21,7 @@ public class DbIntegrityConfig {
     public CommandLineRunner fixIntegrity() {
         return args -> {
             System.out.println("[BOOTSTRAP] Checking database integrity...");
-            
+
             // 1. Ensure Roles exist
             ensureRole(1, "SUPER ADMIN");
             ensureRole(2, "ADMIN");
@@ -32,7 +32,8 @@ public class DbIntegrityConfig {
             userRepository.findAll().forEach(user -> {
                 if (user.getRoleEntity() == null) {
                     roleRepository.findByName("MENTEE").ifPresent(role -> {
-                        System.out.println("[BOOTSTRAP] Fixing user " + user.getUsername() + ": Role was null or invalid. Assigning MENTEE.");
+                        System.out.println("[BOOTSTRAP] Fixing user " + user.getUsername()
+                                + ": Role was null or invalid. Assigning MENTEE.");
                         user.setRoleEntity(role);
                         userRepository.save(user);
                     });

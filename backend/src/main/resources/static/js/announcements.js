@@ -45,14 +45,23 @@ async function loadNotificationDropdown() {
         
         if (evtRes && evtRes.ok) {
             const events = await evtRes.json();
-            const eventAnns = events.map(e => ({
-                id: 'evt-' + e.id,
-                title: e.title,
-                message: "Upcoming Event: " + e.description,
-                type: 'EVENT',
-                createdAt: e.eventDate || new Date().toISOString(),
-                isRead: false
-            }));
+            const eventAnns = events.map(e => {
+                let parsedDate = new Date();
+                if (e.eventDate) {
+                    const dateStr = e.eventDate.split(' - ')[0]; 
+                    const result = new Date(dateStr);
+                    if (!isNaN(result)) parsedDate = result;
+                }
+                return {
+                    id: 'evt-' + e.id,
+                    title: e.title,
+                    message: "Upcoming Event: " + e.description,
+                    type: 'EVENT',
+                    createdAt: parsedDate.toISOString(),
+                    displayDate: e.eventDate,
+                    isRead: false
+                };
+            });
             allItems = allItems.concat(eventAnns);
         }
         
@@ -101,7 +110,7 @@ function renderNotificationDropdown(announcements) {
             <div class="flex items-center gap-2 mb-1">
                 <span class="w-1.5 h-1.5 rounded-full ${!ann.isRead ? 'bg-primary animate-pulse' : 'bg-transparent'}"></span>
                 <span class="text-[10px] font-mono tracking-widest ${typeColor}">${ann.type}</span>
-                <span class="text-[10px] font-mono text-on-surface-variant ml-auto">${new Date(ann.createdAt).toLocaleDateString()}</span>
+                <span class="text-[10px] font-mono text-on-surface-variant ml-auto">${ann.displayDate || new Date(ann.createdAt).toLocaleDateString()}</span>
             </div>
             <h4 class="text-xs font-bold text-white pl-3">${ann.title}</h4>
             <p class="text-[10px] text-on-surface-variant pl-3 mt-1 truncate">${ann.message}</p>
@@ -113,11 +122,46 @@ function renderNotificationDropdown(announcements) {
 async function loadAnnouncementsPage(type) {
     try {
         const url = type === 'ALL' ? '/api/v1/announcements' : `/api/v1/announcements?type=${type}`;
-        const response = await fetch(url);
-        if (response.ok) {
-            const data = await response.json();
-            renderAnnouncementsPage(data);
+        
+        const fetchPromises = [fetch(url)];
+        if (type === 'ALL' || type === 'EVENT') {
+            fetchPromises.push(fetch('/api/v1/events').catch(() => null));
         }
+
+        const responses = await Promise.all(fetchPromises);
+        let allItems = [];
+
+        if (responses[0] && responses[0].ok) {
+            const data = await responses[0].json();
+            allItems = allItems.concat(data);
+        }
+
+        if (responses.length > 1 && responses[1] && responses[1].ok) {
+            const events = await responses[1].json();
+            const eventAnns = events.map(e => {
+                let parsedDate = new Date();
+                if (e.eventDate) {
+                    const dateStr = e.eventDate.split(' - ')[0]; 
+                    const result = new Date(dateStr);
+                    if (!isNaN(result)) parsedDate = result;
+                }
+                return {
+                    id: 'evt-' + e.id,
+                    title: e.title,
+                    message: "Upcoming Event: " + e.description,
+                    type: 'EVENT',
+                    createdAt: parsedDate.toISOString(),
+                    displayDate: e.eventDate,
+                    isRead: false
+                };
+            });
+            allItems = allItems.concat(eventAnns);
+        }
+
+        // Sort descending by date
+        allItems.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        renderAnnouncementsPage(allItems);
     } catch (err) {
         console.error('Error fetching announcements page:', err);
     }
@@ -148,7 +192,7 @@ function renderAnnouncementsPage(announcements) {
                     <span class="font-mono text-[10px] px-2 py-0.5 border ${typeColor} uppercase tracking-widest">${ann.type}</span>
                     ${!ann.isRead ? '<span class="font-mono text-[10px] text-black bg-primary px-1 font-bold">NEW</span>' : ''}
                 </div>
-                <div class="font-mono text-xs text-on-surface-variant">${new Date(ann.createdAt).toLocaleString()}</div>
+                <div class="font-mono text-xs text-on-surface-variant">${ann.displayDate || new Date(ann.createdAt).toLocaleString()}</div>
             </div>
             <h3 class="text-lg font-bold text-white mb-2">${ann.title}</h3>
             <p class="text-sm text-on-surface-variant">${ann.message}</p>
