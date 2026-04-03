@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.Se2.CyberWebApp.entity.Role;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +43,8 @@ public class AuthController {
         String password = request.get("password");
 
         if (name == null || username == null || email == null || password == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "All fields are strictly required for initialization."));
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "All fields are strictly required for initialization."));
         }
 
         if (userRepository.findByUsername(username).isPresent()) {
@@ -72,10 +72,12 @@ public class AuthController {
         try {
             emailService.sendVerificationEmail(newUser.getEmail(), generatedOtp);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("message", "Operative registered, but email dispatch failed. Contact Admin."));
+            return ResponseEntity.status(500)
+                    .body(Map.of("message", "Operative registered, but email dispatch failed. Contact Admin."));
         }
 
-        return ResponseEntity.ok(Map.of("message", "Registration pending. Verification code dispatched to your comms link."));
+        return ResponseEntity
+                .ok(Map.of("message", "Registration pending. Verification code dispatched to your comms link."));
     }
 
     // --- OTP VERIFICATION PROTOCOL ---
@@ -105,7 +107,8 @@ public class AuthController {
 
             // Check if account is verified via OTP
             if (!user.isEnabled()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "Account locked. Please verify your email first."));
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "Account locked. Please verify your email first."));
             }
 
             // Check password
@@ -167,6 +170,7 @@ public class AuthController {
 
         }).orElse(ResponseEntity.status(404).body(Map.of("message", "Operative profile not found.")));
     }
+
     // --- RECOVERY PROTOCOL: STEP 1 (REQUEST OTP) ---
     @PostMapping("/forgot-password-request")
     public ResponseEntity<?> requestPasswordReset(@RequestBody Map<String, String> request) {
@@ -192,7 +196,8 @@ public class AuthController {
             try {
                 emailService.sendVerificationEmail(user.getEmail(), generatedOtp);
             } catch (Exception e) {
-                return ResponseEntity.status(500).body(Map.of("message", "Recovery initiated, but email dispatch failed. Contact Admin."));
+                return ResponseEntity.status(500)
+                        .body(Map.of("message", "Recovery initiated, but email dispatch failed. Contact Admin."));
             }
 
             return ResponseEntity.ok(Map.of("message", "Recovery code dispatched to your comms link."));

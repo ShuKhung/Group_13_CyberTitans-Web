@@ -38,15 +38,23 @@ public class SecurityConfig {
                                 "/", "/home", "/services/**",
                                 "/projects/**", "/team/**", "/ranking/**", "/faq/**",
                                 "/publications/**", "/api/publications/**",
-                                "/login", "/error", "/CSS/**", "/js/**", "/images/**", "/favicon.ico"
-                        ).permitAll()
+                                "/login", "/error", "/CSS/**", "/js/**", "/images/**", "/favicon.ico")
+                        .permitAll()
 
                         // 1. GUEST: Các API mở cửa tự do
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/team/members").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/events").permitAll()
 
+                        // Giao diện (Web routes & Thymeleaf templates)
+                        .requestMatchers("/", "/home", "/admin", "/faq", "/permissions", "/profile", "/projects",
+                                "/publications", "/ranking", "/services", "/team", "/events")
+                        .permitAll()
+                        .requestMatchers("/CSS/**", "/js/**", "/components/**", "/pages/**", "/**/*.html", "/**/*.css",
+                                "/**/*.js", "/error")
+                        .permitAll()
                         // 2. ADMIN, SUPER ADMIN & MENTOR
                         .requestMatchers("/admin/**", "/api/v1/admin/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
                         .requestMatchers("/api/v1/super-admin/**", "/permissions/**").hasAuthority("SUPER ADMIN")
@@ -56,15 +64,16 @@ public class SecurityConfig {
                         .requestMatchers("/profile", "/api/v1/user/**").authenticated()
 
                         // 4. Default fallthrough
-                        .anyRequest().permitAll()
-                )
-                // We enable FORM LOGIN or at least standard session support if we use Cookies for SSR
-                // But since we use JwtAuthFilter with Cookies, STATELESS can usually stay, 
+                        .anyRequest().permitAll())
+                // We enable FORM LOGIN or at least standard session support if we use Cookies
+                // for SSR
+                // But since we use JwtAuthFilter with Cookies, STATELESS can usually stay,
                 // but let's ensure the Filter is properly ordered.
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
