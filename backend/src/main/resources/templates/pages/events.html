@@ -1,0 +1,32 @@
+<html th:replace="~{layout/layout :: page(title='CyberTitans — Events', active='events', headExtra=~{}, content=~{::content}, scriptsExtra=~{::scripts})}" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="content">
+<div id="page-events" class="relative pt-16 pb-24">
+    <main class="relative z-10 px-6 md:px-8 max-w-6xl mx-auto">
+        <div class="mb-10 text-left flex flex-col items-start border-l-2 border-[#D4AF37] pl-4">
+            <span class="text-[#D4AF37] font-mono text-[10px] tracking-widest uppercase mb-1">CLAN_EVENTS.LOG</span>
+            <h2 class="text-3xl md:text-4xl font-headline font-bold text-white mb-4">Club Events</h2>
+            <p class="text-on-surface-variant font-body text-sm max-w-2xl leading-relaxed">
+                Workshops, hackathons, CTF competitions, and seminars. Join events to earn Cyber Coins and proof-of-work records for your portfolio.
+            </p>
+        </div>
+        
+        <div class="mb-8 border-b border-white/10 pb-2">
+            <div id="event-filters" class="flex flex-wrap gap-4 font-mono text-[10px] sm:text-xs font-bold tracking-widest uppercase text-on-surface-variant">
+                <button class="filter-btn active text-primary border-b-2 border-primary pb-2" data-filter="ALL">ALL</button>
+                <button class="filter-btn hover:text-white transition-colors pb-2" data-filter="HACKATHON">HACKATHON</button>
+                <button class="filter-btn hover:text-white transition-colors pb-2" data-filter="WORKSHOP">WORKSHOP</button>
+                <button class="filter-btn hover:text-white transition-colors pb-2" data-filter="CTF">CTF</button>
+                <button class="filter-btn hover:text-white transition-colors pb-2" data-filter="SEMINAR">SEMINAR</button>
+            </div>
+        </div>
+
+        <div id="events-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Events injected dynamically by JS -->
+        </div>
+    </main>
+</div>
+</div>
+<th:block th:fragment="scripts">
+    <script th:src="@{/js/events.js}"></script>
+</th:block>
+</html>

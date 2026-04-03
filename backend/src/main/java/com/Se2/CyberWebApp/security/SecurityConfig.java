@@ -38,9 +38,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/team/members").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/events").permitAll()
 
                         // Giao diện (Web routes & Thymeleaf templates)
-                        .requestMatchers("/", "/home", "/admin", "/faq", "/permissions", "/profile", "/projects", "/publications", "/ranking", "/services", "/team").permitAll()
+                        .requestMatchers("/", "/home", "/admin", "/faq", "/permissions", "/profile", "/projects", "/publications", "/ranking", "/services", "/team", "/events").permitAll()
                         .requestMatchers("/CSS/**", "/js/**", "/components/**", "/pages/**", "/**/*.html", "/**/*.css", "/**/*.js", "/error").permitAll()
 
                         // 2. ADMIN: Khu vực tuyệt mật
