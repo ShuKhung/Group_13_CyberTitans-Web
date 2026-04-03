@@ -19,7 +19,6 @@ public class AdminApiController {
     @Autowired
     private UserService userService;
 
-    /** Returns all users (SUPER ADMIN visible but read-only on the frontend). */
     @GetMapping("/users")
     public ResponseEntity<List<Map<String, Object>>> getAllUsers() {
         List<User> users = userService.getAllUsers();

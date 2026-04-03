@@ -12,17 +12,17 @@ public class Publication {
     private Integer id;
 
     @Column(name = "user_id")
-    private Integer userId; // Poster ID / Người đăng
+    private Integer userId;
 
     private String title;
     
     @Column(name = "original_author")
-    private String originalAuthor; // Original writer / Người viết bài báo gốc
+    private String originalAuthor;
 
-    private String category; // Tags e.g., WEB_DEV, CTF_WRITEUP
+    private String category;
 
     @Column(name = "created_at")
-    private LocalDate createdAt; // Date of publication
+    private LocalDate createdAt; 
 
     @Column(name = "journal_name")
     private String journalName;

@@ -25,7 +25,6 @@ public class CyberWebAppApplication {
 									 ProjectRepository projectRepository,
 									 UserRepository userRepository) {
 		return args -> {
-			// Seed Categories if empty
 			if (categoryRepository.count() == 0) {
 				Category cat1 = new Category();
 				cat1.setName("Web Development");
@@ -46,7 +45,6 @@ public class CyberWebAppApplication {
 				categoryRepository.save(cat9);
 			}
 
-			// Seed Projects if empty
 			if (projectRepository.count() == 0) {
 				Category webCat = categoryRepository.findAll().stream()
 						.filter(c -> c.getSlug().equals("web-development")).findFirst().orElse(null);

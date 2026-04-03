@@ -137,7 +137,7 @@ public class TeamController {
     @PostMapping("/members/{mentorId}/request-mentor")
     public ResponseEntity<?> requestMentor(@PathVariable Integer mentorId, @RequestBody Map<String, Integer> requestData) {
         Integer menteeId = requestData.get("menteeId");
-        int MENTOR_COST = 500; // Đặt giá thuê Mentor là 500 Coins
+        int MENTOR_COST = 500; 
 
         // 1. Transfer coin
         User mentee = userRepository.findById(menteeId).orElse(null);
@@ -161,8 +161,6 @@ public class TeamController {
         mentee.setCoin(mentee.getCoin() - MENTOR_COST);
         userRepository.save(mentee);
 
-        // 5. (Tương lai) Tại đây bạn sẽ lưu 1 dòng vào bảng `Notification` trong DB cho Mentor.
-        // Hiện tại, chúng ta báo giao dịch thành công về cho Frontend.
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Request sent successfully!");

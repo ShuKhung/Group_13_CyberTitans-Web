@@ -16,7 +16,6 @@ public class Announcement {
     @Column(columnDefinition = "TEXT")
     private String message;
 
-    // e.g., EVENT, SYSTEM, MENTOR, INFO
     private String type;
 
     @Column(name = "created_at")

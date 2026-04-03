@@ -29,7 +29,7 @@ public class AnnouncementController {
     @PostMapping
     public ResponseEntity<?> createAnnouncement(@RequestBody Announcement announcement) {
         if (announcement.getType() == null || announcement.getType().isBlank()) {
-            announcement.setType("INFO"); // default
+            announcement.setType("INFO"); 
         } else {
             announcement.setType(announcement.getType().toUpperCase());
         }

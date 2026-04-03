@@ -24,7 +24,7 @@ public class Project {
     private String image;
 
     @Column(length = 500)
-    private String technologies; // CSV
+    private String technologies; 
 
     @Column(columnDefinition = "decimal(15,2) default '0.00'")
     private Double price = 0.0;

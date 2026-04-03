@@ -71,7 +71,7 @@
   color: #ef4444;
 }
 
-/* Forms & Inputs */
+
 .form-group {
   margin-bottom: 1rem;
 }
@@ -112,7 +112,7 @@
   padding: 1rem;
 }
 
-/* Buttons */
+
 .cyber-btn {
   width: 100%;
   padding: 1rem;
@@ -171,7 +171,7 @@
   color: white;
 }
 
-/* Misc */
+
 .form-actions-row {
   display: flex;
   justify-content: space-between;
