@@ -31,11 +31,35 @@ document.addEventListener('click', (event) => {
 
 async function loadNotificationDropdown() {
     try {
-        const response = await fetch('/api/v1/announcements');
-        if (response.ok) {
-            const data = await response.json();
-            renderNotificationDropdown(data);
+        const [annRes, evtRes] = await Promise.all([
+            fetch('/api/v1/announcements'),
+            fetch('/api/v1/events').catch(() => null)
+        ]);
+        
+        let allItems = [];
+        
+        if (annRes && annRes.ok) {
+            const data = await annRes.json();
+            allItems = allItems.concat(data);
         }
+        
+        if (evtRes && evtRes.ok) {
+            const events = await evtRes.json();
+            const eventAnns = events.map(e => ({
+                id: 'evt-' + e.id,
+                title: e.title,
+                message: "Upcoming Event: " + e.description,
+                type: 'EVENT',
+                createdAt: e.eventDate || new Date().toISOString(),
+                isRead: false
+            }));
+            allItems = allItems.concat(eventAnns);
+        }
+        
+        // Sort descending by date
+        allItems.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        renderNotificationDropdown(allItems);
     } catch (err) {
         console.error('Error fetching notifications:', err);
     }
@@ -67,7 +91,7 @@ function renderNotificationDropdown(announcements) {
         const item = document.createElement('div');
         item.className = `p-3 border-b border-outline-variant/10 text-left hover:bg-white/5 cursor-pointer transition-colors ${ann.isRead ? 'opacity-60' : ''}`;
         item.onclick = () => {
-            if (!ann.isRead) markAsRead(ann.id);
+            if (!ann.isRead && typeof ann.id === 'number') markAsRead(ann.id);
             window.location.href = '/announcementEvents';
         };
 

@@ -9,6 +9,11 @@
                 <p class="text-gray-400 font-mono text-sm leading-relaxed">
                     Workshops, hackathons, CTF competitions, and seminars. Join events to earn Cyber Coins and proof-of-work records for your portfolio.
                 </p>
+                <div sec:authorize="hasAnyAuthority('SUPER ADMIN')" class="mt-6">
+                    <a th:href="@{/admin/events}" class="px-4 py-2.5 border border-[#D4AF37] text-[#D4AF37] text-xs font-mono uppercase tracking-widest hover:bg-[#D4AF37]/10 transition-colors inline-flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">settings</span>Manage Events
+                    </a>
+                </div>
             </div>
 
             <!-- Filters -->
@@ -55,7 +60,7 @@
                         </div>
                     </div>
 
-                    <button class="w-full py-3 bg-transparent border text-[10px] font-mono font-bold tracking-[0.2em] transition-all uppercase"
+                    <button onclick="showJoinSuccessModal()" class="w-full py-3 bg-transparent border text-[10px] font-mono font-bold tracking-[0.2em] transition-all uppercase"
                             th:classappend="${event.eventType == 'HACKATHON'} ? 'border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10' : (${event.eventType == 'WORKSHOP'} ? 'border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6]/10' : (${event.eventType == 'CTF'} ? 'border-[#a855f7] text-[#a855f7] hover:bg-[#a855f7]/10' : (${event.eventType == 'SEMINAR'} ? 'border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e]/10' : 'border-white text-white hover:bg-white/10')))">
                         JOIN EVENT
                     </button>
@@ -100,6 +105,40 @@
                 });
             });
         });
+    </script>
+
+    <!-- Join Success Modal -->
+    <div id="join-success-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-[#0a0a0a] border border-[#4dff88] w-full max-w-sm shadow-[0_0_40px_rgba(77,255,136,0.1)] relative p-8 text-center transition-transform transform scale-95 opacity-0 duration-300" id="join-modal-content">
+            <span class="material-symbols-outlined text-6xl text-[#4dff88] mb-4 block">task_alt</span>
+            <h2 class="text-xl font-headline font-bold text-white uppercase tracking-widest mb-2">Registration Confirmed</h2>
+            <p class="text-sm font-mono text-gray-400 mb-8">You have successfully joined the event. Prepare your setup, operative.</p>
+            <button onclick="hideJoinSuccessModal()" class="px-6 py-3 bg-[#4dff88] text-black font-bold font-mono text-xs uppercase tracking-[0.2em] hover:brightness-110 transition-all w-full">Understood</button>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function showJoinSuccessModal() {
+            const modal = document.getElementById('join-success-modal');
+            const content = document.getElementById('join-modal-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function hideJoinSuccessModal() {
+            const modal = document.getElementById('join-success-modal');
+            const content = document.getElementById('join-modal-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300);
+        }
     </script>
 </div>
 </html>

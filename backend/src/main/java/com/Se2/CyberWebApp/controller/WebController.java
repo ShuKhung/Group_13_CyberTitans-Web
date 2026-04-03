@@ -100,4 +100,9 @@ public class WebController {
         return "pages/events";
     }
 
+    @GetMapping("/announcementEvents")
+    public String announcementEvents() {
+        return "pages/announcementsEvents";
+    }
+
 }
