@@ -51,7 +51,9 @@ function renderPermissionsTable(users) {
             `<option value="${r}" ${r === u.role ? 'selected' : ''}>${r}</option>`
         ).join('');
 
-        return `<tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+        const isLocked = (u.role === 'SUPER ADMIN');
+        
+        return `<tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors ${isLocked ? 'opacity-80' : ''}">
             <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center font-mono text-[11px] font-bold text-primary flex-shrink-0">
@@ -67,8 +69,9 @@ function renderPermissionsTable(users) {
                 <span class="px-2 py-0.5 border font-mono text-[10px] tracking-widest uppercase ${roleClass}">${u.role || 'MENTEE'}</span>
             </td>
             <td class="px-6 py-4 text-right">
-                <select onchange="updateUserRole(${u.id}, this.value, this)"
-                        class="bg-[#0a0a0a] border border-white/20 text-white font-mono text-[10px] px-3 py-2 outline-none focus:border-primary hover:border-white/40 transition-colors cursor-pointer">
+                <select ${isLocked ? 'disabled' : ''} 
+                        onchange="updateUserRole(${u.id}, this.value, this)"
+                        class="bg-[#0a0a0a] border border-white/20 text-white font-mono text-[10px] px-3 py-2 outline-none focus:border-primary hover:border-white/40 transition-colors ${isLocked ? 'cursor-not-allowed opacity-50 grayscale' : 'cursor-pointer'}">
                     ${roleOptions}
                 </select>
             </td>

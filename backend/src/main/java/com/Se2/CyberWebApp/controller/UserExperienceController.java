@@ -45,7 +45,6 @@ public class UserExperienceController {
             }
         }
         
-        // Fallback to Header if cookie missing
         if (token == null) {
             String header = request.getHeader("Authorization");
             if (header != null && header.startsWith("Bearer ")) {

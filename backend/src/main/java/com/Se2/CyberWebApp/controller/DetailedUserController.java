@@ -68,7 +68,6 @@ public class DetailedUserController {
                  }
              }
 
-             // Fabricate extra information to fill the empty space dynamically based on user ID
              StringBuilder fabricatedDesc = new StringBuilder();
              if (description != null) {
                  fabricatedDesc.append(description);

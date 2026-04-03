@@ -11,10 +11,8 @@ import java.util.List;
 @Repository
 public interface AnnouncementRepository extends JpaRepository<Announcement, Integer> {
     
-    // Fetch all announcements ordered by newest first
     List<Announcement> findAllByOrderByCreatedAtDesc();
 
-    // Fetch announcements by type
     List<Announcement> findByTypeOrderByCreatedAtDesc(String type);
 
     @Modifying

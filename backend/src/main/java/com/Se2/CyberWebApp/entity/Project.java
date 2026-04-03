@@ -24,7 +24,7 @@ public class Project {
     private String image;
 
     @Column(length = 500)
-    private String technologies; // CSV
+    private String technologies; 
 
     @Column(name = "github_url", length = 500)
     private String githubUrl;

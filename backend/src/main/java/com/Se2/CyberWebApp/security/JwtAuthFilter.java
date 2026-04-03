@@ -24,7 +24,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Skip filter for static files to avoid log spam and unnecessary processing
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
@@ -42,11 +41,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        // 1. Check Authorization Header (AJAX)
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
         }
-        // 2. Check Cookies (SSR/Thymeleaf)
         else if (request.getCookies() != null) {
             for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
                 if ("cyber_token".equals(cookie.getName())) {
@@ -60,7 +57,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUsername(token);
             } catch (Exception e) {
-                // Token invalid or expired - do nothing, treat as anonymous
             }
         }
 
@@ -70,7 +66,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 Claims claims = jwtUtil.extractAllClaims(token);
                 String role = claims.get("role", String.class);
-                if (role == null) role = "MENTEE"; // Default role matching database
+                if (role == null) role = "MENTEE"; 
 
                 List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
 

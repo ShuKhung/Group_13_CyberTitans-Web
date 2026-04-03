@@ -69,7 +69,7 @@ public class PortfolioController {
     private String getUserPortfolio(String username, Model model) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         if (userOpt.isEmpty()) {
-            return "pages/404"; // Or a proper error page
+            return "pages/404"; 
         }
 
         User user = userOpt.get();

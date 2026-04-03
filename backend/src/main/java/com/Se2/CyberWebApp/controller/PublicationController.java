@@ -17,13 +17,11 @@ public class PublicationController {
     @Autowired
     private PublicationRepository publicationRepository;
 
-    // API lấy toàn bộ danh sách, sắp xếp mới nhất lên trước
     @GetMapping
     public ResponseEntity<List<Publication>> getAllPublications() {
         return ResponseEntity.ok(publicationRepository.findAllByOrderByCreatedAtDesc());
     }
 
-    // API lấy chi tiết 1 bài báo
     @GetMapping("/{id}")
     public ResponseEntity<Publication> getPublicationById(@PathVariable Integer id) {
         return publicationRepository.findById(id)
@@ -31,17 +29,15 @@ public class PublicationController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // API tạo bài báo mới (Dành cho Admin/Superadmin)
     @PostMapping
     public ResponseEntity<?> createPublication(@RequestBody Publication publication) {
         if (publication.getCreatedAt() == null) {
-            publication.setCreatedAt(LocalDate.now()); // Default to today if not provided
+            publication.setCreatedAt(LocalDate.now());
         }
         Publication saved = publicationRepository.save(publication);
         return ResponseEntity.ok(Map.of("message", "Publication created successfully", "data", saved));
     }
 
-    // API cập nhật bài báo
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePublication(@PathVariable Integer id, @RequestBody Publication updatedPub) {
         return publicationRepository.findById(id).map(pub -> {
@@ -58,7 +54,6 @@ public class PublicationController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // API xóa bài báo
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePublication(@PathVariable Integer id) {
         return publicationRepository.findById(id).map(pub -> {

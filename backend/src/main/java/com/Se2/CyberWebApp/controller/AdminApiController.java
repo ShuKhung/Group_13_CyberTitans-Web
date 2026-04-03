@@ -24,7 +24,6 @@ public class AdminApiController {
     @Autowired
     private ProjectService projectService;
 
-    /** Returns all users (SUPER ADMIN visible but read-only on the frontend). */
     @GetMapping("/users")
     public ResponseEntity<List<Map<String, Object>>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -110,7 +109,6 @@ public class AdminApiController {
             map.put("teamId", p.getTeamId());
             map.put("githubUrl", p.getGithubUrl());
             map.put("submittedAt", p.getCreatedAt()); 
-            // map.put("user", p.getUser() != null ? p.getUser().getName() : "Anonymous");
             return map;
         }).collect(Collectors.toList());
         return ResponseEntity.ok(response);
@@ -128,4 +126,3 @@ public class AdminApiController {
         return ResponseEntity.ok(Map.of("message", "Project rejected. Archiving records."));
     }
 }
-

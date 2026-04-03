@@ -96,6 +96,9 @@ public class UserService {
 
         if (userOpt.isPresent() && roleOpt.isPresent()) {
             User user = userOpt.get();
+            // --- GUARD: Cannot modify a Super Admin account ---
+            rejectIfSuperAdmin(user);
+            
             user.setRoleEntity(roleOpt.get());
             userRepository.save(user);
         }

@@ -31,14 +31,12 @@ public class SuperAdminApiController {
         if (roleName == null || roleName.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Role name is required."));
         }
-        // Use the role name exactly as provided — matches DB values: MENTEE, MENTOR, ADMIN, SUPER ADMIN
         userService.updateUserRole(id, roleName);
         return ResponseEntity.ok(Map.of("message", "Role updated. Identity matrix recalibrated."));
     }
 
     @GetMapping("/system-logs")
     public ResponseEntity<?> getSystemLogs() {
-        // Placeholder for real logs
         return ResponseEntity.ok(Map.of("logs", "SYSTEM_ACCESS: ADMIN_LOGIN(AdminOperative)\nUSER_MODIFIED: ROLE_UPDATE(UserX -> ROLE_ADMIN)\nSECURITY_SCAN_COMPLETED\nDATABASE_INTEGRITY_VERIFIED"));
     }
 

@@ -25,8 +25,28 @@ public class CyberWebAppApplication {
 									 ProjectRepository projectRepository,
 									 UserRepository userRepository) {
 		return args -> {
+			// Seed Categories if empty (from main)
+			if (categoryRepository.count() == 0) {
+				Category cat1 = new Category();
+				cat1.setName("Web Development");
+				cat1.setSlug("web-development");
+				cat1.setDescription("Project about website, web app, SaaS");
+				categoryRepository.save(cat1);
 
-			// Only seed if project table is empty
+				Category cat2 = new Category();
+				cat2.setName("Mobile App");
+				cat2.setSlug("mobile-app");
+				cat2.setDescription("Applications for iOS, Android, or cross-platform");
+				categoryRepository.save(cat2);
+
+				Category cat9 = new Category();
+				cat9.setName("AR VR Mixed Reality");
+				cat9.setSlug("ar-vr-mixed-reality");
+				cat9.setDescription("Augmented reality, virtual reality, and mixed reality projects");
+				categoryRepository.save(cat9);
+			}
+
+			// Seed Projects if empty (my logic with status and pending project)
 			if (projectRepository.count() == 0) {
 
 				List<Category> allCats = categoryRepository.findAll();
