@@ -8,6 +8,32 @@ async function executeSignUp() {
         return showToast("SYSTEM ERROR: All fields must be populated.", "error");
     }
 
+    const errName = document.getElementById('error-signup-name');
+    const errEmail = document.getElementById('error-signup-email');
+
+    if (errName) errName.classList.add('hidden');
+    if (errEmail) errEmail.classList.add('hidden');
+
+    let hasError = false;
+
+    if (!/^[a-zA-Z\s\-À-ỹ]+$/.test(name)) {
+        if (errName) {
+            errName.textContent = 'Designation can only contain letters and hyphens.';
+            errName.classList.remove('hidden');
+        }
+        hasError = true;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (errEmail) {
+            errEmail.textContent = 'Invalid email format.';
+            errEmail.classList.remove('hidden');
+        }
+        hasError = true;
+    }
+
+    if (hasError) return;
+
     try {
         const response = await fetch(`${API_BASE_URL}/auth/register`, {
             method: 'POST',

@@ -21,6 +21,9 @@ public class WebController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private com.Se2.CyberWebApp.repository.ClubEventRepository clubEventRepository;
+
     @GetMapping("/")
     public String index() {
         return "pages/home";
@@ -34,6 +37,11 @@ public class WebController {
     @GetMapping("/admin")
     public String admin() {
         return "pages/admin";
+    }
+
+    @GetMapping("/admin/events")
+    public String adminEvents() {
+        return "pages/eventCRUD";
     }
 
     @GetMapping("/faq")
@@ -84,6 +92,17 @@ public class WebController {
     @GetMapping("/team")
     public String team() {
         return "pages/team";
+    }
+
+    @GetMapping("/events")
+    public String events(Model model) {
+        model.addAttribute("events", clubEventRepository.findAll());
+        return "pages/events";
+    }
+
+    @GetMapping("/announcementEvents")
+    public String announcementEvents() {
+        return "pages/announcementsEvents";
     }
 
 }

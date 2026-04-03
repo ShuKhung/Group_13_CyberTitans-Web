@@ -1,0 +1,310 @@
+<html th:replace="~{layout/layout :: page(title='CyberTitans — Event Management', active='admin_events', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="content">
+<div id="page-event-crud" class="page active pt-16">
+  <main class="max-w-7xl mx-auto px-6 md:px-8 py-16">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-12">
+      <div>
+        <p class="font-mono text-[#D4AF37] text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 bg-[#D4AF37] animate-pulse"></span>
+          /ADMIN/EVENT_CONTROL
+        </p>
+        <h1 class="font-headline text-4xl font-bold text-white tracking-tight">Event Management</h1>
+        <p class="text-gray-500 text-sm mt-1 font-mono">Create, modify, and terminate system events.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a th:href="@{/admin}" class="px-4 py-2.5 border border-white/20 text-white text-xs font-mono uppercase tracking-widest hover:bg-white/5 transition-colors flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">arrow_back</span>Member Registry
+        </a>
+        <button onclick="openCreateEventModal()" class="px-4 py-2.5 bg-primary text-black text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(142,255,113,0.3)]">
+          <span class="material-symbols-outlined text-sm">add</span>New Event
+        </button>
+      </div>
+    </div>
+
+    <!-- Event Table -->
+    <div class="bg-[#0a0a0a] border border-white/10 overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/30">
+        <div class="flex items-center gap-3">
+          <span class="w-2 h-2 bg-primary animate-pulse rounded-full"></span>
+          <h3 class="text-sm font-headline font-bold uppercase tracking-wider text-white">Event Registry</h3>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-white/10 bg-black/20">
+              <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Type</th>
+              <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Title</th>
+              <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden md:table-cell">Date</th>
+              <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden lg:table-cell">Coins</th>
+              <th class="px-6 py-4 text-right text-[10px] font-mono text-gray-500 uppercase tracking-widest">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="event-table">
+            <tr><td colspan="5" class="px-6 py-12 text-center text-gray-600 font-mono text-xs">Loading operations database...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Event Modal -->
+<div id="event-crud-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-[#0a0a0a] border border-primary w-full max-w-2xl shadow-[0_0_40px_rgba(142,255,113,0.1)] relative">
+        <div class="border-b border-white/10 px-8 py-5 flex justify-between items-center bg-black/30">
+            <h2 id="event-modal-title" class="text-lg font-bold text-white font-headline uppercase tracking-widest">Create Event</h2>
+            <button onclick="closeEventModal()" class="text-gray-500 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-xl">close</span>
+            </button>
+        </div>
+        <div class="p-8 space-y-5 h-full max-h-[70vh] overflow-y-auto">
+            <input type="hidden" id="event-id">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Event Title</label>
+                    <input type="text" id="event-title" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="e.g. IU Spring Hackathon">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Event Type</label>
+                    <select id="event-type" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs cursor-pointer">
+                        <option value="HACKATHON" class="bg-black text-[#D4AF37]">HACKATHON</option>
+                        <option value="WORKSHOP" class="bg-black text-[#3b82f6]">WORKSHOP</option>
+                        <option value="CTF" class="bg-black text-[#a855f7]">CTF</option>
+                        <option value="SEMINAR" class="bg-black text-[#22c55e]">SEMINAR</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Description</label>
+                <textarea id="event-desc" rows="3" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="Event details..."></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Date / Time</label>
+                    <input type="text" id="event-date" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="12.APR.2026 - 08:00 - 20:00">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Location</label>
+                    <input type="text" id="event-location" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="Hall A">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Capacity</label>
+                    <input type="text" id="event-capacity" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="100 / Unlimited">
+                </div>
+            </div>
+
+            <div class="space-y-2 w-full md:w-1/3">
+                <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Reward (Coins)</label>
+                <input type="number" id="event-coins" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="50">
+            </div>
+            
+        </div>
+        <div class="border-t border-white/10 px-8 py-5 flex justify-end gap-3 bg-black/20">
+            <button onclick="closeEventModal()" class="px-5 py-2.5 border border-white/10 text-white font-mono text-xs uppercase hover:bg-white/5 transition-colors">Cancel</button>
+            <button id="save-event-btn" onclick="saveEvent()" class="px-6 py-2.5 bg-primary text-black font-bold font-mono text-xs uppercase hover:brightness-110 transition-all">Save Protocol</button>
+        </div>
+    </div>
+</div>
+
+<!-- Inline script for CRUD logic -->
+<script th:inline="javascript">
+    const API_BASE_URL = '/api/v1'; // Adjust if needed
+    let allEvents = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadEvents();
+    });
+
+    async function fetchWithAuth(url, options = {}) {
+        const token = localStorage.getItem('token');
+        const headers = {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        };
+        const updatedOptions = { ...options, headers };
+        return fetch(url, updatedOptions);
+    }
+
+    async function loadEvents() {
+        try {
+            const res = await fetchWithAuth(`${API_BASE_URL}/events`);
+            if (!res.ok) throw new Error('Failed to fetch events');
+            allEvents = await res.json();
+            renderEventTable();
+        } catch (err) {
+            console.error(err);
+            document.getElementById('event-table').innerHTML = `<tr><td colspan="5" class="px-6 py-6 text-center text-error font-mono text-xs">Error loading database</td></tr>`;
+        }
+    }
+
+    function renderEventTable() {
+        const tbody = document.getElementById('event-table');
+        if (allEvents.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-600 font-mono text-xs">No events registered in system.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = allEvents.map(ev => {
+            let badgeClass = 'border-white text-white bg-white/10';
+            if(ev.eventType === 'HACKATHON') badgeClass = 'border-[#D4AF37] text-[#D4AF37] bg-[#D4AF37]/10';
+            else if(ev.eventType === 'WORKSHOP') badgeClass = 'border-[#3b82f6] text-[#3b82f6] bg-[#3b82f6]/10';
+            else if(ev.eventType === 'CTF') badgeClass = 'border-[#a855f7] text-[#a855f7] bg-[#a855f7]/10';
+            else if(ev.eventType === 'SEMINAR') badgeClass = 'border-[#22c55e] text-[#22c55e] bg-[#22c55e]/10';
+
+            return `
+            <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+              <td class="px-6 py-4">
+                 <span class="inline-block border px-2 py-1 text-[10px] font-mono font-bold tracking-widest uppercase ${badgeClass}">${escapeHtml(ev.eventType || 'N/A')}</span>
+              </td>
+              <td class="px-6 py-4 text-white font-headline font-bold text-sm">
+                 ${escapeHtml(ev.title || 'Untitled')}
+              </td>
+              <td class="px-6 py-4 text-gray-400 font-mono text-xs hidden md:table-cell">
+                 ${escapeHtml(ev.eventDate || '')}
+              </td>
+              <td class="px-6 py-4 text-[#D4AF37] font-mono text-xs font-bold hidden lg:table-cell">
+                 ${ev.coins || 0}
+              </td>
+              <td class="px-6 py-4 text-right">
+                 <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="editEvent(${ev.id})" class="text-gray-400 hover:text-primary transition-colors" title="Edit">
+                        <span class="material-symbols-outlined text-sm">edit</span>
+                    </button>
+                    <button onclick="deleteEvent(${ev.id})" class="text-gray-400 hover:text-error transition-colors" title="Terminate">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
+                 </div>
+              </td>
+            </tr>
+            `;
+        }).join('');
+    }
+
+    function escapeHtml(unsafe) {
+        if(!unsafe) return '';
+        return unsafe.toString()
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
+    function openCreateEventModal() {
+        document.getElementById('event-modal-title').innerText = 'Create New Event';
+        document.getElementById('event-id').value = '';
+        document.getElementById('event-title').value = '';
+        document.getElementById('event-type').value = 'HACKATHON';
+        document.getElementById('event-desc').value = '';
+        document.getElementById('event-date').value = '';
+        document.getElementById('event-location').value = '';
+        document.getElementById('event-capacity').value = '';
+        document.getElementById('event-coins').value = '0';
+        
+        document.getElementById('event-crud-modal').classList.remove('hidden');
+        document.getElementById('event-crud-modal').classList.add('flex');
+    }
+
+    function editEvent(id) {
+        const ev = allEvents.find(e => e.id === id);
+        if(!ev) return;
+        
+        document.getElementById('event-modal-title').innerText = 'Edit Event Protocol';
+        document.getElementById('event-id').value = ev.id;
+        document.getElementById('event-title').value = ev.title || '';
+        document.getElementById('event-type').value = ev.eventType || 'HACKATHON';
+        document.getElementById('event-desc').value = ev.description || '';
+        document.getElementById('event-date').value = ev.eventDate || '';
+        document.getElementById('event-location').value = ev.location || '';
+        document.getElementById('event-capacity').value = ev.capacity || '';
+        document.getElementById('event-coins').value = ev.coins || 0;
+        
+        document.getElementById('event-crud-modal').classList.remove('hidden');
+        document.getElementById('event-crud-modal').classList.add('flex');
+    }
+
+    function closeEventModal() {
+        document.getElementById('event-crud-modal').classList.add('hidden');
+        document.getElementById('event-crud-modal').classList.remove('flex');
+    }
+
+    async function saveEvent() {
+        const id = document.getElementById('event-id').value;
+        const payload = {
+            title: document.getElementById('event-title').value.trim(),
+            eventType: document.getElementById('event-type').value,
+            description: document.getElementById('event-desc').value.trim(),
+            eventDate: document.getElementById('event-date').value.trim(),
+            location: document.getElementById('event-location').value.trim(),
+            capacity: document.getElementById('event-capacity').value.trim(),
+            coins: parseInt(document.getElementById('event-coins').value) || 0
+        };
+
+        if(!payload.title) {
+            alert('Title is required to execute protocol.');
+            return;
+        }
+
+        const url = id ? `${API_BASE_URL}/super-admin/events/${id}` : `${API_BASE_URL}/super-admin/events`;
+        const method = id ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetchWithAuth(url, {
+                method: method,
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                if (res.status === 403 || res.status === 401) {
+                    throw new Error('Access Denied. Super Admin clearance required.');
+                }
+                const text = await res.text();
+                throw new Error(text || 'Operation failed');
+            }
+            
+            closeEventModal();
+            loadEvents(); // refresh grid
+        } catch (err) {
+            console.error(err);
+            alert('Error updating database: ' + err.message);
+        }
+    }
+
+    async function deleteEvent(id) {
+        if(!confirm('WARNING: Deleting this event will permanently remove it from the system. Proceed?')) {
+            return;
+        }
+
+        try {
+            const res = await fetchWithAuth(`${API_BASE_URL}/super-admin/events/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!res.ok) {
+                 if (res.status === 403 || res.status === 401) {
+                    throw new Error('Access Denied. Super Admin clearance required.');
+                }
+                const text = await res.text();
+                throw new Error(text || 'Failed to delete');
+            }
+            
+            loadEvents();
+        } catch (err) {
+            console.error(err);
+            alert('Error deleting event: ' + err.message);
+        }
+    }
+</script>
+</div>
+</html>
