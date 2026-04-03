@@ -1,11 +1,82 @@
-<html th:replace="~{layout/layout :: page(title='CyberTitans — Projects', active='projects', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout/layout :: page(title='CyberTitans — Projects', active='projects', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="content">
-<div id="page-projects" class="pt-16">
-  <main class="pt-16 pb-20 px-6 md:px-8 max-w-7xl mx-auto">
-    <header class="mb-12 border-l-2 border-primary pl-8"><p class="font-mono text-primary text-sm tracking-[0.2em] mb-2">/ROOT/PROJECTS</p><h1 class="text-5xl font-headline font-bold">Tactical Deployments</h1></header>
-    <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div> 
-  </main>
+<div id="page-projects" class="pt-24 pb-20 px-6 md:px-8 max-w-7xl mx-auto">
+  <header class="mb-16 border-l-4 border-primary pl-10 py-2">
+    <p class="font-mono text-primary text-sm tracking-[0.4em] mb-3 uppercase opacity-80">/ROOT/DEPLOYMENTS</p>
+    <h1 class="text-6xl font-headline font-bold tracking-tight text-white uppercase">Tactical Projects</h1>
+  </header>
+
+<div class="max-w-[1400px] mx-auto py-4 flex flex-col lg:flex-row gap-12">
+  
+  <!-- Main Content: Project Grid -->
+  <div class="flex-grow order-2 lg:order-1">
+    <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Dynamic Project Cards -->
+      <th:block th:each="project : ${projects}">
+        <div class="hack-card bg-surface-container-low/30 backdrop-blur-md border border-outline-variant/10 shadow-3xl relative group flex flex-col h-full overflow-hidden project-card"
+             th:data-name="${project.name != null ? project.name.toLowerCase() : ''}"
+             th:data-tech="${project.technologies != null ? project.technologies.toLowerCase() : ''}">
+          <div class="scanner"></div>
+          
+          <!-- Thumbnail Area -->
+          <div class="relative w-full h-56 overflow-hidden bg-black/40 border-b border-white/5">
+              <img th:if="${project.image != null}" th:src="@{${'/' + project.image}}" th:alt="${project.name}" class="w-full h-full object-cover opacity-50 group-hover:opacity-80 group-hover:scale-105 transition-all duration-1000 hue-rotate-[10deg] saturate-[0.8]">
+              <div th:unless="${project.image != null}" class="w-full h-full flex items-center justify-center bg-primary/2">
+                  <div class="relative">
+                      <span class="material-symbols-outlined text-primary/10 text-8xl">grid_view</span>
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="p-8 flex flex-col flex-grow">
+              <!-- Inline Tags -->
+              <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="px-2 py-0.5 bg-primary/20 border border-primary/40 text-primary font-mono text-[9px] uppercase tracking-wider" th:text="${project.category != null ? project.category.name : 'Web Development'}">WEB DEVELOPMENT</span>
+                  <th:block th:if="${project.technologies != null}">
+                    <th:block th:each="tag, iter : ${#strings.arraySplit(project.technologies, ',')}">
+                        <span th:if="${iter.index < 2}" class="px-2 py-0.5 bg-white/10 border border-white/20 text-white/60 font-mono text-[9px] uppercase tracking-wider" th:text="${tag.trim()}">TECH</span>
+                    </th:block>
+                  </th:block>
+              </div>
+
+              <h2 class="text-2xl font-headline font-bold text-white mb-4 group-hover:text-primary transition-colors leading-tight" th:text="${project.name != null ? project.name : 'Untitled Deployment'}">Project Name</h2>
+              
+              <p class="text-white/40 text-sm leading-relaxed mb-8 font-body line-clamp-3" th:text="${project.description != null ? project.description : 'Tactical dossier details unavailable for this sector.'}">
+                Project Description...
+              </p>
+      
+              <!-- Footer Status Line -->
+              <div class="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+                  <div class="flex flex-col">
+                      <span class="font-mono text-[10px] text-white/20 uppercase tracking-[0.2em]" th:text="${project.id != null ? 'V' + (project.id + 2) + '.4.0_STABLE' : 'V_UNKNOWN_STABLE'}">V2.4.0_STABLE</span>
+                  </div>
+                  
+                  <div class="text-primary opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
+                      <span class="material-symbols-outlined">arrow_forward</span>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </div>
+
+  <!-- Sidebar: Terminal & Controls ISOLATED -->
+  <!--/*
+  <aside class="w-full lg:w-[320px] order-1 lg:order-2 space-y-8">
+    ... (omitted sidebar content)
+  </aside>
+  */-->
 </div>
 
+<!--/*
+<script>
+    ... (omitted script)
+</script>
+*/-->
+
+</div>
+</div>
 </div>
 </html>
