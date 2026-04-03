@@ -7,8 +7,23 @@
             <span class="text-gray-400 font-mono text-sm tracking-[0.2em]">The Collective</span>
         </div>
         
-        <div id="team-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Admin Section -->
+        <div id="admin-section" class="mb-20">
+            <div class="mb-10 text-left border-l-2 border-primary pl-6">
+                <h3 class="text-2xl font-headline font-bold text-white uppercase tracking-widest">The Sovereigns</h3>
+                <p class="text-gray-500 font-mono text-xs mt-1 uppercase">Administration & Oversight</p>
             </div>
+            <div id="admin-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+
+        <!-- Mentor Section -->
+        <div id="mentor-section">
+            <div class="mb-10 text-left border-l-2 border-[#d575ff] pl-6">
+                <h3 class="text-2xl font-headline font-bold text-white uppercase tracking-widest">The Mentors</h3>
+                <p class="text-gray-500 font-mono text-xs mt-1 uppercase">Guidance & Knowledge Transfer</p>
+            </div>
+            <div id="mentor-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
     </main>
     <div id="profile-modal" onclick="if(event.target === this) closeProfileModal()" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex justify-end transition-opacity duration-300">
     

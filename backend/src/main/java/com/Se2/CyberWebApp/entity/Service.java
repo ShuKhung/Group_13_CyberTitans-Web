@@ -15,6 +15,9 @@ public class Service {
     @Column(name = "content_detail", columnDefinition = "TEXT")
     private String contentDetail;
 
+    @Column(name = "button_text")
+    private String buttonText;
+
     @Column(length = 500)
     private String description;
     private String iconClass;
@@ -66,6 +69,13 @@ public class Service {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getButtonText() {
+        return buttonText;
+    }
+    public void setButtonText(String buttonText) {
+        this.buttonText = buttonText;
     }
 
     public Service() {

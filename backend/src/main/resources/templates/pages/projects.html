@@ -1,11 +1,142 @@
-<html th:replace="~{layout/layout :: page(title='CyberTitans — Projects', active='projects', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout/layout :: page(title='CyberTitans — Projects', active='projects', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="content">
-<div id="page-projects" class="pt-16">
-  <main class="pt-16 pb-20 px-6 md:px-8 max-w-7xl mx-auto">
-    <header class="mb-12 border-l-2 border-primary pl-8"><p class="font-mono text-primary text-sm tracking-[0.2em] mb-2">/ROOT/PROJECTS</p><h1 class="text-5xl font-headline font-bold">Tactical Deployments</h1></header>
-    <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div> 
-  </main>
-</div>
+<div id="page-projects" class="pt-24 pb-20 px-6 md:px-8 max-w-[1600px] mx-auto">
+  
+  <!-- Tactical Header -->
+  <header class="mb-12 border-l-[6px] border-primary pl-8 py-1">
+    <p class="font-mono text-primary text-xs tracking-[0.5em] mb-2 uppercase opacity-70">/ROOT/PROJECTS_VAULT</p>
+    <h1 class="text-5xl md:text-6xl font-headline font-bold tracking-tighter text-white uppercase">Tactical Deployments</h1>
+  </header>
 
+  <div class="flex flex-col lg:flex-row gap-10">
+    
+    <!-- Main Content: Project Grid -->
+    <div class="flex-grow order-1 lg:order-2">
+      <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Dynamic Project Cards -->
+        <th:block th:each="project : ${projects}">
+          <div class="hack-card bg-surface-container-low/20 backdrop-blur-sm border border-white/5 relative group flex flex-col h-full overflow-hidden project-card"
+               th:data-name="${project.name != null ? project.name.toLowerCase() : ''}"
+               th:data-tech="${project.technologies != null ? project.technologies.toLowerCase() : ''}">
+            
+            <!-- Thumbnail Area -->
+            <div class="relative w-full h-52 overflow-hidden bg-black/60 border-b border-white/5">
+                <img th:if="${project.image != null}" th:src="@{${'/' + project.image}}" th:alt="${project.name}" 
+                     class="card-banner-img w-full h-full object-cover opacity-60">
+                <div th:unless="${project.image != null}" class="w-full h-full flex items-center justify-center bg-primary/5">
+                    <span class="material-symbols-outlined text-primary/10 text-7xl">deployed_code</span>
+                </div>
+                <div class="scanner"></div>
+            </div>
+
+            <div class="p-6 flex flex-col flex-grow">
+                <!-- Inline Tags -->
+                <div class="flex flex-wrap gap-2 mb-5">
+                    <span class="px-2 py-0.5 bg-primary/10 border border-primary/30 text-primary font-mono text-[10px] uppercase tracking-wider" 
+                          th:text="${project.category != null ? project.category.name : 'Web Development'}">WEB DEVELOPMENT</span>
+                    <th:block th:if="${project.technologies != null}">
+                      <th:block th:each="tag, iter : ${#strings.arraySplit(project.technologies, ',')}">
+                          <span th:if="${iter.index < 2}" class="px-2 py-0.5 bg-white/5 border border-white/10 text-white/50 font-mono text-[10px] uppercase tracking-wider" 
+                                th:text="${tag.trim()}">TECH</span>
+                      </th:block>
+                    </th:block>
+                </div>
+
+                <h2 class="text-2xl font-headline font-bold text-white mb-3 group-hover:text-primary transition-colors leading-tight" 
+                    th:text="${project.name != null ? project.name : 'Untitled Deployment'}">Project Name</h2>
+                
+                <p class="text-white/40 text-sm leading-relaxed mb-8 font-body line-clamp-3" 
+                   th:text="${project.description != null ? project.description : 'Tactical dossier details unavailable.'}">
+                  Project Description...
+                </p>
+        
+                <!-- Footer Status Line -->
+                <div class="mt-auto pt-5 border-t border-white/5 flex items-center justify-between">
+                    <span class="font-mono text-[10px] text-white/20 uppercase tracking-[0.2em]" 
+                          th:text="${project.id != null ? 'V' + (project.id % 5 + 1) + '.' + (project.id % 10) + '.0_STABLE' : 'V1.0.0_STABLE'}">V2.4.0_STABLE</span>
+                    
+                    <div class="text-primary opacity-30 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </th:block>
+      </div>
+    </div>
+
+    <!-- Sidebar: Controls -->
+    <aside class="w-full lg:w-[360px] order-1 lg:order-1 space-y-8">
+      
+      <!-- Search Terminal -->
+      <div class="terminal-block">
+          <div class="title">SEARCH_TERMINAL</div>
+          <form th:action="@{/projects}" method="get" class="cyber-search-container">
+              <input type="text" name="keyword" th:value="${searchKeyword}" 
+                     placeholder="QUERY_SYSTEM..." class="cyber-search-input">
+              <span class="material-symbols-outlined cyber-search-icon">terminal</span>
+          </form>
+      </div>
+
+      <!-- Categories -->
+      <div class="terminal-block">
+          <div class="title">CATEGORIES</div>
+          <div class="flex flex-col gap-1">
+              <a th:href="@{/projects}" class="cat-item" th:classappend="${searchKeyword == null or searchKeyword == ''} ? 'active' : ''">
+                  <span>Show All</span>
+                  <span class="count" th:text="${projects.size()}">0</span>
+              </a>
+              <th:block th:each="entry : ${categoryCounts}">
+                  <a th:href="@{/projects(keyword=${entry.key})}" class="cat-item" 
+                     th:classappend="${searchKeyword == entry.key} ? 'active' : ''">
+                      <span th:text="${entry.key}">Category</span>
+                      <span class="count" th:text="${entry.value}">0</span>
+                  </a>
+              </th:block>
+          </div>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="terminal-block">
+          <div class="title">TECH_STACK</div>
+          <div class="flex flex-wrap gap-2">
+              <th:block th:each="tech : ${techStack}">
+                  <a th:href="@{/projects(keyword=${tech})}" 
+                     class="px-3 py-1 bg-black border border-white/10 text-white/60 font-mono text-[11px] hover:border-primary hover:text-primary transition-colors uppercase"
+                     th:text="${tech}">Tech</a>
+              </th:block>
+          </div>
+      </div>
+
+      <!-- Auth Status -->
+      <div class="auth-panel">
+          <span class="material-symbols-outlined shield-watermark">shield</span>
+          <div class="status-indicator">AUTH_STATUS</div>
+          <div class="flex items-center gap-2 mb-1">
+              <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+              <span class="text-primary font-mono text-[11px]">System Operational</span>
+          </div>
+          <p class="status-text mt-1">All project modules synchronized. Last uplink: <span th:text="${#temporals.format(#temporals.createNow(), 'HH:mm')}">16:00</span> local time.</p>
+      </div>
+
+    </aside>
+  </div>
+
+  <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.querySelector('.cyber-search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchInput.closest('form').submit();
+                }
+            });
+        }
+    });
+  </script>
+
+</div>
+</div>
 </div>
 </html>

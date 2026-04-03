@@ -1,14 +1,22 @@
 async function buildTeam() {
-    const container = document.getElementById('team-grid-container');
-    if (!container) return;
+    const adminGrid = document.getElementById('admin-grid');
+    const mentorGrid = document.getElementById('mentor-grid');
+    if (!adminGrid && !mentorGrid) return;
+
     try {
         const response = await fetch(`${API_BASE_URL}/team/members`);
         const teamData = await response.json();
         const defaultAvt = "https://ui-avatars.com/api/?background=random&color=fff&name=";
-        container.innerHTML = teamData.map(m => `
+
+        // Grouping & Filtering
+        const admins = teamData.filter(m => ["ADMIN", "SUPER ADMIN", "SUPERADMIN"].includes(m.role.toUpperCase()));
+        const mentors = teamData.filter(m => m.role.toUpperCase() === "MENTOR");
+
+        // Helper for rendering
+        const renderCards = (members) => members.map(m => `
             <div class="hack-card p-6 border transition-all duration-300">
                 <div class="scanner"></div>
-                <img src="${m.avatar || (defaultAvt + m.name)}" class="w-full aspect-square object-cover mb-4 grayscale hover:grayscale-0 transition-all"/>
+                <img src="${m.avatar || (defaultAvt + encodeURIComponent(m.name))}" class="w-full aspect-square object-cover mb-4 grayscale hover:grayscale-0 transition-all"/>
                 <div class="space-y-1">
                     <h4 class="text-white font-bold text-lg font-headline">${m.name}</h4>
                     <p class="text-primary font-mono text-xs uppercase tracking-widest">${m.role}</p>
@@ -17,6 +25,17 @@ async function buildTeam() {
                     <button onclick="openProfileModal(${m.id})" class="text-primary font-mono text-[10px] uppercase border border-primary/20 px-4 py-1 hover:bg-primary hover:text-black transition-all">VIEW PROFILE</button>
                 </div>
             </div>`).join('');
+
+        // Inject HTML and Toggle Sections
+        if (adminGrid) {
+            adminGrid.innerHTML = renderCards(admins);
+            document.getElementById('admin-section').style.display = admins.length ? 'block' : 'none';
+        }
+        if (mentorGrid) {
+            mentorGrid.innerHTML = renderCards(mentors);
+            document.getElementById('mentor-section').style.display = mentors.length ? 'block' : 'none';
+        }
+
     } catch (err) { console.error("Team error:", err); }
 }
 

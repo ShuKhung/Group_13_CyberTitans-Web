@@ -127,32 +127,49 @@ function closeRecoveryModal() {
 let typewriterTimer;
 
 function handleServiceClick(element) {
-    // 1. Lấy dữ liệu từ các thuộc tính data- của Thymeleaf
-    const title = element.getAttribute('data-title');
-    const description = element.getAttribute('data-description');
-    // Ưu tiên lấy content_detail, nếu không có thì lấy description tạm
-    const fullContent = element.getAttribute('data-content') || description;
+    // 1. Lấy dữ liệu từ Card (Thymeleaf đổ vào)
+    const title = element.getAttribute('data-title') || "";
+    const fullContent = element.getAttribute('data-content') || "";
+    const btnTextFromDB = element.getAttribute('data-button') || "INQUIRE PROTECTION";
 
-    // 2. Trỏ đến các Element trong file modals.html
+    // 2. Trỏ đến các Element trong Modal
     const modal = document.getElementById('service-modal');
     const titleEl = document.getElementById('modal-service-title');
     const bodyEl = document.getElementById('modal-service-body');
+    const btnTextEl = document.getElementById('modal-service-btn-text');
+    const btnEl = document.getElementById('modal-service-btn');
 
     if (!modal || !titleEl || !bodyEl) return;
 
-    // 3. Hiển thị Modal (Xóa class hidden)
+    // 3. Hiển thị Modal và đổi chữ trên nút
     modal.classList.remove('hidden');
     titleEl.innerText = title;
-    bodyEl.innerHTML = ""; // Xóa nội dung cũ để gõ mới
+    if (btnTextEl) btnTextEl.innerText = btnTextFromDB;
 
-    // 4. Hiệu ứng gõ chữ Hacker Style
+    // 4. KHÔI PHỤC LOGIC CHUYỂN TRANG TEAM
+    if (btnEl) {
+        btnEl.onclick = function() {
+            // Kiểm tra nếu là Mentor Matching thì nhảy sang trang /team
+            if (title.includes("Mentor") || btnTextFromDB.includes("FIND A MENTOR")) {
+                showToast("REDIRECTING TO OPERATIVE DIRECTORY...", "success");
+                setTimeout(() => {
+                    window.location.href = '/team';
+                }, 600);
+            } else {
+                showToast("Request Transmitted!", "success");
+                closeModal('service-modal');
+            }
+        };
+    }
+
+    // 5. Hiệu ứng gõ chữ (Typewriter)
+    bodyEl.innerHTML = "";
     clearTimeout(typewriterTimer);
     let i = 0;
     function type() {
         if (i < fullContent.length) {
             bodyEl.innerHTML += fullContent.charAt(i);
             i++;
-            // Tốc độ gõ 15ms mỗi ký tự (có thể điều chỉnh cho nhanh/chậm)
             typewriterTimer = setTimeout(type, 15);
         }
     }
@@ -173,5 +190,19 @@ function closeModal(id) {
 function handleBackdropClick(event, id) {
     if (event.target.id === id) {
         closeModal(id);
+    }
+}
+
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('mobile-menu-icon');
+    if (!menu || !icon) return;
+    
+    if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        icon.innerText = 'close';
+    } else {
+        menu.classList.add('hidden');
+        icon.innerText = 'menu';
     }
 }

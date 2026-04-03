@@ -173,10 +173,6 @@ function renderAdminTable(users) {
                     <button onclick="prepAdminAction(${u.id}, 'PASSWORD')" title="Reset Password" class="p-1.5 text-gray-500 hover:text-white transition-colors rounded">
                         <span class="material-symbols-outlined text-base">lock_reset</span>
                     </button>
-                    <button onclick="prepAdminAction(${u.id}, '${isActive ? 'BAN' : 'UNBAN'}')" title="${isActive ? 'Terminate Access' : 'Restore Access'}" 
-                            class="p-1.5 ${isActive ? 'text-gray-500 hover:text-error' : 'text-gray-500 hover:text-primary'} transition-colors rounded">
-                        <span class="material-symbols-outlined text-base">${isActive ? 'person_off' : 'person_check'}</span>
-                    </button>
                 </div>
             </td>
         </tr>`;
@@ -184,16 +180,15 @@ function renderAdminTable(users) {
 }
 
 function filterAdminTable(query) {
-    if (!query) {
-        renderAdminTable(currentUsers);
-        return;
-    }
-    const q = query.toLowerCase();
-    const filtered = currentUsers.filter(u =>
-        (u.name || '').toLowerCase().includes(q) ||
-        (u.username || '').toLowerCase().includes(q) ||
-        (u.role || '').toLowerCase().includes(q)
-    );
+    const q = (query || '').toLowerCase();
+    const roleFilter = document.getElementById('admin-role-filter')?.value || 'ALL';
+    
+    const filtered = currentUsers.filter(u => {
+        const matchesName = (u.name || '').toLowerCase().includes(q) || (u.username || '').toLowerCase().includes(q);
+        const matchesRole = roleFilter === 'ALL' || u.role === roleFilter;
+        return matchesName && matchesRole;
+    });
+    
     renderAdminTable(filtered);
 }
 
