@@ -1,3 +1,4 @@
+
 package com.Se2.CyberWebApp.entity;
 
 import jakarta.persistence.*;

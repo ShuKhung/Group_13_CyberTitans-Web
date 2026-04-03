@@ -10,4 +10,5 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findTop10ByOrderByPointDesc();
     Optional<User> findByUsername(String username);
+    long countByPointGreaterThan(Double point);
 }

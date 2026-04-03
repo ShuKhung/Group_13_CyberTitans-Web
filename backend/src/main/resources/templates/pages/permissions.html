@@ -1,4 +1,4 @@
-<html th:replace="~{layout/layout :: page(title='CyberTitans — Permissions', active='permissions', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout/layout :: page(title='CyberTitans — Permissions', active='permissions', headExtra=~{}, content=~{pages/permissions :: content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="content">
 <div id="page-permissions" class="pt-16">
   <main class="max-w-7xl mx-auto px-6 md:px-8 py-16">
@@ -6,14 +6,33 @@
       <div><h1 class="font-headline text-3xl font-bold">Permissions Matrix</h1></div>
       <button data-action="navigate" data-target="admin" class="flex items-center gap-2 text-xs font-mono text-on-surface-variant hover:text-white transition-colors"><span class="material-symbols-outlined text-sm pointer-events-none">arrow_back</span>Back</button>
     </div>
-    <div class="bg-surface-container-low border border-outline-variant/10 overflow-x-auto">
-      <table class="w-full">
-        <thead><tr class="border-b border-outline-variant/10 bg-[#000000]/50"><th class="px-6 py-5 text-left text-[10px] font-mono text-on-surface-variant uppercase tracking-widest sticky left-0 bg-surface-container-low z-10">Permission</th><th class="px-6 py-5 text-center text-[10px] font-mono uppercase tracking-widest text-outline">Guest</th><th class="px-6 py-5 text-center text-[10px] font-mono uppercase tracking-widest text-[#D4AF37]">Super Admin</th></tr></thead>
-        <tbody id="perm-table-body"></tbody>
+    <div id="permissions-container" class="bg-surface-container-low border border-outline-variant/10 overflow-x-auto mb-12">
+      <table class="w-full perm-table">
+        <thead>
+            <tr class="border-b border-outline-variant/10">
+                <th class="px-6 py-4 text-left text-[10px] font-mono text-on-surface-variant uppercase tracking-widest">Operative</th>
+                <th class="px-6 py-4 text-left text-[10px] font-mono text-on-surface-variant uppercase tracking-widest">Current Identity</th>
+                <th class="px-6 py-4 text-right text-[10px] font-mono text-on-surface-variant uppercase tracking-widest">Re-assign Role</th>
+            </tr>
+        </thead>
+        <tbody id="perm-table-body">
+            <!-- Dynamic Role Assignment here -->
+        </tbody>
       </table>
+    </div>
+
+    <!-- System Logs Section -->
+    <div class="border-t border-white/10 pt-12">
+        <h2 class="font-headline text-xl font-bold uppercase tracking-[0.2em] text-error mb-8 flex items-center gap-3">
+            <span class="material-symbols-outlined">terminal</span> /SYSTEM_LOGS_AUDIT
+        </h2>
+        <div id="system-logs" class="bg-black p-6 font-mono text-[11px] text-error/80 border border-error/20 overflow-y-auto max-h-[300px] leading-relaxed">
+            [ACCESS_DENIED] Restricted area. Initialize authorization matrix...
+        </div>
     </div>
   </main>
 </div>
 
+<script th:src="@{/js/permissions.js}"></script>
 </div>
 </html>
