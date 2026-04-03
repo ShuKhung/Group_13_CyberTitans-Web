@@ -39,6 +39,11 @@ public class WebController {
         return "pages/admin";
     }
 
+    @GetMapping("/admin/events")
+    public String adminEvents() {
+        return "pages/eventCRUD";
+    }
+
     @GetMapping("/faq")
     public String faq() {
         return "pages/faq";
