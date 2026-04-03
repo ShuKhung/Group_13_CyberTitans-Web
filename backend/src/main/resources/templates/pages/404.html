@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/layout :: page(title='404 - Not Found', active='none', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}"
+      xmlns:th="http://www.thymeleaf.org">
+<body class="bg-surface">
+    <div th:fragment="content" class="min-h-[80vh] flex flex-col items-center justify-center p-6 text-center">
+        <div class="relative mb-8">
+            <h1 class="text-9xl font-bold font-headline text-primary opacity-20">404</h1>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <span class="material-symbols-outlined text-6xl text-primary animate-pulse">terminal</span>
+            </div>
+        </div>
+        
+        <h2 class="text-3xl font-headline font-bold text-white mb-4 uppercase tracking-widest">Neural Link Severed</h2>
+        <p class="text-on-surface-variant font-mono text-sm max-w-md mx-auto mb-8 leading-relaxed">
+            The operative profile you are looking for does not exist in the mainframe database. It may have been redacted or never existed.
+        </p>
+        
+        <a th:href="@{/}" class="px-8 py-3 bg-primary text-black font-mono font-bold uppercase tracking-widest hover:brightness-110 transition-all border border-primary/50 shadow-[0_0_20px_rgba(142,255,113,0.2)]">
+            // RETURN TO HUB
+        </a>
+    </div>
+</body>
+</html>

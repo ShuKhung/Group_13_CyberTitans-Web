@@ -29,7 +29,7 @@
             DELETE
           </button>
 
-          <button onclick="openModal('change-password-modal')"
+          <button onclick="openModal('password-modal')"
             class="h-10 px-4 border border-error/20 bg-error/5 text-error hover:bg-error/20 transition-all font-mono text-[10px] uppercase tracking-widest">
             CHANGE PASSWORD
           </button>
@@ -43,6 +43,8 @@
       </div>
 
       <div class="w-full h-px bg-white/5 mb-12"></div>
+
+      <form id="profile-form" onsubmit="event.preventDefault(); saveAccountProfile();">
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div class="lg:col-span-4 space-y-8">
@@ -98,13 +100,10 @@
                 class="data-input w-full bg-black border border-white/20 text-white font-mono p-2 resize-none"
                 rows="4"></textarea>
             </div>
-            <div class="flex flex-wrap gap-2 mt-6">
-              <span
-                class="px-3 py-1 tag-primary text-[11px] font-mono bg-primary/20 text-primary border border-primary/30">SAD</span>
-              <span
-                class="px-3 py-1 tag-secondary text-[11px] font-mono bg-white/10 text-white border border-white/20">Web
-                Dev</span>
-              <button onclick="showToast('Tag editor coming soon')"
+            <input type="hidden" id="input-tags" />
+            <div id="tags-wrapper" class="flex flex-wrap gap-2 mt-6">
+              <!-- Tags rendered by JS -->
+              <button type="button" onclick="promptAddTag()"
                 class="px-3 py-1 bg-surface-container border border-outline-variant/30 text-[11px] font-mono hover:bg-surface-bright transition-colors">+
                 Add Tag</button>
             </div>
@@ -124,6 +123,7 @@
           </div>
         </div>
       </div>
+      </form>
     </div>
 
     <!-- Experience Modal -->

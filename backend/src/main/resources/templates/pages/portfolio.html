@@ -104,9 +104,9 @@
       <div class="relative">
         <div class="w-32 h-32 rounded-full border-2 border-primary/30 p-2 flex items-center justify-center bg-black/40">
           <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-surface-container-highest">
-            <img th:if="${user.avatar != null}" th:src="${user.avatar}" class="w-full h-full object-cover">
-            <span th:unless="${user.avatar != null}" class="text-4xl font-headline font-bold text-white/40" 
-                  th:text="${user.name != null && !user.name.isEmpty() ? user.name.substring(0, 1) : 'O'}">O</span>
+            <img th:if="${user.avatar != null && !user.avatar.isEmpty()}" th:src="${user.avatar}" class="w-full h-full object-cover">
+            <span th:unless="${user.avatar != null && !user.avatar.isEmpty()}" class="text-4xl font-headline font-bold text-white/40" 
+                  th:text="${(user.name != null && !user.name.isEmpty()) ? user.name.substring(0, 1) : 'O'}">O</span>
           </div>
         </div>
       </div>
@@ -189,9 +189,9 @@
           </h4>
           <div class="flex flex-wrap gap-2">
             <th:block th:each="exp : ${experiences}">
-               <th:block th:if="${exp.tags != null}" th:each="tag : ${exp.tags.split(',')}">
+               <th:block th:if="${exp.tags != null && !exp.tags.isEmpty()}" th:each="tag : ${#strings.arraySplit(exp.tags, ',')}">
                   <span th:if="${exp.type == 'PROJECT'}" class="tag-verified px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded">
-                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> <span th:text="${tag.trim()}">Java</span>
+                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span> <span th:text="${#strings.trim(tag)}">Java</span>
                   </span>
                </th:block>
             </th:block>
@@ -210,9 +210,9 @@
           </h4>
           <div class="flex flex-wrap gap-2">
             <th:block th:each="exp : ${experiences}">
-               <th:block th:if="${exp.tags != null}" th:each="tag : ${exp.tags.split(',')}">
+               <th:block th:if="${exp.tags != null && !exp.tags.isEmpty()}" th:each="tag : ${#strings.arraySplit(exp.tags, ',')}">
                   <span th:if="${exp.type != 'PROJECT'}" class="tag-skill px-3 py-1.5 text-[10px] font-mono flex items-center gap-2 rounded">
-                    <span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> <span th:text="${tag.trim()}">Java</span>
+                    <span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span> <span th:text="${#strings.trim(tag)}">Java</span>
                   </span>
                </th:block>
             </th:block>
@@ -253,15 +253,44 @@
           <p class="text-[11px] font-mono text-primary uppercase font-bold tracking-widest mb-4" th:text="${exp.positionTitle}">LECTURER</p>
           
           <div class="flex flex-wrap gap-2">
-            <span th:if="${exp.tags != null}" th:each="tag : ${exp.tags.split(',')}" 
-                  class="px-2 py-0.5 bg-white/5 border border-white/10 text-[9px] font-mono text-on-surface-variant rounded" th:text="${tag.trim()}">
-              Java Core
-            </span>
+            <th:block th:if="${exp.tags != null && !exp.tags.isEmpty()}">
+              <span th:each="tag : ${#strings.arraySplit(exp.tags, ',')}" 
+                    class="px-2 py-0.5 bg-white/5 border border-white/10 text-[9px] font-mono text-on-surface-variant rounded" th:text="${#strings.trim(tag)}">
+                Java Core
+              </span>
+            </th:block>
           </div>
         </div>
 
         <div th:if="${experiences.isEmpty() || #lists.isEmpty(experiences)}" class="relative pl-12 group opacity-50">
            <p class="font-mono text-xs text-on-surface-variant">No operational history detected in neural link.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education Section -->
+    <div class="mb-8">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="h-px bg-white/10 flex-1"></div>
+        <h3 class="font-mono text-[10px] text-secondary tracking-[0.4em] uppercase font-bold text-center">Education</h3>
+        <div class="h-px bg-white/10 flex-1"></div>
+      </div>
+
+      <div class="space-y-8">
+        <div th:each="edu : ${educations}" class="cyber-card p-6 border-l-4 border-l-secondary/50">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h4 class="text-lg font-headline font-bold text-white mb-1" th:text="${edu.institution}">Hanoi University</h4>
+              <p class="text-xs font-mono text-secondary uppercase tracking-widest" th:text="${edu.title}">Bachelor of Software Engineering</p>
+            </div>
+            <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-1 border border-white/10" 
+                  th:text="${(edu.startYear != null ? edu.startYear : '????') + ' — ' + (edu.endYear == null ? 'PRESENT' : edu.endYear)}">2020 — 2024</span>
+          </div>
+          <p th:if="${edu.descriptionHtml != null}" class="text-xs text-on-surface-variant/80 italic leading-relaxed" th:text="${edu.descriptionHtml}">Major in Cyber Security and Networking.</p>
+        </div>
+
+        <div th:if="${educations == null || #lists.isEmpty(educations)}" class="text-center py-8 opacity-40">
+           <p class="font-mono text-xs text-on-surface-variant">No academic records found in neural network.</p>
         </div>
       </div>
     </div>

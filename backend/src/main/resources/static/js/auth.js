@@ -9,31 +9,40 @@ function applyLoginState(userData) {
     isLoggedIn = true;
     const navGuest = document.getElementById('nav-guest');
     const navUser = document.getElementById('nav-user');
+    const mobileNavGuest = document.getElementById('mobile-nav-guest');
+    const mobileNavUser = document.getElementById('mobile-nav-user');
     
-    if (navGuest) { navGuest.classList.add('hidden'); navGuest.classList.remove('flex'); }
-    if (navUser) {
-        navUser.classList.remove('hidden'); navUser.classList.add('flex');
-        
-        // Set name
-        const nameSpan = navUser.querySelector('span.truncate');
-        if (nameSpan) nameSpan.textContent = userData.name || '';
+    // Desktop Nav Sync
+    if (navGuest) { navGuest.classList.add('hidden'); navGuest.classList.remove('md:flex'); }
+    if (navUser) { navUser.classList.remove('hidden'); navUser.classList.add('md:flex'); }
 
-        // If Thymeleaf already set it via sec:authentication="name", that's fine too
-        // Fallback: try setting it anyway
-        
-        // Set coins
-        const coinDisplay = document.getElementById('nav-coin-display');
-        if (coinDisplay) {
-            const startCoin = parseInt(coinDisplay.textContent.replace(/,/g, '')) || 0;
-            const endCoin = userData.coin || 0;
-            if (startCoin !== endCoin && typeof animateCoinValue === 'function') animateCoinValue('nav-coin-display', startCoin, endCoin, 1500); 
-            else coinDisplay.textContent = endCoin.toLocaleString(); 
-        }
+    // Mobile Nav Sync
+    if (mobileNavGuest) mobileNavGuest.classList.add('hidden');
+    if (mobileNavUser) mobileNavUser.classList.remove('hidden');
+    
+    if (navUser || mobileNavUser) {
+        // Set name in both locations
+        const nameSpans = document.querySelectorAll('#nav-user span.truncate, #mobile-nav-user-name');
+        nameSpans.forEach(s => s.textContent = userData.name || 'OPERATIVE');
 
-        // Set avatar initials
-        const initialsEl = document.getElementById('nav-avatar-initials');
-        if (initialsEl && userData.name) {
-            initialsEl.textContent = userData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        // Set coins in both locations
+        const coinDisplays = document.querySelectorAll('#nav-coin-display, #mobile-nav-coin-display');
+        coinDisplays.forEach(display => {
+            if (display.id === 'nav-coin-display') {
+                const startCoin = parseInt(display.textContent.replace(/,/g, '')) || 0;
+                const endCoin = userData.coin || 0;
+                if (startCoin !== endCoin && typeof animateCoinValue === 'function') animateCoinValue('nav-coin-display', startCoin, endCoin, 1500); 
+                else display.textContent = endCoin.toLocaleString();
+            } else {
+                display.textContent = (userData.coin || 0).toLocaleString();
+            }
+        });
+
+        // Set avatar initials in both locations
+        const initialsEls = document.querySelectorAll('#nav-avatar-initials, #mobile-nav-avatar-initials');
+        if (userData.name) {
+            const initials = userData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            initialsEls.forEach(el => el.textContent = initials);
         }
     }
 }

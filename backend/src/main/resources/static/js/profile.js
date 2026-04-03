@@ -23,6 +23,13 @@ async function loadOperativeData() {
             const phoneInput = document.getElementById('input-phone');
             if (phoneInput) phoneInput.value = user.phone || '';
             if (document.getElementById('input-bio')) document.getElementById('input-bio').value = user.description || '';
+            
+            // Specialization Data Fix
+            const tagsInput = document.getElementById('input-tags');
+            if (tagsInput) {
+                tagsInput.value = user.tags || '';
+                renderUserTags(user.tags || '');
+            }
 
             // Show actual role from DB
             const roleEl = document.getElementById('profile-role');
@@ -38,6 +45,52 @@ async function loadOperativeData() {
     
     // Load Professional Records
     loadExperiences();
+}
+
+function renderUserTags(tagsStr) {
+    const wrapper = document.getElementById('tags-wrapper');
+    if (!wrapper) return;
+    
+    const tags = tagsStr.split(',').filter(t => t.trim());
+    const addBtn = wrapper.querySelector('button');
+    
+    // Clear current tags (except the Add button)
+    wrapper.innerHTML = '';
+    
+    tags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'px-3 py-1 bg-primary/20 text-primary border border-primary/30 text-[11px] font-mono flex items-center gap-2';
+        span.innerHTML = `
+            ${tag.trim()}
+            <button type="button" onclick="removeUserTag('${tag.trim()}')" class="hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-[12px]">close</span>
+            </button>
+        `;
+        wrapper.appendChild(span);
+    });
+    
+    if (addBtn) wrapper.appendChild(addBtn);
+}
+
+function promptAddTag() {
+    const tag = prompt("Enter new specialization tag (e.g. Java, Python, Security):");
+    if (!tag || !tag.trim()) return;
+    
+    const input = document.getElementById('input-tags');
+    const currentTags = input.value ? input.value.split(',').filter(t => t.trim()) : [];
+    
+    if (currentTags.includes(tag.trim())) return showToast("Tag already exists.", "error");
+    
+    currentTags.push(tag.trim());
+    input.value = currentTags.join(',');
+    renderUserTags(input.value);
+}
+
+function removeUserTag(tag) {
+    const input = document.getElementById('input-tags');
+    const currentTags = input.value.split(',').filter(t => t.trim() && t.trim() !== tag);
+    input.value = currentTags.join(',');
+    renderUserTags(input.value);
 }
 
 // --- EXPERIENCE MANAGEMENT PROTOCOL ---
@@ -199,7 +252,8 @@ async function saveAccountProfile() {
     const currentUser = JSON.parse(savedUserStr);
     const payload = {
         name: document.getElementById('input-name').value, email: document.getElementById('input-email').value,
-        phone: document.getElementById('input-phone').value, description: document.getElementById('input-bio').value
+        phone: document.getElementById('input-phone').value, description: document.getElementById('input-bio').value,
+        tags: document.getElementById('input-tags').value
     };
 
     try {
@@ -216,6 +270,48 @@ async function saveAccountProfile() {
             applyLoginState(currentUser);
         } else { showToast('Lỗi: Không có quyền sửa.', 'error'); }
     } catch (error) { showToast('Lỗi Server.', 'error'); }
+}
+
+// --- PASSWORD UPDATE PROTOCOL ---
+async function submitChangePassword() {
+    const oldPass = document.getElementById('old-pass').value;
+    const newPass = document.getElementById('new-pass').value;
+    const savedUserStr = sessionStorage.getItem('cyber_user') || localStorage.getItem('cyber_user');
+    
+    if (!savedUserStr) return showToast("Session expired. Please log in again.", "error");
+    if (!oldPass || !newPass) return showToast("Both current and new keys are required.", "error");
+
+    const currentUser = JSON.parse(savedUserStr);
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                username: currentUser.username, 
+                oldPassword: oldPass, 
+                newPassword: newPass 
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showToast("Security key synchronization successful.", "success");
+            closePassModal();
+            // Clear inputs
+            document.getElementById('old-pass').value = '';
+            document.getElementById('new-pass').value = '';
+        } else {
+            showToast(`SYNC DENIED: ${data.message}`, "error");
+        }
+    } catch (error) {
+        showToast("SIGNAL LOST: Server unreachable.", "error");
+    }
+}
+
+function closePassModal() {
+    closeModal('password-modal');
 }
 
 async function openProfileModal(id) {
@@ -259,12 +355,6 @@ async function openProfileModal(id) {
                     MESSAGE
                 </button>`;
 
-            if (viewerRole === 'ADMIN' || viewerRole === 'SUPER ADMIN') {
-                actionButtonsHTML += `
-                    <button onclick="adminDeleteUser(${user.id})" class="w-full mt-4 bg-red-600/20 border border-red-500/50 text-red-500 font-bold font-mono tracking-widest py-3.5 hover:bg-red-600 hover:text-white transition-all text-[11px]">
-                        [ADMIN] TERMINATE OPERATIVE
-                    </button>`;
-            }
         }
 
         const defaultAvt = "https://ui-avatars.com/api/?background=222&color=fff&name=";

@@ -71,15 +71,12 @@ public class TeamController {
         response.put("email", user.getEmail() != null ? user.getEmail() : "ENCRYPTED");
         response.put("coin", user.getCoin() != null ? user.getCoin() : 0);
         response.put("description", user.getDescription() != null ? user.getDescription() : "");
+        response.put("tags", user.getTags());
 
-        String description = null;
         String facebook = null;
         String linkedin = null;
-        
         if (experiences != null && !experiences.isEmpty()) {
             UserExperience exp = experiences.get(0);
-            description = exp.getDescription();
-            
             if (exp.getReferenceInfo() != null && exp.getReferenceInfo().contains("|")) {
                 String[] socials = exp.getReferenceInfo().split("\\|");
                 facebook = socials[0].equals("null") ? null : socials[0];
@@ -89,7 +86,6 @@ public class TeamController {
             }
         }
 
-        if (description != null) response.put("description", description);
         if (facebook != null) response.put("facebook", facebook);
         if (linkedin != null) response.put("linkedin", linkedin);
 
@@ -118,6 +114,9 @@ public class TeamController {
         }
         if (updateData.containsKey("description")) {
             user.setDescription(updateData.get("description").toString());
+        }
+        if (updateData.containsKey("tags")) {
+            user.setTags(updateData.get("tags").toString());
         }
 
         if (updateData.containsKey("coin")) {

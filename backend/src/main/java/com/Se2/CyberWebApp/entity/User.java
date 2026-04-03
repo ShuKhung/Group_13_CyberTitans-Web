@@ -14,6 +14,9 @@ public class User {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "tags")
+    private String tags;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role", referencedColumnName = "id")
     private Role roleEntity;
@@ -150,5 +153,13 @@ public class User {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }

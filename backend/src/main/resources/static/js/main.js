@@ -192,3 +192,17 @@ function handleBackdropClick(event, id) {
         closeModal(id);
     }
 }
+
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('mobile-menu-icon');
+    if (!menu || !icon) return;
+    
+    if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        icon.innerText = 'close';
+    } else {
+        menu.classList.add('hidden');
+        icon.innerText = 'menu';
+    }
+}
