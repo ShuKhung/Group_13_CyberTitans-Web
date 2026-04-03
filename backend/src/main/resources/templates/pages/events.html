@@ -1,0 +1,105 @@
+<html th:replace="~{layout/layout :: page(title='CyberTitans — Events', active='events', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="content">
+    <div id="page-events" class="relative pt-24 pb-24 min-h-screen bg-[#0e0e0e]">
+        <main class="relative z-10 px-6 md:px-8 max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="mb-12 text-left border-l-2 border-[#D4AF37] pl-6 max-w-3xl">
+                <span class="text-[#D4AF37] font-mono text-xs tracking-[0.2em] uppercase block mb-2">CLUB_EVENTS.LOG</span>
+                <h1 class="text-4xl md:text-5xl font-headline font-bold text-white mb-4">Club Events</h1>
+                <p class="text-gray-400 font-mono text-sm leading-relaxed">
+                    Workshops, hackathons, CTF competitions, and seminars. Join events to earn Cyber Coins and proof-of-work records for your portfolio.
+                </p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center gap-6 mb-12 border-b border-white/10 pb-4">
+                <button class="filter-btn active text-[#D4AF37] font-mono text-xs font-bold tracking-[0.2em] uppercase relative" data-filter="all">ALL
+                  <span class="absolute -bottom-[17px] left-0 w-full h-0.5 bg-[#D4AF37]"></span>
+                </button>
+                <button class="filter-btn text-gray-500 hover:text-white transition-colors font-mono text-xs font-bold tracking-[0.2em] uppercase relative" data-filter="HACKATHON">HACKATHON</button>
+                <button class="filter-btn text-gray-500 hover:text-white transition-colors font-mono text-xs font-bold tracking-[0.2em] uppercase relative" data-filter="WORKSHOP">WORKSHOP</button>
+                <button class="filter-btn text-gray-500 hover:text-white transition-colors font-mono text-xs font-bold tracking-[0.2em] uppercase relative" data-filter="CTF">CTF</button>
+                <button class="filter-btn text-gray-500 hover:text-white transition-colors font-mono text-xs font-bold tracking-[0.2em] uppercase relative" data-filter="SEMINAR">SEMINAR</button>
+            </div>
+
+            <!-- Events Grid -->
+            <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Event Card -->
+                <div th:each="event : ${events}" 
+                     class="event-card group p-6 bg-[#0e0e0e] border border-white/10 hover:border-white/20 transition-all flex flex-col h-full"
+                     th:data-type="${event.eventType}">
+                    
+                    <!-- Badge -->
+                    <div class="mb-5 inline-block border px-2 py-1 text-[10px] font-mono font-bold tracking-widest uppercase"
+                         th:classappend="${event.eventType == 'HACKATHON'} ? 'border-[#D4AF37] text-[#D4AF37] bg-[#D4AF37]/10' : (${event.eventType == 'WORKSHOP'} ? 'border-[#3b82f6] text-[#3b82f6] bg-[#3b82f6]/10' : (${event.eventType == 'CTF'} ? 'border-[#a855f7] text-[#a855f7] bg-[#a855f7]/10' : (${event.eventType == 'SEMINAR'} ? 'border-[#22c55e] text-[#22c55e] bg-[#22c55e]/10' : 'border-white text-white bg-white/10')))"
+                         th:text="${event.eventType}">HACKATHON</div>
+                    
+                    <h3 class="text-xl font-headline font-bold text-white mb-3 tracking-wide" th:text="${event.title}">Event Title</h3>
+                    
+                    <p class="text-gray-400 text-sm font-mono leading-relaxed mb-8 flex-grow" th:text="${event.description}">
+                        Event Description...
+                    </p>
+
+                    <div class="space-y-2 mt-auto mb-6">
+                        <div class="flex items-center gap-3 text-gray-500 font-mono text-xs">
+                            <span class="material-symbols-outlined text-[16px]" th:classappend="${event.eventType == 'HACKATHON'} ? 'text-[#D4AF37]' : (${event.eventType == 'WORKSHOP'} ? 'text-[#3b82f6]' : (${event.eventType == 'CTF'} ? 'text-[#a855f7]' : (${event.eventType == 'SEMINAR'} ? 'text-[#22c55e]' : 'text-primary')))">calendar_month</span>
+                            <span th:text="${event.eventDate}">01.JAN.2026 - 09:00 - 18:00</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-500 font-mono text-xs">
+                            <span class="material-symbols-outlined text-[16px]" th:classappend="${event.eventType == 'HACKATHON'} ? 'text-[#D4AF37]' : (${event.eventType == 'WORKSHOP'} ? 'text-[#3b82f6]' : (${event.eventType == 'CTF'} ? 'text-[#a855f7]' : (${event.eventType == 'SEMINAR'} ? 'text-[#22c55e]' : 'text-primary')))">location_on</span>
+                            <span th:text="${event.location}">Online</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-500 font-mono text-xs">
+                            <span class="material-symbols-outlined text-[16px]" th:classappend="${event.eventType == 'HACKATHON'} ? 'text-[#D4AF37]' : (${event.eventType == 'WORKSHOP'} ? 'text-[#3b82f6]' : (${event.eventType == 'CTF'} ? 'text-[#a855f7]' : (${event.eventType == 'SEMINAR'} ? 'text-[#22c55e]' : 'text-primary')))">group</span>
+                            <span>Capacity: <th:block th:text="${event.capacity}">100</th:block></span>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 bg-transparent border text-[10px] font-mono font-bold tracking-[0.2em] transition-all uppercase"
+                            th:classappend="${event.eventType == 'HACKATHON'} ? 'border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10' : (${event.eventType == 'WORKSHOP'} ? 'border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6]/10' : (${event.eventType == 'CTF'} ? 'border-[#a855f7] text-[#a855f7] hover:bg-[#a855f7]/10' : (${event.eventType == 'SEMINAR'} ? 'border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e]/10' : 'border-white text-white hover:bg-white/10')))">
+                        JOIN EVENT
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script for filtering -->
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const eventCards = document.querySelectorAll('.event-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active state
+                    filterBtns.forEach(b => {
+                        b.classList.remove('active', 'text-[#D4AF37]');
+                        b.classList.add('text-gray-500');
+                        const underline = b.querySelector('span');
+                        if(underline) underline.remove();
+                    });
+
+                    // Add active state to clicked
+                    btn.classList.add('active', 'text-[#D4AF37]');
+                    btn.classList.remove('text-gray-500');
+                    const span = document.createElement('span');
+                    span.className = 'absolute -bottom-[17px] left-0 w-full h-0.5 bg-[#D4AF37]';
+                    btn.appendChild(span);
+
+                    const filterValue = btn.getAttribute('data-filter');
+
+                    // Filter cards
+                    eventCards.forEach(card => {
+                        if (filterValue === 'all' || card.getAttribute('data-type') === filterValue) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</div>
+</html>

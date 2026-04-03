@@ -1,104 +1,163 @@
 <th:block th:fragment="navbar(active)">
-<header id="top-nav" class="fixed top-0 w-full z-50 bg-[#0e0e0e]/80 backdrop-blur-md border-b border-outline-variant/15 will-change-transform" style="transform: translateZ(0);">
-  <div class="flex justify-between items-center px-6 md:px-8 h-16 max-w-full">
-    
-    <a th:href="@{/}" class="text-xl font-bold text-[#D4AF37] tracking-widest font-headline uppercase hover:text-[#e8c84a] transition-colors block">CyberTitans</a>
-    
-    <nav class="hidden lg:flex items-center gap-7 font-headline text-sm tracking-tight uppercase">
-      <a th:href="@{/home}" data-page="home" th:classappend="${active == 'home'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Home</a>
-      <a th:href="@{/services}" data-page="services" th:classappend="${active == 'services'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Services</a>
-      <a th:href="@{/projects}" data-page="projects" th:classappend="${active == 'projects'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Projects</a>
-      <a th:href="@{/publications}" data-page="publications" th:classappend="${active == 'publications'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Publications</a>
-      <a th:href="@{/faq}" data-page="faq" th:classappend="${active == 'faq'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">FAQ</a>
-      <a th:href="@{/team}" data-page="team" th:classappend="${active == 'team'} ? 'nav-active' : ''" class="nav-link text-on-surface-variant hover:text-white transition-colors">Team</a>
-      
-      <!-- Admin Links -->
-      <a sec:authorize="hasAnyAuthority('ADMIN', 'SUPER ADMIN')" th:href="@{/admin}" data-page="admin" th:classappend="${active == 'admin'} ? 'nav-active' : ''" class="nav-link text-[#D4AF37] hover:text-white transition-colors">Admin Panel</a>
-      <a sec:authorize="hasAuthority('SUPER ADMIN')" th:href="@{/permissions}" data-page="permissions" th:classappend="${active == 'permissions'} ? 'nav-active' : ''" class="nav-link text-error hover:text-white transition-colors">Permissions</a>
-      
-      <a th:href="@{/ranking}" data-page="ranking" class="nav-link text-[#D4AF37] font-bold hover:brightness-125 transition-colors">Ranking</a>
-    </nav>
-    
-    <div class="flex items-center gap-3">
-      
-      <!-- GUEST STATE (toggled by JS) -->
-      <div id="nav-guest" class="items-center gap-4 flex md:flex">
-        <button onclick="openModal('login-modal')" class="text-xs font-mono text-white hover:text-primary transition-colors uppercase tracking-widest">Login</button>
-        <button onclick="switchToSignUp()" class="bg-primary text-black px-4 py-1.5 text-xs font-mono font-bold uppercase tracking-widest hover:brightness-110 transition-all">Join</button>
-      </div>
+  <header id="top-nav"
+    class="fixed top-0 w-full z-50 bg-[#0e0e0e]/80 backdrop-blur-md border-b border-outline-variant/15 will-change-transform"
+    style="transform: translateZ(0);">
+    <div class="flex justify-between items-center px-6 md:px-8 h-16 max-w-full">
 
-      <!-- AUTHENTICATED STATE (toggled by JS) -->
-      <div id="nav-user" class="hidden items-center gap-5">
-        
-        <a th:href="@{/profile}" data-page="profile" class="nav-link flex items-center gap-3 cursor-pointer group">
-            <div class="flex flex-col items-end">
-                <div class="flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
-                    <span class="hidden md:block text-xs font-mono text-white group-hover:text-primary transition-colors uppercase tracking-widest truncate max-w-[120px]" 
-                          sec:authentication="name">Operative</span>
-                </div>
-                <div class="hidden md:flex items-center gap-1 mt-0.5 pr-0.5">
-                    <span class="material-symbols-outlined text-[#D4AF37] text-[12px]">toll</span>
-                    <span id="nav-coin-display" class="font-mono text-[10px] text-[#D4AF37] font-bold tracking-widest">0</span>
-                </div>
+      <a th:href="@{/}"
+        class="text-xl font-bold text-[#D4AF37] tracking-widest font-headline uppercase hover:text-[#e8c84a] transition-colors block">CyberTitans</a>
+
+      <nav class="hidden lg:flex items-center gap-7 font-headline text-sm tracking-tight uppercase">
+        <a th:href="@{/home}" data-page="home" th:classappend="${active == 'home'} ? 'nav-active' : ''"
+          class="nav-link text-on-surface-variant hover:text-white transition-colors">Home</a>
+        <a th:href="@{/services}" data-page="services" th:classappend="${active == 'services'} ? 'nav-active' : ''"
+          class="nav-link text-on-surface-variant hover:text-white transition-colors">Services</a>
+        <a th:href="@{/projects}" data-page="projects" th:classappend="${active == 'projects'} ? 'nav-active' : ''"
+          class="nav-link text-on-surface-variant hover:text-white transition-colors">Projects</a>
+        <a th:href="@{/publications}" data-page="publications"
+          th:classappend="${active == 'publications'} ? 'nav-active' : ''"
+          class="nav-link text-on-surface-variant hover:text-white transition-colors">Publications</a>
+        <a th:href="@{/faq}" data-page="faq" th:classappend="${active == 'faq'} ? 'nav-active' : ''"
+          class="nav-link text-on-surface-variant hover:text-white transition-colors">FAQ</a>
+        <a th:href="@{/team}" data-page="team" th:classappend="${active == 'team'} ? 'nav-active' : ''"
+          class="nav-link text-on-surface-variant hover:text-white transition-colors">Team</a>
+        <a th:href="@{/events}" data-page="events" th:classappend="${active == 'events'} ? 'nav-active' : ''"
+          class="nav-link text-on-surface-variant hover:text-white transition-colors">Events</a>
+
+        <!-- Admin Links -->
+        <a sec:authorize="hasAnyAuthority('ADMIN', 'SUPER ADMIN')" th:href="@{/admin}" data-page="admin"
+          th:classappend="${active == 'admin'} ? 'nav-active' : ''"
+          class="nav-link text-[#D4AF37] hover:text-white transition-colors">Admin Panel</a>
+        <a sec:authorize="hasAuthority('SUPER ADMIN')" th:href="@{/permissions}" data-page="permissions"
+          th:classappend="${active == 'permissions'} ? 'nav-active' : ''"
+          class="nav-link text-error hover:text-white transition-colors">Permissions</a>
+
+        <a th:href="@{/ranking}" data-page="ranking"
+          class="nav-link text-[#D4AF37] font-bold hover:brightness-125 transition-colors">Ranking</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+
+        <!-- NOTIFICATIONS -->
+        <div class="relative hidden sm:block">
+          <button id="notification-bell" onclick="toggleNotificationPanel()" class="text-on-surface-variant hover:text-white transition-colors relative flex items-center justify-center p-2">
+            <span class="material-symbols-outlined text-[20px]">notifications</span>
+            <span id="notification-badge" class="hidden absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full animate-pulse"></span>
+          </button>
+          
+          <!-- DROPDOWN PANEL -->
+          <div id="notification-panel" class="hidden absolute right-0 mt-2 w-80 bg-surface-container border border-outline-variant/30 shadow-2xl z-50">
+            <div class="p-3 border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-hig">
+              <span class="text-xs font-mono font-bold uppercase tracking-widest text-primary">System Alerts</span>
+              <a th:href="@{/announcementEvents}" class="text-[10px] text-on-surface-variant hover:text-white py-1 px-2 border border-outline-variant/30 transition-colors uppercase cursor-pointer">View All</a>
             </div>
-            
-            <div class="w-7 h-7 bg-primary flex items-center justify-center border border-white/20 group-hover:border-primary transition-colors shadow-[0_0_10px_rgba(77,255,136,0.2)]">
-                <span class="text-black font-bold text-[10px] font-mono" id="nav-avatar-initials">CT</span>
+            <div id="notification-dropdown-list" class="max-h-80 overflow-y-auto space-y-1 p-2 scrollbar-thin scrollbar-thumb-outline-variant scrollbar-track-transparent">
+              <div class="text-center py-4 text-xs text-on-surface-variant font-mono">Loading...</div>
             </div>
-        </a>
-
-        <button onclick="logout()" title="Disconnect" class="text-on-surface-variant hover:text-[#ff4d4d] transition-colors flex items-center justify-center border-l border-white/10 pl-5">
-            <span class="material-symbols-outlined text-[18px]">logout</span>
-        </button>
-      </div>
-      
-      <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-on-surface-variant hover:text-white">
-        <span class="material-symbols-outlined" id="mobile-menu-icon">menu</span>
-      </button>
-      
-    </div>
-  </div>
-
-  <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden lg:hidden bg-surface-container-low border-t border-outline-variant/10 px-6 py-6 pb-12 space-y-4 shadow-2xl">
-    <div class="grid grid-cols-2 gap-3 mb-6">
-      <a th:href="@{/home}" class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Home</a>
-      <a th:href="@{/services}" class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Services</a>
-      <a th:href="@{/projects}" class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Projects</a>
-      <a th:href="@{/publications}" class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Pubs</a>
-      <a th:href="@{/team}" class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Team</a>
-      <a th:href="@{/faq}" class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">FAQ</a>
-    </div>
-
-    <!-- Mobile Auth: Guest -->
-    <div id="mobile-nav-guest" class="space-y-3 pt-4 border-t border-white/5">
-        <button onclick="openModal('login-modal'); toggleMobileMenu();" class="w-full py-4 bg-transparent border border-white/20 text-white font-mono text-xs font-bold uppercase tracking-[0.2em] hover:bg-white/5 transition-all">LOGIN</button>
-        <button onclick="switchToSignUp(); toggleMobileMenu();" class="w-full py-4 bg-primary text-black font-mono text-xs font-bold uppercase tracking-[0.2em] shadow-[0_4px_20px_rgba(142,255,113,0.3)]">INITIALIZE ACCESS</button>
-    </div>
-
-    <!-- Mobile Auth: User -->
-    <div id="mobile-nav-user" class="hidden space-y-3 pt-6 border-t border-white/5">
-        <div class="flex items-center justify-between bg-black/40 border border-white/10 p-4 mb-4">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-primary flex items-center justify-center border border-white/20">
-                    <span class="text-black font-bold text-xs font-mono" id="mobile-nav-avatar-initials">CT</span>
-                </div>
-                <div>
-                   <p id="mobile-nav-user-name" class="text-xs font-mono text-white font-bold uppercase tracking-widest break-all">OPERATIVE</p>
-                   <p class="text-[10px] font-mono text-primary animate-pulse uppercase tracking-widest">ACTIVE SESSION</p>
-                </div>
-            </div>
-            <div class="flex flex-col items-end">
-                <div class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[#D4AF37] text-[14px]">toll</span>
-                    <span id="mobile-nav-coin-display" class="font-mono text-xs text-[#D4AF37] font-bold tracking-widest">0</span>
-                </div>
-            </div>
+          </div>
         </div>
-        <a th:href="@{/profile}" class="block w-full py-4 bg-white/5 border border-primary/30 text-primary text-center font-mono text-xs font-bold uppercase tracking-[0.2em]">MY PROFILE</a>
-        <button onclick="logout()" class="w-full py-4 bg-red-600/10 border border-red-500/30 text-red-500 font-mono text-xs font-bold uppercase tracking-[0.2em]">DISCONNECT</button>
+
+        <!-- GUEST STATE (toggled by JS) -->
+        <div id="nav-guest" class="items-center gap-4 flex md:flex">
+          <button onclick="openModal('login-modal')"
+            class="text-xs font-mono text-white hover:text-primary transition-colors uppercase tracking-widest">Login</button>
+          <button onclick="switchToSignUp()"
+            class="bg-primary text-black px-4 py-1.5 text-xs font-mono font-bold uppercase tracking-widest hover:brightness-110 transition-all">Join</button>
+        </div>
+
+        <!-- AUTHENTICATED STATE (toggled by JS) -->
+        <div id="nav-user" class="hidden items-center gap-5">
+
+          <a th:href="@{/profile}" data-page="profile" class="nav-link flex items-center gap-3 cursor-pointer group">
+            <div class="flex flex-col items-end">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
+                <span
+                  class="hidden md:block text-xs font-mono text-white group-hover:text-primary transition-colors uppercase tracking-widest truncate max-w-[120px]"
+                  sec:authentication="name">Operative</span>
+              </div>
+              <div class="hidden md:flex items-center gap-1 mt-0.5 pr-0.5">
+                <span class="material-symbols-outlined text-[#D4AF37] text-[12px]">toll</span>
+                <span id="nav-coin-display"
+                  class="font-mono text-[10px] text-[#D4AF37] font-bold tracking-widest">0</span>
+              </div>
+            </div>
+
+            <div
+              class="w-7 h-7 bg-primary flex items-center justify-center border border-white/20 group-hover:border-primary transition-colors shadow-[0_0_10px_rgba(77,255,136,0.2)]">
+              <span class="text-black font-bold text-[10px] font-mono" id="nav-avatar-initials">CT</span>
+            </div>
+          </a>
+
+          <button onclick="logout()" title="Disconnect"
+            class="text-on-surface-variant hover:text-[#ff4d4d] transition-colors flex items-center justify-center border-l border-white/10 pl-5">
+            <span class="material-symbols-outlined text-[18px]">logout</span>
+          </button>
+        </div>
+
+        <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-on-surface-variant hover:text-white">
+          <span class="material-symbols-outlined" id="mobile-menu-icon">menu</span>
+        </button>
+
+      </div>
     </div>
-  </div>
-</header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu"
+      class="hidden lg:hidden bg-surface-container-low border-t border-outline-variant/10 px-6 py-6 pb-12 space-y-4 shadow-2xl">
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <a th:href="@{/home}"
+          class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Home</a>
+        <a th:href="@{/services}"
+          class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Services</a>
+        <a th:href="@{/projects}"
+          class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Projects</a>
+        <a th:href="@{/publications}"
+          class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Pubs</a>
+        <a th:href="@{/team}"
+          class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Team</a>
+        <a th:href="@{/faq}"
+          class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">FAQ</a>
+        <a th:href="@{/events}"
+          class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Events</a>
+      </div>
+
+      <!-- Mobile Auth: Guest -->
+      <div id="mobile-nav-guest" class="space-y-3 pt-4 border-t border-white/5">
+        <button onclick="openModal('login-modal'); toggleMobileMenu();"
+          class="w-full py-4 bg-transparent border border-white/20 text-white font-mono text-xs font-bold uppercase tracking-[0.2em] hover:bg-white/5 transition-all">LOGIN</button>
+        <button onclick="switchToSignUp(); toggleMobileMenu();"
+          class="w-full py-4 bg-primary text-black font-mono text-xs font-bold uppercase tracking-[0.2em] shadow-[0_4px_20px_rgba(142,255,113,0.3)]">INITIALIZE
+          ACCESS</button>
+      </div>
+
+      <!-- Mobile Auth: User -->
+      <div id="mobile-nav-user" class="hidden space-y-3 pt-6 border-t border-white/5">
+        <div class="flex items-center justify-between bg-black/40 border border-white/10 p-4 mb-4">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-primary flex items-center justify-center border border-white/20">
+              <span class="text-black font-bold text-xs font-mono" id="mobile-nav-avatar-initials">CT</span>
+            </div>
+            <div>
+              <p id="mobile-nav-user-name"
+                class="text-xs font-mono text-white font-bold uppercase tracking-widest break-all">OPERATIVE</p>
+              <p class="text-[10px] font-mono text-primary animate-pulse uppercase tracking-widest">ACTIVE SESSION</p>
+            </div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[#D4AF37] text-[14px]">toll</span>
+              <span id="mobile-nav-coin-display"
+                class="font-mono text-xs text-[#D4AF37] font-bold tracking-widest">0</span>
+            </div>
+          </div>
+        </div>
+        <a th:href="@{/profile}"
+          class="block w-full py-4 bg-white/5 border border-primary/30 text-primary text-center font-mono text-xs font-bold uppercase tracking-[0.2em]">MY
+          PROFILE</a>
+        <button onclick="logout()"
+          class="w-full py-4 bg-red-600/10 border border-red-500/30 text-red-500 font-mono text-xs font-bold uppercase tracking-[0.2em]">DISCONNECT</button>
+      </div>
+    </div>
+  </header>
 </th:block>

@@ -1,5 +1,9 @@
 package com.Se2.CyberWebApp.controller;
 
+import com.Se2.CyberWebApp.entity.ClubEvent;
+import com.Se2.CyberWebApp.repository.ClubEventRepository;
+import com.Se2.CyberWebApp.entity.Announcement;
+import com.Se2.CyberWebApp.repository.AnnouncementRepository;
 import com.Se2.CyberWebApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +18,12 @@ public class SuperAdminApiController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ClubEventRepository clubEventRepository;
+
+    @Autowired
+    private AnnouncementRepository announcementRepository;
 
     @PostMapping("/users/{id}/role")
     public ResponseEntity<?> updateUserRole(@PathVariable Integer id, @RequestBody Map<String, String> request) {
@@ -30,5 +40,49 @@ public class SuperAdminApiController {
     public ResponseEntity<?> getSystemLogs() {
         // Placeholder for real logs
         return ResponseEntity.ok(Map.of("logs", "SYSTEM_ACCESS: ADMIN_LOGIN(AdminOperative)\nUSER_MODIFIED: ROLE_UPDATE(UserX -> ROLE_ADMIN)\nSECURITY_SCAN_COMPLETED\nDATABASE_INTEGRITY_VERIFIED"));
+    }
+
+    // --- EVENT CRUD ---
+
+    @PostMapping("/events")
+    public ResponseEntity<?> createEvent(@RequestBody ClubEvent event) {
+        if (event.getTitle() == null || event.getTitle().isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Event title is required."));
+        }
+        clubEventRepository.save(event);
+        
+        // Auto-generate notification
+        Announcement notif = new Announcement(
+                "New Event: " + event.getTitle(),
+                "A new event has been scheduled. Check it out and register!",
+                "EVENT"
+        );
+        announcementRepository.save(notif);
+
+        return ResponseEntity.ok(Map.of("message", "Event created successfully.", "event", event));
+    }
+
+    @PutMapping("/events/{id}")
+    public ResponseEntity<?> updateEvent(@PathVariable Integer id, @RequestBody ClubEvent eventDetails) {
+        return clubEventRepository.findById(id).map(existingEvent -> {
+            existingEvent.setTitle(eventDetails.getTitle());
+            existingEvent.setDescription(eventDetails.getDescription());
+            existingEvent.setEventDate(eventDetails.getEventDate());
+            existingEvent.setLocation(eventDetails.getLocation());
+            existingEvent.setCapacity(eventDetails.getCapacity());
+            existingEvent.setEventType(eventDetails.getEventType());
+            existingEvent.setCoins(eventDetails.getCoins());
+            clubEventRepository.save(existingEvent);
+            return ResponseEntity.ok(Map.of("message", "Event updated successfully.", "event", existingEvent));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/events/{id}")
+    public ResponseEntity<?> deleteEvent(@PathVariable Integer id) {
+        if (!clubEventRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        clubEventRepository.deleteById(id);
+        return ResponseEntity.ok(Map.of("message", "Event deleted successfully."));
     }
 }
