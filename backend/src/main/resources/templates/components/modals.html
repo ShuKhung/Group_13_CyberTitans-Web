@@ -40,9 +40,9 @@
       <div class="status-indicator"><span class="dot primary"></span> RECRUITMENT_PROTOCOL.EXE</div>
       <h2>Initialize Operative</h2>
     </header>
-    <div class="form-group"><label class="cyber-label">Designation</label><input type="text" id="signup-name" class="cyber-input"></div>
+    <div class="form-group"><label class="cyber-label">Designation</label><input type="text" id="signup-name" class="cyber-input"><p id="error-signup-name" class="text-red-500 text-[10px] font-mono mt-1 hidden"></p></div>
     <div class="form-group"><label class="cyber-label">Identifier</label><input type="text" id="signup-username" class="cyber-input"></div>
-    <div class="form-group"><label class="cyber-label">Comms Link</label><input type="email" id="signup-email" class="cyber-input"></div>
+    <div class="form-group"><label class="cyber-label">Comms Link</label><input type="email" id="signup-email" class="cyber-input"><p id="error-signup-email" class="text-red-500 text-[10px] font-mono mt-1 hidden"></p></div>
     <div class="form-group"><label class="cyber-label">Pass-Key</label><input type="password" id="signup-password" class="cyber-input"></div>
     <button onclick="executeSignUp()" class="cyber-btn primary-btn mt-4">Execute Registration <span class="material-symbols-outlined">how_to_reg</span></button>
     <div class="modal-footer">Already registered? <a href="#" onclick="switchToLogin()" class="cyber-link highlight">Sign In</a></div>

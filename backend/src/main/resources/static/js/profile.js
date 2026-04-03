@@ -1,19 +1,19 @@
 async function loadOperativeData() {
     const savedUserStr = sessionStorage.getItem('cyber_user') || localStorage.getItem('cyber_user');
-    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token'); 
+    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
     if (!savedUserStr || !token) return;
-    
+
     const currentUser = JSON.parse(savedUserStr);
     const nameInput = document.getElementById('input-name');
-    if (!nameInput) return; 
+    if (!nameInput) return;
 
     // Pre-fill username immediately from stored session (no API needed)
     const usernameInput = document.getElementById('input-username');
     if (usernameInput) usernameInput.value = currentUser.username || '';
 
     try {
-        const response = await fetch(`${API_BASE_URL}/team/members/${currentUser.id}`, { 
-            headers: { 'Authorization': `Bearer ${token}` } 
+        const response = await fetch(`${API_BASE_URL}/team/members/${currentUser.id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
             const user = await response.json();
@@ -23,7 +23,7 @@ async function loadOperativeData() {
             const phoneInput = document.getElementById('input-phone');
             if (phoneInput) phoneInput.value = user.phone || '';
             if (document.getElementById('input-bio')) document.getElementById('input-bio').value = user.description || '';
-            
+
             // Specialization Data Fix
             const tagsInput = document.getElementById('input-tags');
             if (tagsInput) {
@@ -42,7 +42,7 @@ async function loadOperativeData() {
             }
         } else if (response.status === 403 || response.status === 401) { logout(); }
     } catch (error) { console.error("[SYSTEM] Error loading user data:", error); }
-    
+
     // Load Professional Records
     loadExperiences();
 }
@@ -50,13 +50,13 @@ async function loadOperativeData() {
 function renderUserTags(tagsStr) {
     const wrapper = document.getElementById('tags-wrapper');
     if (!wrapper) return;
-    
+
     const tags = tagsStr.split(',').filter(t => t.trim());
     const addBtn = wrapper.querySelector('button');
-    
+
     // Clear current tags (except the Add button)
     wrapper.innerHTML = '';
-    
+
     tags.forEach(tag => {
         const span = document.createElement('span');
         span.className = 'px-3 py-1 bg-primary/20 text-primary border border-primary/30 text-[11px] font-mono flex items-center gap-2';
@@ -68,19 +68,19 @@ function renderUserTags(tagsStr) {
         `;
         wrapper.appendChild(span);
     });
-    
+
     if (addBtn) wrapper.appendChild(addBtn);
 }
 
 function promptAddTag() {
     const tag = prompt("Enter new specialization tag (e.g. Java, Python, Security):");
     if (!tag || !tag.trim()) return;
-    
+
     const input = document.getElementById('input-tags');
     const currentTags = input.value ? input.value.split(',').filter(t => t.trim()) : [];
-    
+
     if (currentTags.includes(tag.trim())) return showToast("Tag already exists.", "error");
-    
+
     currentTags.push(tag.trim());
     input.value = currentTags.join(',');
     renderUserTags(input.value);
@@ -154,7 +154,7 @@ function openExperienceModal(id = null) {
     const modal = document.getElementById('experience-modal');
     const title = document.getElementById('exp-modal-title');
     const idInput = document.getElementById('exp-id');
-    
+
     // Clear fields
     idInput.value = id || '';
     document.getElementById('exp-org').value = '';
@@ -189,7 +189,7 @@ function closeExperienceModal() {
 async function saveExperience() {
     const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
     const id = document.getElementById('exp-id').value;
-    
+
     const payload = {
         organizationName: document.getElementById('exp-org').value,
         positionTitle: document.getElementById('exp-title').value,
@@ -206,10 +206,10 @@ async function saveExperience() {
     try {
         const url = id ? `${API_BASE_URL}/experience/${id}` : `${API_BASE_URL}/experience`;
         const method = id ? 'PUT' : 'POST';
-        
+
         const response = await fetch(url, {
             method: method,
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
@@ -228,7 +228,7 @@ async function saveExperience() {
 
 async function deleteExperience(id) {
     if (!confirm("⚠️ WARNING: Permanent deletion initiated. Are you sure?")) return;
-    
+
     const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
     try {
         const response = await fetch(`${API_BASE_URL}/experience/${id}`, {
@@ -246,13 +246,55 @@ async function deleteExperience(id) {
 
 async function saveAccountProfile() {
     const savedUserStr = sessionStorage.getItem('cyber_user') || localStorage.getItem('cyber_user');
-    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token'); 
+    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
     if (!savedUserStr || !token) return showToast('Lỗi: Phiên đăng nhập hết hạn!', 'error');
-    
+
     const currentUser = JSON.parse(savedUserStr);
+
+    // Validation
+    const nameInput = document.getElementById('input-name');
+    const emailInput = document.getElementById('input-email');
+    const phoneInput = document.getElementById('input-phone');
+
+    const errName = document.getElementById('error-input-name');
+    const errEmail = document.getElementById('error-input-email');
+    const errPhone = document.getElementById('error-input-phone');
+
+    if (errName) errName.classList.add('hidden');
+    if (errEmail) errEmail.classList.add('hidden');
+    if (errPhone) errPhone.classList.add('hidden');
+
+    let hasError = false;
+
+    if (!/^[a-zA-Z\s\-À-ỹ]+$/.test(nameInput.value.trim())) {
+        if (errName) {
+            errName.textContent = 'Invalid full name.';
+            errName.classList.remove('hidden');
+        }
+        hasError = true;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())) {
+        if (errEmail) {
+            errEmail.textContent = 'Invalid email format.';
+            errEmail.classList.remove('hidden');
+        }
+        hasError = true;
+    }
+
+    if (!/^\d+$/.test(phoneInput.value.trim())) {
+        if (errPhone) {
+            errPhone.textContent = 'Phone must contain only numbers.';
+            errPhone.classList.remove('hidden');
+        }
+        hasError = true;
+    }
+
+    if (hasError) return;
+
     const payload = {
-        name: document.getElementById('input-name').value, email: document.getElementById('input-email').value,
-        phone: document.getElementById('input-phone').value, description: document.getElementById('input-bio').value,
+        name: nameInput.value, email: emailInput.value,
+        phone: phoneInput.value, description: document.getElementById('input-bio').value,
         tags: document.getElementById('input-tags').value
     };
 
@@ -277,20 +319,20 @@ async function submitChangePassword() {
     const oldPass = document.getElementById('old-pass').value;
     const newPass = document.getElementById('new-pass').value;
     const savedUserStr = sessionStorage.getItem('cyber_user') || localStorage.getItem('cyber_user');
-    
+
     if (!savedUserStr) return showToast("Session expired. Please log in again.", "error");
     if (!oldPass || !newPass) return showToast("Both current and new keys are required.", "error");
 
     const currentUser = JSON.parse(savedUserStr);
-    
+
     try {
         const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                username: currentUser.username, 
-                oldPassword: oldPass, 
-                newPassword: newPass 
+            body: JSON.stringify({
+                username: currentUser.username,
+                oldPassword: oldPass,
+                newPassword: newPass
             })
         });
 
@@ -319,7 +361,7 @@ async function openProfileModal(id) {
     const modal = document.getElementById('profile-modal');
     const modalContent = document.getElementById('profile-modal-content');
     const modalBody = document.getElementById('modal-body');
-    
+
     if (!token) return showToast("Please log in to view profiles!", "error");
 
     modal.classList.remove('hidden');
@@ -327,16 +369,16 @@ async function openProfileModal(id) {
     modalBody.innerHTML = '<p class="text-primary font-mono animate-pulse text-center mt-20">Establishing secure connection... Fetching operative data...</p>';
 
     try {
-        const response = await fetch(`${API_BASE_URL}/team/members/${id}`, { 
-            headers: { 'Authorization': `Bearer ${token}` } 
+        const response = await fetch(`${API_BASE_URL}/team/members/${id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (!response.ok) throw new Error("Data access denied.");
-        const user = await response.json(); 
-        
+        const user = await response.json();
+
         const savedUserStr = sessionStorage.getItem('cyber_user') || localStorage.getItem('cyber_user');
         const currentUser = JSON.parse(savedUserStr);
-        const viewerRole = currentUser.role; 
+        const viewerRole = currentUser.role;
 
         let actionButtonsHTML = '';
 
@@ -345,7 +387,7 @@ async function openProfileModal(id) {
                 <button onclick="showPage('my-profile'); closeProfileModal();" class="w-full bg-secondary text-black font-bold font-mono tracking-widest py-3.5 hover:bg-white transition-all text-[11px]">
                     // EDIT MY TACTICAL DATA
                 </button>`;
-        } 
+        }
         else {
             actionButtonsHTML = `
                 <button onclick="handleMentorRequest(${user.id}, '${user.name}')" class="w-full bg-primary text-black font-bold font-mono tracking-widest py-3.5 hover:bg-white transition-all text-[11px] mb-2">
@@ -365,7 +407,7 @@ async function openProfileModal(id) {
             experiencesHTML = user.experiences.map((exp, index) => {
                 const isLast = index === user.experiences.length - 1;
                 const isActive = !exp.endDate || exp.endDate.toUpperCase() === 'PRESENT';
-                
+
                 let coursesHTML = '';
                 if (exp.courseInfo) {
                     let courses = exp.courseInfo.includes(';') ? exp.courseInfo.split(';') : exp.courseInfo.split(',');
@@ -421,8 +463,8 @@ async function openProfileModal(id) {
                 </div>
             </div>`;
 
-    } catch (error) { 
-        modalBody.innerHTML = `<p class="text-red-500 font-mono text-center mt-20">CONNECTION TERMINATED. ${error.message}</p>`; 
+    } catch (error) {
+        modalBody.innerHTML = `<p class="text-red-500 font-mono text-center mt-20">CONNECTION TERMINATED. ${error.message}</p>`;
     }
 }
 
@@ -440,7 +482,7 @@ async function adminDeleteUser(userId) {
     try {
         const response = await fetch(`${API_BASE_URL}/team/members/${userId}`, {
             method: 'DELETE',
-            headers: { 
+            headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
@@ -448,8 +490,8 @@ async function adminDeleteUser(userId) {
 
         if (response.ok) {
             showToast("User deleted successfully!", "success");
-            closeProfileModal(); 
-            buildTeam(); 
+            closeProfileModal();
+            buildTeam();
         } else {
             const errorData = await response.json();
             showToast(`ERROR: ${errorData.message || 'Access denied.'}`, "error");
