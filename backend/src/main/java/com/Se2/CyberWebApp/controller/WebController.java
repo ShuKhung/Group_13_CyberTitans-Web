@@ -44,6 +44,11 @@ public class WebController {
         return "pages/eventCRUD";
     }
 
+    @GetMapping("/admin/services")
+    public String adminServices() {
+        return "pages/serviceCRUD";
+    }
+
     @GetMapping("/faq")
     public String faq() {
         return "pages/faq";

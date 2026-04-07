@@ -4,6 +4,8 @@ import com.Se2.CyberWebApp.entity.ClubEvent;
 import com.Se2.CyberWebApp.repository.ClubEventRepository;
 import com.Se2.CyberWebApp.entity.Announcement;
 import com.Se2.CyberWebApp.repository.AnnouncementRepository;
+import com.Se2.CyberWebApp.entity.Service;
+import com.Se2.CyberWebApp.repository.ServiceRepository;
 import com.Se2.CyberWebApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,9 @@ public class SuperAdminApiController {
 
     @Autowired
     private AnnouncementRepository announcementRepository;
+
+    @Autowired
+    private ServiceRepository serviceRepository;
 
     @PostMapping("/users/{id}/role")
     public ResponseEntity<?> updateUserRole(@PathVariable Integer id, @RequestBody Map<String, String> request) {
@@ -82,5 +87,39 @@ public class SuperAdminApiController {
         }
         clubEventRepository.deleteById(id);
         return ResponseEntity.ok(Map.of("message", "Event deleted successfully."));
+    }
+
+    // --- SERVICE CRUD ---
+
+    @PostMapping("/services")
+    public ResponseEntity<?> createService(@RequestBody Service service) {
+        if (service.getTitle() == null || service.getTitle().isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Service title is required."));
+        }
+        serviceRepository.save(service);
+        return ResponseEntity.ok(Map.of("message", "Service created successfully.", "service", service));
+    }
+
+    @PutMapping("/services/{id}")
+    public ResponseEntity<?> updateService(@PathVariable Long id, @RequestBody Service serviceDetails) {
+        return serviceRepository.findById(id).map(existingService -> {
+            existingService.setTitle(serviceDetails.getTitle());
+            existingService.setDescription(serviceDetails.getDescription());
+            existingService.setContentDetail(serviceDetails.getContentDetail());
+            existingService.setIconClass(serviceDetails.getIconClass());
+            existingService.setButtonText(serviceDetails.getButtonText());
+            existingService.setLinkUrl(serviceDetails.getLinkUrl());
+            serviceRepository.save(existingService);
+            return ResponseEntity.ok(Map.of("message", "Service updated successfully.", "service", existingService));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/services/{id}")
+    public ResponseEntity<?> deleteService(@PathVariable Long id) {
+        if (!serviceRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        serviceRepository.deleteById(id);
+        return ResponseEntity.ok(Map.of("message", "Service deleted successfully."));
     }
 }
