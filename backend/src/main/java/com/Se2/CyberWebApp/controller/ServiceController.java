@@ -17,7 +17,7 @@ public class ServiceController {
 
     @GetMapping("/services")
     public String viewServices(Model model) {
-        List<Service> list = serviceRepository.findAll();
+        List<Service> list = serviceRepository.findAllByOrderByIdAsc();
 
         model.addAttribute("services", list);
 
