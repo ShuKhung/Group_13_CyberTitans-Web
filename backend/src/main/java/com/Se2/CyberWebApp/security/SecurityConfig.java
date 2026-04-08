@@ -24,7 +24,11 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(request -> {
                     var cache = new org.springframework.web.cors.CorsConfiguration();
-                    cache.setAllowedOrigins(java.util.List.of("http://127.0.0.1:5500", "http://localhost:5500"));
+                    cache.setAllowedOrigins(java.util.List.of(
+                            "http://127.0.0.1:5500", "http://localhost:5500",
+                            "http://127.0.0.1:8000", "http://localhost:8000",
+                            "http://127.0.0.1:8081", "http://localhost:8081"
+                    ));
                     cache.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     cache.setAllowedHeaders(java.util.List.of("*"));
                     cache.setAllowCredentials(true);
@@ -43,6 +47,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/team/members").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/projects/{id}").permitAll()
+                        .requestMatchers("/api/v1/projects/submit", "/api/v1/projects/my-submissions").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/projects").authenticated()
                         .requestMatchers("/admin/**", "/api/v1/admin/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
                         .requestMatchers("/api/v1/super-admin/**", "/permissions/**").hasAuthority("SUPER ADMIN")
                         .requestMatchers("/api/v1/mentor/**").hasAnyAuthority("MENTOR", "ADMIN", "SUPER ADMIN")

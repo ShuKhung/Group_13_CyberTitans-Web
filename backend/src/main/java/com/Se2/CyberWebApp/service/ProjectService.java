@@ -1,6 +1,7 @@
 package com.Se2.CyberWebApp.service;
 
 import com.Se2.CyberWebApp.entity.Project;
+import com.Se2.CyberWebApp.entity.User;
 import com.Se2.CyberWebApp.repository.CategoryRepository;
 import com.Se2.CyberWebApp.repository.ProjectRepository;
 import org.slf4j.Logger;
@@ -95,6 +96,15 @@ public class ProjectService {
         return projectRepository.findBySlug(slug);
     }
 
+    public Optional<Project> getProjectById(Integer id) {
+        return projectRepository.findById(id);
+    }
+
+    public List<Project> getProjectsByUser(User user) {
+        return projectRepository.findByUserOrderByCreatedAtDesc(user);
+    }
+
+    @Transactional
     public Project saveProject(Project project) {
         return projectRepository.save(project);
     }
