@@ -1,7 +1,9 @@
 package com.Se2.CyberWebApp.controller;
 
 import com.Se2.CyberWebApp.entity.Project;
+import com.Se2.CyberWebApp.entity.Service;
 import com.Se2.CyberWebApp.service.ProjectService;
+import com.Se2.CyberWebApp.repository.ServiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +27,20 @@ public class WebController {
     @Autowired
     private com.Se2.CyberWebApp.repository.ClubEventRepository clubEventRepository;
 
+    @Autowired
+    private ServiceRepository serviceRepository;
+
     @GetMapping("/")
-    public String index() {
+    public String index(Model model) {
+        List<Service> coreServices = serviceRepository.findAllById(Arrays.asList(1L, 2L, 3L));
+        model.addAttribute("coreServices", coreServices);
         return "pages/home";
     }
 
     @GetMapping("/home")
-    public String home() {
+    public String home(Model model) {
+        List<Service> coreServices = serviceRepository.findAllById(Arrays.asList(1L, 2L, 3L));
+        model.addAttribute("coreServices", coreServices);
         return "pages/home";
     }
 

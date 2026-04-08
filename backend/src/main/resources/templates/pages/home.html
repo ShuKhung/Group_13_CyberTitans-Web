@@ -29,6 +29,44 @@
     </div>
   </section>
 
+  <section class="max-w-7xl mx-auto px-6 md:px-8 py-20 border-t border-white/10 mt-10" th:if="${coreServices != null and not #lists.isEmpty(coreServices)}">
+      <div class="flex items-center gap-3 mb-10">
+          <div class="w-2.5 h-2.5 bg-primary"></div>
+          <h2 class="font-headline text-3xl font-bold uppercase tracking-widest text-white">Core Training</h2>
+      </div>
+      <p class="text-gray-400 mb-12 max-w-2xl text-sm leading-relaxed">
+          Fundamental programs designed to forge elite operatives in competitive programming, web infrastructure, and cyber defense.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div th:each="s : ${coreServices}"
+               class="p-8 glass-panel border border-white/10 hover:border-[#8eff71]/30 transition-all group card-lift cursor-pointer relative overflow-hidden"
+               th:data-title="${s.title}"
+               th:data-description="${s.description}"
+               th:data-content="${s.contentDetail}"
+               th:data-button="${s.buttonText}"
+               th:data-link="${s.linkUrl}"
+               onclick="handleServiceClick(this)">
+
+              <div class="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div class="w-full h-1/2 bg-gradient-to-b from-[#8eff71]/10 to-transparent animate-[scanner_2s_linear_infinite]"></div>
+              </div>
+
+              <div class="w-12 h-12 bg-[#8eff71]/10 flex items-center justify-center mb-6 group-hover:bg-[#8eff71]/20 transition-colors">
+                  <span class="material-symbols-outlined text-[#8eff71] text-2xl" th:text="${s.iconClass}">shield</span>
+              </div>
+
+              <h3 class="font-headline text-xl font-bold mb-3 text-white" th:text="${s.title}"></h3>
+              <p class="text-on-surface-variant text-sm leading-relaxed mb-6" th:text="${s.description}"></p>
+
+              <div class="flex items-center gap-2 text-[#8eff71] text-xs font-mono uppercase tracking-widest group-hover:gap-4 transition-all">
+                  <span>LEARN MORE</span>
+                  <span class="material-symbols-outlined text-sm">arrow_forward</span>
+              </div>
+          </div>
+      </div>
+  </section>
+
   <section class="max-w-7xl mx-auto px-6 md:px-8 py-20 border-t border-white/10 mt-10">
       <div class="flex items-center gap-3 mb-10">
           <div class="w-2.5 h-2.5 bg-primary"></div>
