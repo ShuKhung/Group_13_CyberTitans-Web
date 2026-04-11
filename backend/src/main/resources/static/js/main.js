@@ -15,6 +15,21 @@ function initializeApp() {
     if (activePage && activePage.id === 'page-my-profile' && typeof loadOperativeData === "function") {
         loadOperativeData();
     }
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('action') === 'login') {
+        openModal('login-modal');
+    }
+}
+
+function handleTeamNavClick(event) {
+    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
+    if (!token) {
+        event.preventDefault();
+        window.location.href = '/home?action=login';
+        return false;
+    }
+    return true;
 }
 
 // --- GLOBAL TOAST SYSTEM ---

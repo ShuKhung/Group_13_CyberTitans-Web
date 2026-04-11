@@ -19,7 +19,7 @@
           class="nav-link text-on-surface-variant hover:text-white transition-colors">Publications</a>
         <a th:href="@{/faq}" data-page="faq" th:classappend="${active == 'faq'} ? 'nav-active' : ''"
           class="nav-link text-on-surface-variant hover:text-white transition-colors">FAQ</a>
-        <a th:href="@{/team}" data-page="team" th:classappend="${active == 'team'} ? 'nav-active' : ''"
+        <a th:href="@{/team}" onclick="return handleTeamNavClick(event)" data-page="team" th:classappend="${active == 'team'} ? 'nav-active' : ''"
           class="nav-link text-on-surface-variant hover:text-white transition-colors">Team</a>
         <a th:href="@{/events}" data-page="events" th:classappend="${active == 'events'} ? 'nav-active' : ''"
           class="nav-link text-on-surface-variant hover:text-white transition-colors">Events</a>
@@ -113,7 +113,7 @@
           class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Projects</a>
         <a th:href="@{/publications}"
           class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Pubs</a>
-        <a th:href="@{/team}"
+        <a th:href="@{/team}" onclick="return handleTeamNavClick(event)"
           class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">Team</a>
         <a th:href="@{/faq}"
           class="block text-center bg-white/5 border border-white/10 py-3 text-xs font-headline uppercase text-on-surface-variant hover:text-primary transition-all">FAQ</a>
