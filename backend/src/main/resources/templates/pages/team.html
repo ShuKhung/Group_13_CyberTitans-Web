@@ -23,7 +23,29 @@
     </div>
 </div>  
 </div>
-</div>
-
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
+        if (!token) {
+            openModal('login-modal');
+            const loginModal = document.getElementById('login-modal');
+            if(loginModal) {
+                const observer = new MutationObserver(mutations => {
+                    mutations.forEach(mutation => {
+                        if (mutation.attributeName === 'class' && loginModal.classList.contains('hidden')) {
+                            const _token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
+                            if (!_token) {
+                                window.location.href = '/home';
+                            }
+                        }
+                    });
+                });
+                observer.observe(loginModal, { attributes: true });
+            } else {
+                window.location.href = '/home';
+            }
+        }
+    });
+</script>
 </div>
 </html>
