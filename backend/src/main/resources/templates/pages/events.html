@@ -9,7 +9,7 @@
                 <p class="text-gray-400 font-mono text-sm leading-relaxed">
                     Workshops, hackathons, CTF competitions, and seminars. Join events to earn Cyber Coins and proof-of-work records for your portfolio.
                 </p>
-                <div sec:authorize="hasAnyAuthority('SUPER ADMIN')" class="mt-6">
+                <div sec:authorize="hasAnyAuthority('ADMIN', 'SUPER ADMIN')" class="mt-6">
                     <a th:href="@{/admin/events}" class="px-4 py-2.5 border border-[#D4AF37] text-[#D4AF37] text-xs font-mono uppercase tracking-widest hover:bg-[#D4AF37]/10 transition-colors inline-flex items-center gap-2">
                         <span class="material-symbols-outlined text-sm">settings</span>Manage Events
                     </a>

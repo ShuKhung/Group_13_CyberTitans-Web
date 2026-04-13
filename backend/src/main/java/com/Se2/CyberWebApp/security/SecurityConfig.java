@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/projects/{id}").permitAll()
                         .requestMatchers("/api/v1/projects/submit", "/api/v1/projects/my-submissions").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/projects").authenticated()
+                        .requestMatchers("/api/v1/super-admin/events", "/api/v1/super-admin/events/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
+                        .requestMatchers("/admin/events", "/admin/events/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
                         .requestMatchers("/admin/**", "/api/v1/admin/**").hasAnyAuthority("ADMIN", "SUPER ADMIN")
                         .requestMatchers("/api/v1/super-admin/**", "/permissions/**").hasAuthority("SUPER ADMIN")
                         .requestMatchers("/api/v1/mentor/**").hasAnyAuthority("MENTOR", "ADMIN", "SUPER ADMIN")
