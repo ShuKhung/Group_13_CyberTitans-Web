@@ -9,7 +9,7 @@
                 <p class="text-gray-400 font-mono text-sm leading-relaxed">
                     Workshops, hackathons, CTF competitions, and seminars. Join events to earn Cyber Coins and proof-of-work records for your portfolio.
                 </p>
-                <div sec:authorize="hasAnyAuthority('SUPER ADMIN')" class="mt-6">
+                <div sec:authorize="hasAnyAuthority('ADMIN', 'SUPER ADMIN')" class="mt-6">
                     <a th:href="@{/admin/events}" class="px-4 py-2.5 border border-[#D4AF37] text-[#D4AF37] text-xs font-mono uppercase tracking-widest hover:bg-[#D4AF37]/10 transition-colors inline-flex items-center gap-2">
                         <span class="material-symbols-outlined text-sm">settings</span>Manage Events
                     </a>
@@ -60,7 +60,12 @@
                         </div>
                     </div>
 
-                    <button onclick="showJoinSuccessModal()" class="w-full py-3 bg-transparent border text-[10px] font-mono font-bold tracking-[0.2em] transition-all uppercase"
+                    <button sec:authorize="isAuthenticated()" onclick="showJoinSuccessModal()" class="w-full py-3 bg-transparent border text-[10px] font-mono font-bold tracking-[0.2em] transition-all uppercase"
+                            th:classappend="${event.eventType == 'HACKATHON'} ? 'border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10' : (${event.eventType == 'WORKSHOP'} ? 'border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6]/10' : (${event.eventType == 'CTF'} ? 'border-[#a855f7] text-[#a855f7] hover:bg-[#a855f7]/10' : (${event.eventType == 'SEMINAR'} ? 'border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e]/10' : 'border-white text-white hover:bg-white/10')))">
+                        JOIN EVENT
+                    </button>
+
+                    <button sec:authorize="isAnonymous()" onclick="showLoginRequiredModal()" class="w-full py-3 bg-transparent border text-[10px] font-mono font-bold tracking-[0.2em] transition-all uppercase"
                             th:classappend="${event.eventType == 'HACKATHON'} ? 'border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10' : (${event.eventType == 'WORKSHOP'} ? 'border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6]/10' : (${event.eventType == 'CTF'} ? 'border-[#a855f7] text-[#a855f7] hover:bg-[#a855f7]/10' : (${event.eventType == 'SEMINAR'} ? 'border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e]/10' : 'border-white text-white hover:bg-white/10')))">
                         JOIN EVENT
                     </button>
@@ -117,6 +122,19 @@
         </div>
     </div>
 
+    <!-- Login Required Modal -->
+    <div id="login-required-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-[#0a0a0a] border border-[#ff4d4d] w-full max-w-sm shadow-[0_0_40px_rgba(255,77,77,0.1)] relative p-8 text-center transition-transform transform scale-95 opacity-0 duration-300" id="login-req-modal-content">
+            <span class="material-symbols-outlined text-6xl text-[#ff4d4d] mb-4 block">lock</span>
+            <h2 class="text-xl font-headline font-bold text-white uppercase tracking-widest mb-2">Access Denied</h2>
+            <p class="text-sm font-mono text-gray-400 mb-8">Please login to your operative account to join this event.</p>
+            <div class="flex gap-4">
+                <button onclick="hideLoginRequiredModal()" class="flex-1 py-3 bg-transparent border border-gray-600 text-gray-400 font-bold font-mono text-xs uppercase tracking-[0.2em] hover:bg-gray-800 transition-all">Cancel</button>
+                <button onclick="redirectToLogin()" class="flex-1 py-3 bg-[#ff4d4d] text-black font-bold font-mono text-xs uppercase tracking-[0.2em] hover:brightness-110 transition-all">Login</button>
+            </div>
+        </div>
+    </div>
+
     <script th:inline="javascript">
         function showJoinSuccessModal() {
             const modal = document.getElementById('join-success-modal');
@@ -137,6 +155,39 @@
             setTimeout(() => {
                 modal.classList.remove('flex');
                 modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function showLoginRequiredModal() {
+            const modal = document.getElementById('login-required-modal');
+            const content = document.getElementById('login-req-modal-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function hideLoginRequiredModal() {
+            const modal = document.getElementById('login-required-modal');
+            const content = document.getElementById('login-req-modal-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function redirectToLogin() {
+            hideLoginRequiredModal();
+            setTimeout(() => {
+                if (typeof openModal === 'function') {
+                    openModal('login-modal');
+                } else {
+                    window.location.href = '/home?login=true';
+                }
             }, 300);
         }
     </script>

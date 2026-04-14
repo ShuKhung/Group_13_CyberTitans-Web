@@ -1,0 +1,333 @@
+<html th:replace="~{layout/layout :: page(title='CyberTitans — Service Management', active='admin_services', headExtra=~{}, content=~{::content}, scriptsExtra=~{})}" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="content">
+<div id="page-service-crud" class="page active pt-16">
+  <main class="max-w-7xl mx-auto px-6 md:px-8 py-16">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-12">
+      <div>
+        <p class="font-mono text-[#8eff71] text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 bg-[#8eff71] animate-pulse"></span>
+          /ADMIN/SERVICE_CONTROL
+        </p>
+        <h1 class="font-headline text-4xl font-bold text-white tracking-tight">Service Management</h1>
+        <p class="text-gray-500 text-sm mt-1 font-mono">Create, modify, and terminate system services.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a th:href="@{/admin}" class="px-4 py-2.5 border border-white/20 text-white text-xs font-mono uppercase tracking-widest hover:bg-white/5 transition-colors flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">arrow_back</span>Member Registry
+        </a>
+        <button onclick="openCreateServiceModal()" class="px-4 py-2.5 bg-primary text-black text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(142,255,113,0.3)]">
+          <span class="material-symbols-outlined text-sm">add</span>New Service
+        </button>
+      </div>
+    </div>
+
+    <!-- Service Table -->
+    <div class="bg-[#0a0a0a] border border-white/10 overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/30">
+        <div class="flex items-center gap-3">
+          <span class="w-2 h-2 bg-primary animate-pulse rounded-full"></span>
+          <h3 class="text-sm font-headline font-bold uppercase tracking-wider text-white">Service Registry</h3>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-white/10 bg-black/20">
+              <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest w-16">Icon</th>
+              <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Title</th>
+              <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden md:table-cell">Button Text</th>
+              <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden lg:table-cell">Link URL</th>
+              <th class="px-6 py-4 text-right text-[10px] font-mono text-gray-500 uppercase tracking-widest">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="service-table">
+            <tr><td colspan="5" class="px-6 py-12 text-center text-gray-600 font-mono text-xs">Loading operations database...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Service Modal -->
+<div id="service-crud-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-[#0a0a0a] border border-primary w-full max-w-3xl shadow-[0_0_40px_rgba(142,255,113,0.1)] relative">
+        <div class="border-b border-white/10 px-8 py-5 flex justify-between items-center bg-black/30">
+            <h2 id="service-modal-title" class="text-lg font-bold text-white font-headline uppercase tracking-widest">Create Service</h2>
+            <button onclick="closeServiceModal()" class="text-gray-500 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-xl">close</span>
+            </button>
+        </div>
+        <div class="p-8 space-y-5 h-full max-h-[80vh] overflow-y-auto">
+            <input type="hidden" id="service-id">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Service Title</label>
+                    <input type="text" id="service-title" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="e.g. Mentor Matching">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Icon Class (Material Icons)</label>
+                    <input type="text" id="service-icon" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="e.g. groups">
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Short Description</label>
+                <textarea id="service-desc" rows="2" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="Text for the main card..."></textarea>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Content Detail (Modal body)</label>
+                <textarea id="service-content" rows="4" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="Text typed explicitly via terminal..."></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Button Text</label>
+                    <input type="text" id="service-btn" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="e.g. LEARN MORE">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] font-mono text-gray-500 uppercase tracking-widest block">Link URL</label>
+                    <input type="text" id="service-link" class="data-input w-full p-3 bg-black border border-white/20 hover:border-primary/50 focus:border-primary transition-colors text-white font-mono text-xs" placeholder="e.g. /projects (Leave blank for generic action)">
+                </div>
+            </div>
+            
+        </div>
+        <div class="border-t border-white/10 px-8 py-5 flex justify-end gap-3 bg-black/20">
+            <button onclick="closeServiceModal()" class="px-5 py-2.5 border border-white/10 text-white font-mono text-xs uppercase hover:bg-white/5 transition-colors">Cancel</button>
+            <button id="save-service-btn" onclick="saveService()" class="px-6 py-2.5 bg-primary text-black font-bold font-mono text-xs uppercase hover:brightness-110 transition-all">Save Protocol</button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-service-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-[#0a0a0a] border border-red-500 w-full max-w-md shadow-[0_0_40px_rgba(239,68,68,0.1)] relative">
+        <div class="border-b border-white/10 px-8 py-5 flex justify-between items-center bg-black/30">
+            <h2 class="text-lg font-bold text-red-500 font-headline uppercase tracking-widest">Terminate Protocol</h2>
+            <button onclick="closeDeleteModal()" class="text-gray-500 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-xl">close</span>
+            </button>
+        </div>
+        <div class="p-8">
+            <p class="text-gray-300 font-mono text-sm leading-relaxed">WARNING: Deleting this service will permanently erase it from the core registry. Are you sure you want to proceed?</p>
+            <input type="hidden" id="delete-service-id">
+        </div>
+        <div class="border-t border-white/10 px-8 py-5 flex justify-end gap-3 bg-black/20">
+            <button onclick="closeDeleteModal()" class="px-5 py-2.5 border border-white/10 text-white font-mono text-xs uppercase hover:bg-white/5 transition-colors">Cancel</button>
+            <button onclick="executeDeleteService()" class="px-6 py-2.5 bg-red-600 text-white font-bold font-mono text-xs uppercase hover:brightness-110 transition-all">Execute</button>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const API_BASE_URL = '/api/v1';
+    let allServices = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadServices();
+    });
+
+    async function fetchWithAuth(url, options = {}) {
+        const token = localStorage.getItem('token');
+        const headers = {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        };
+        const updatedOptions = { ...options, headers };
+        return fetch(url, updatedOptions);
+    }
+
+    async function loadServices() {
+        try {
+            const res = await fetchWithAuth(`${API_BASE_URL}/services`);
+            if (!res.ok) throw new Error('Failed to fetch services');
+            allServices = await res.json();
+            
+            // Fix sorting locally to guarantee ID ASC order, as suggested in plan
+            allServices.sort((a,b) => a.id - b.id);
+            
+            renderServiceTable();
+        } catch (err) {
+            console.error(err);
+            document.getElementById('service-table').innerHTML = `<tr><td colspan="5" class="px-6 py-6 text-center text-red-500 font-mono text-xs">Error loading database</td></tr>`;
+        }
+    }
+
+    function renderServiceTable() {
+        const tbody = document.getElementById('service-table');
+        if (allServices.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-600 font-mono text-xs">No services registered in system.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = allServices.map(srv => {
+            return `
+            <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+              <td class="px-6 py-4">
+                 <div class="w-8 h-8 flex items-center justify-center bg-primary/10 rounded-full">
+                     <span class="material-symbols-outlined text-[#8eff71] text-sm">${escapeHtml(srv.iconClass || 'check')}</span>
+                 </div>
+              </td>
+              <td class="px-6 py-4 text-white font-headline font-bold text-sm">
+                 ${escapeHtml(srv.title || 'Untitled')}
+              </td>
+              <td class="px-6 py-4 text-gray-400 font-mono text-xs hidden md:table-cell">
+                 <span class="inline-block border px-2 py-1 border-white/20 text-white bg-white/5 uppercase">${escapeHtml(srv.buttonText || 'CLOSE')}</span>
+              </td>
+              <td class="px-6 py-4 text-[#8eff71] font-mono text-xs hidden lg:table-cell">
+                 ${escapeHtml(srv.linkUrl || 'N/A')}
+              </td>
+              <td class="px-6 py-4 text-right">
+                 <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="editService(${srv.id})" class="text-gray-400 hover:text-primary transition-colors" title="Edit">
+                        <span class="material-symbols-outlined text-sm">edit</span>
+                    </button>
+                    <button onclick="deleteService(${srv.id})" class="text-gray-400 hover:text-red-500 transition-colors" title="Terminate">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
+                 </div>
+              </td>
+            </tr>
+            `;
+        }).join('');
+    }
+
+    function escapeHtml(unsafe) {
+        if(!unsafe) return '';
+        return unsafe.toString()
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
+    function openCreateServiceModal() {
+        document.getElementById('service-modal-title').innerText = 'Create New Service';
+        document.getElementById('service-id').value = '';
+        document.getElementById('service-title').value = '';
+        document.getElementById('service-icon').value = 'settings';
+        document.getElementById('service-desc').value = '';
+        document.getElementById('service-content').value = '';
+        document.getElementById('service-btn').value = 'CLOSE';
+        document.getElementById('service-link').value = '';
+        
+        document.getElementById('service-crud-modal').classList.remove('hidden');
+        document.getElementById('service-crud-modal').classList.add('flex');
+    }
+
+    function editService(id) {
+        const srv = allServices.find(s => s.id === id);
+        if(!srv) return;
+        
+        document.getElementById('service-modal-title').innerText = 'Edit Service Protocol';
+        document.getElementById('service-id').value = srv.id;
+        document.getElementById('service-title').value = srv.title || '';
+        document.getElementById('service-icon').value = srv.iconClass || '';
+        document.getElementById('service-desc').value = srv.description || '';
+        document.getElementById('service-content').value = srv.contentDetail || '';
+        document.getElementById('service-btn').value = srv.buttonText || '';
+        document.getElementById('service-link').value = srv.linkUrl || '';
+        
+        document.getElementById('service-crud-modal').classList.remove('hidden');
+        document.getElementById('service-crud-modal').classList.add('flex');
+    }
+
+    function closeServiceModal() {
+        document.getElementById('service-crud-modal').classList.add('hidden');
+        document.getElementById('service-crud-modal').classList.remove('flex');
+    }
+
+    async function saveService() {
+        const id = document.getElementById('service-id').value;
+        const payload = {
+            title: document.getElementById('service-title').value.trim(),
+            iconClass: document.getElementById('service-icon').value.trim(),
+            description: document.getElementById('service-desc').value.trim(),
+            contentDetail: document.getElementById('service-content').value.trim(),
+            buttonText: document.getElementById('service-btn').value.trim(),
+            linkUrl: document.getElementById('service-link').value.trim()
+        };
+
+        if(!payload.title) {
+            if(typeof showToast === 'function') showToast('Title is required.', 'error');
+            else alert('Title is required to execute protocol.');
+            return;
+        }
+
+        const url = id ? `${API_BASE_URL}/super-admin/services/${id}` : `${API_BASE_URL}/super-admin/services`;
+        const method = id ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetchWithAuth(url, {
+                method: method,
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                if (res.status === 403 || res.status === 401) {
+                    throw new Error('Access Denied. Super Admin clearance required.');
+                }
+                const text = await res.text();
+                throw new Error(text || 'Operation failed');
+            }
+            
+            closeServiceModal();
+            if(typeof showToast === 'function') showToast(id ? 'Service updated successfully' : 'Service created successfully', 'success');
+            loadServices(); 
+        } catch (err) {
+            console.error(err);
+            if(typeof showToast === 'function') showToast('Database Error: ' + err.message, 'error');
+            else alert('Error updating database: ' + err.message);
+        }
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-service-modal').classList.add('hidden');
+        document.getElementById('delete-service-modal').classList.remove('flex');
+    }
+
+    function deleteService(id) {
+        document.getElementById('delete-service-id').value = id;
+        document.getElementById('delete-service-modal').classList.remove('hidden');
+        document.getElementById('delete-service-modal').classList.add('flex');
+    }
+
+    async function executeDeleteService() {
+        const id = document.getElementById('delete-service-id').value;
+        if(!id) return;
+        
+        try {
+            const res = await fetchWithAuth(`${API_BASE_URL}/super-admin/services/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!res.ok) {
+                 if (res.status === 403 || res.status === 401) {
+                    throw new Error('Access Denied. Super Admin clearance required.');
+                }
+                const text = await res.text();
+                throw new Error(text || 'Failed to delete');
+            }
+            
+            closeDeleteModal();
+            if(typeof showToast === 'function') showToast('Service permanently terminated', 'success');
+            loadServices();
+        } catch (err) {
+            console.error(err);
+            closeDeleteModal();
+            if(typeof showToast === 'function') showToast('Termination Error: ' + err.message, 'error');
+            else alert('Error deleting service: ' + err.message);
+        }
+    }
+</script>
+</div>
+</html>

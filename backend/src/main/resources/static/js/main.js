@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 
 function initializeApp() {
     console.log("[SYSTEM] Starting CyberTitans...");
-    checkLoginState(); 
-    
+    checkLoginState();
+
     if (typeof startCountdown === "function") startCountdown();
     if (typeof buildRanking === "function") buildRanking();
     if (typeof buildTeam === "function") buildTeam();
@@ -15,10 +15,25 @@ function initializeApp() {
     if (activePage && activePage.id === 'page-my-profile' && typeof loadOperativeData === "function") {
         loadOperativeData();
     }
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('action') === 'login') {
+        openModal('login-modal');
+    }
+}
+
+function handleTeamNavClick(event) {
+    const token = sessionStorage.getItem('cyber_token') || localStorage.getItem('cyber_token');
+    if (!token) {
+        event.preventDefault();
+        window.location.href = '/home?action=login';
+        return false;
+    }
+    return true;
 }
 
 // --- GLOBAL TOAST SYSTEM ---
-let toastTimeout; 
+let toastTimeout;
 
 function startCountdown() {
     const daysEl = document.getElementById('cd-days');
@@ -38,7 +53,7 @@ function startCountdown() {
     setInterval(() => {
         if (totalSeconds <= 0) return;
         totalSeconds--;
-        
+
         let rem = totalSeconds;
         const newD = Math.floor(rem / 86400); rem %= 86400;
         const newH = Math.floor(rem / 3600); rem %= 3600;
@@ -57,15 +72,15 @@ function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     const toastText = document.getElementById('toast-text');
     const toastDot = document.getElementById('toast-dot');
-    
+
     if (!toast || !toastText) {
         alert(message);
         return;
     }
-    
+
     toast.className = 'fixed bottom-5 right-5 z-[9999] bg-[#111] px-6 py-4 flex items-center gap-4 transition-transform duration-300 border show';
     toastText.textContent = message;
-    
+
     if (type === 'error') {
         toast.classList.add('border-red-500', 'shadow-[0_0_15px_rgba(239,68,68,0.3)]', 'text-red-500');
         if (toastDot) toastDot.className = 'w-2 h-2 rounded-full animate-pulse bg-red-500';
@@ -73,7 +88,7 @@ function showToast(message, type = 'success') {
         toast.classList.add('border-primary/50', 'shadow-[0_0_15px_rgba(129,255,105,0.2)]', 'text-primary');
         if (toastDot) toastDot.className = 'w-2 h-2 rounded-full animate-pulse bg-primary';
     }
-    
+
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {
         toast.classList.remove('show');
@@ -131,6 +146,7 @@ function handleServiceClick(element) {
     const title = element.getAttribute('data-title') || "";
     const fullContent = element.getAttribute('data-content') || "";
     const btnTextFromDB = element.getAttribute('data-button') || "INQUIRE PROTECTION";
+    const linkUrl = element.getAttribute('data-link');
 
     // 2. Trỏ đến các Element trong Modal
     const modal = document.getElementById('service-modal');
@@ -146,14 +162,15 @@ function handleServiceClick(element) {
     titleEl.innerText = title;
     if (btnTextEl) btnTextEl.innerText = btnTextFromDB;
 
-    // 4. KHÔI PHỤC LOGIC CHUYỂN TRANG TEAM
+    // 4. XỬ LÝ CHUYỂN TRANG BẰNG LINK URL TỪ DATABASE
     if (btnEl) {
-        btnEl.onclick = function() {
-            // Kiểm tra nếu là Mentor Matching thì nhảy sang trang /team
-            if (title.includes("Mentor") || btnTextFromDB.includes("FIND A MENTOR")) {
-                showToast("REDIRECTING TO OPERATIVE DIRECTORY...", "success");
+        btnEl.onclick = function () {
+            if (btnTextFromDB.toUpperCase() === 'CLOSE') {
+                closeModal('service-modal');
+            } else if (linkUrl && linkUrl !== 'null' && linkUrl.trim() !== '') {
+                showToast("REDIRECTING...", "success");
                 setTimeout(() => {
-                    window.location.href = '/team';
+                    window.location.href = linkUrl;
                 }, 600);
             } else {
                 showToast("Request Transmitted!", "success");
@@ -197,7 +214,7 @@ function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
     const icon = document.getElementById('mobile-menu-icon');
     if (!menu || !icon) return;
-    
+
     if (menu.classList.contains('hidden')) {
         menu.classList.remove('hidden');
         icon.innerText = 'close';

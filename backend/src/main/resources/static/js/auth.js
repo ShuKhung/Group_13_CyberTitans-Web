@@ -19,6 +19,12 @@ function applyLoginState(userData) {
     // Mobile Nav Sync
     if (mobileNavGuest) mobileNavGuest.classList.add('hidden');
     if (mobileNavUser) mobileNavUser.classList.remove('hidden');
+
+    // Guest CTA Banners
+    const guestCta = document.getElementById('guest-cta-banner');
+    if (guestCta) {
+        guestCta.classList.add('hidden');
+    }
     
     if (navUser || mobileNavUser) {
         // Set name in both locations

@@ -125,6 +125,15 @@ function renderPublications(pubs) {
         }
         
         const authorStr = p.originalAuthor || 'Unknown';
+        const cyberwebTeam = ['ngo van quyen', 'le manh toan', 'xuan vu', 'van-quyen ngo'];
+        const formatAuthor = (authors) => authors.split(',').map(a => {
+            let t = a.trim();
+            if (cyberwebTeam.some(m => t.toLowerCase().includes(m))) {
+                return `<b class="text-[#8eff71]">${t}</b>`;
+            }
+            return t;
+        }).join(', ');
+        const displayAuthor = formatAuthor(authorStr);
         const initials = authorStr.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
 
         return `
@@ -140,12 +149,12 @@ function renderPublications(pubs) {
             <p class="text-gray-400 text-sm mb-6 line-clamp-3">
                  Click to decrypt and read full briefing...
             </p>
-            <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 bg-[#222] rounded-full flex items-center justify-center text-[10px] text-white font-bold border border-white/10">${initials}</div>
-                    <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider">${authorStr}</span>
+            <div class="mt-auto flex items-end justify-between border-t border-white/5 pt-4 gap-4">
+                <div class="flex items-start gap-2">
+                    <div class="w-6 h-6 bg-[#222] rounded-full flex-shrink-0 flex items-center justify-center text-[10px] text-white font-bold border border-white/10 mt-0.5">${initials}</div>
+                    <span class="text-gray-500 font-mono text-[10px] uppercase tracking-wider line-clamp-3 leading-tight">${displayAuthor}</span>
                 </div>
-                <span class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-[#8eff71] flex items-center gap-1 transition-colors">
+                <span class="text-white font-mono text-[10px] uppercase tracking-widest group-hover:text-[#8eff71] flex items-center gap-1 transition-colors flex-shrink-0 mb-0.5">
                     DECRYPT <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
                 </span>
             </div>
@@ -189,11 +198,25 @@ function openPublicationModal(element) {
     document.getElementById('modal-pub-content').innerHTML = pub.abstractText || "Classified or no abstract available.";
 
     const linkBtn = document.getElementById('modal-pub-link');
+    const sessionStr = sessionStorage.getItem('cyber_user') || localStorage.getItem('cyber_user');
+    
     if (pub.publicationUrl && pub.publicationUrl !== 'null' && pub.publicationUrl !== '') {
-        linkBtn.href = pub.publicationUrl;
+        if (!sessionStr) {
+            linkBtn.href = "#";
+            linkBtn.onclick = (e) => {
+                e.preventDefault();
+                closePublicationModal();
+                document.getElementById('signup-modal').classList.remove('hidden');
+                document.getElementById('signup-modal').classList.add('flex');
+            };
+        } else {
+            linkBtn.onclick = null;
+            linkBtn.href = pub.publicationUrl;
+        }
         linkBtn.style.display = 'flex';
     } else {
         linkBtn.style.display = 'none';
+        linkBtn.onclick = null;
     }
 
     const modal = document.getElementById('publication-modal');

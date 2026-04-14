@@ -33,8 +33,14 @@
     </th:block>
 </head>
 
-<body class="bg-[#0e0e0e] text-on-surface font-body selection:bg-primary selection:text-[#0d6100] overflow-x-hidden">
+<body class="bg-[#0e0e0e] text-on-surface font-body selection:bg-primary selection:text-[#0d6100] overflow-x-hidden relative">
 
+    <div class="fixed inset-0 pointer-events-none z-0">
+      <div class="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,_rgba(142,255,113,0.05)_0%,_transparent_70%)] rounded-full"></div>
+      <div class="absolute inset-0 css-grid-bg"></div>
+    </div>
+
+    <div class="relative z-10 flex flex-col min-h-screen">
     <!-- Navbar Fragment -->
     <div th:replace="~{components/navbar :: navbar(active=${active})}"></div>
 
@@ -48,6 +54,7 @@
 
     <!-- Modals Fragment -->
     <div th:replace="~{components/modals :: modals}"></div>
+    </div>
 
     <!-- Global Scripts -->
     <script th:src="@{/js/config.js}"></script>
