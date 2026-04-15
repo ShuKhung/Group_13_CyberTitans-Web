@@ -1,5 +1,7 @@
 let currentUsers = [];
 let currentProjects = [];
+let currentActiveProjects = [];
+let currentDeleteRequests = [];
 let targetId = null;
 let currentAction = '';
 let activeTab = 'users';
@@ -35,54 +37,77 @@ function setupConfirmBtn() {
     }
 }
 
+// --- TAB MANAGEMENT ---
+
+const ALL_TABS = ['users', 'projects', 'active-projects', 'delete-requests'];
+
 function switchAdminTab(tab) {
     activeTab = tab;
-    const btnUsers = document.getElementById('tab-users');
-    const btnProjects = document.getElementById('tab-projects');
     const pathIndicator = document.getElementById('admin-path-indicator');
     const mainTitle = document.getElementById('admin-main-title');
     const mainSubtitle = document.getElementById('admin-main-subtitle');
     const headerActions = document.getElementById('admin-header-actions');
     const tableTitle = document.getElementById('admin-table-title');
     const roleFilter = document.getElementById('filter-role-wrap');
-    
+
+    // Reset all tab buttons
+    ALL_TABS.forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+            btn.classList.add('border-transparent', 'text-gray-500');
+            btn.classList.remove('border-primary', 'text-primary');
+        }
+    });
+    // Activate current tab
+    const activeBtn = document.getElementById(`tab-${tab}`);
+    if (activeBtn) {
+        activeBtn.classList.add('border-primary', 'text-primary');
+        activeBtn.classList.remove('border-transparent', 'text-gray-500');
+    }
+
     if (tab === 'users') {
-        btnUsers.classList.add('border-primary', 'text-primary');
-        btnUsers.classList.remove('border-transparent', 'text-gray-500');
-        btnProjects.classList.add('border-transparent', 'text-gray-500');
-        btnProjects.classList.remove('border-primary', 'text-primary');
-        
         pathIndicator.textContent = 'CONTROL_CENTER';
         mainTitle.textContent = 'Member Management';
         mainSubtitle.textContent = 'Real-time operative registry. All changes are permanent.';
         tableTitle.textContent = 'Member Registry';
         if (roleFilter) roleFilter.style.display = '';
         if (headerActions) headerActions.style.display = 'flex';
-        
         updateTableHeaders('users');
         loadAdminData();
-    } else {
-        btnProjects.classList.add('border-primary', 'text-primary');
-        btnProjects.classList.remove('border-transparent', 'text-gray-500');
-        btnUsers.classList.add('border-transparent', 'text-gray-500');
-        btnUsers.classList.remove('border-primary', 'text-primary');
-        
+    } else if (tab === 'projects') {
         pathIndicator.textContent = 'PROJECT_APPROVAL';
         mainTitle.textContent = 'Project Requests';
         mainSubtitle.textContent = 'Validation required for public deployment.';
         tableTitle.textContent = 'Pending Requests';
         if (roleFilter) roleFilter.style.display = 'none';
         if (headerActions) headerActions.style.display = 'none';
-
         updateTableHeaders('projects');
         loadPendingProjects();
+    } else if (tab === 'active-projects') {
+        pathIndicator.textContent = 'PROJECT_MANAGEMENT';
+        mainTitle.textContent = 'Active Projects';
+        mainSubtitle.textContent = 'Manage live projects. Request deletion requires Super Admin approval.';
+        tableTitle.textContent = 'Active Registry';
+        if (roleFilter) roleFilter.style.display = 'none';
+        if (headerActions) headerActions.style.display = 'none';
+        updateTableHeaders('active-projects');
+        loadActiveProjects();
+    } else if (tab === 'delete-requests') {
+        pathIndicator.textContent = 'DELETION_QUEUE';
+        mainTitle.textContent = 'Deletion Requests';
+        mainSubtitle.textContent = 'Super Admin authorization required to permanently purge projects.';
+        tableTitle.textContent = 'Pending Deletions';
+        if (roleFilter) roleFilter.style.display = 'none';
+        if (headerActions) headerActions.style.display = 'none';
+        updateTableHeaders('delete-requests');
+        loadDeleteRequests();
     }
 }
 
 function updateTableHeaders(type) {
     const head = document.getElementById('admin-table-head');
     if (!head) return;
-    
+
     if (type === 'users') {
         head.innerHTML = `
             <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Operative</th>
@@ -91,7 +116,7 @@ function updateTableHeaders(type) {
             <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Status</th>
             <th class="px-6 py-4 text-right text-[10px] font-mono text-gray-500 uppercase tracking-widest">Actions</th>
         `;
-    } else {
+    } else if (type === 'projects') {
         head.innerHTML = `
             <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Project/Team</th>
             <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden md:table-cell">Tech Stack</th>
@@ -99,8 +124,26 @@ function updateTableHeaders(type) {
             <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Status</th>
             <th class="px-6 py-4 text-right text-[10px] font-mono text-gray-500 uppercase tracking-widest">Validation</th>
         `;
+    } else if (type === 'active-projects') {
+        head.innerHTML = `
+            <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Project/Team</th>
+            <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden md:table-cell">Tech Stack</th>
+            <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden lg:table-cell">Views</th>
+            <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Rating</th>
+            <th class="px-6 py-4 text-right text-[10px] font-mono text-gray-500 uppercase tracking-widest">Actions</th>
+        `;
+    } else if (type === 'delete-requests') {
+        head.innerHTML = `
+            <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Project/Team</th>
+            <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden md:table-cell">Tech Stack</th>
+            <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest hidden lg:table-cell">Requested At</th>
+            <th class="px-6 py-4 text-left text-[10px] font-mono text-gray-500 uppercase tracking-widest">Status</th>
+            <th class="px-6 py-4 text-right text-[10px] font-mono text-gray-500 uppercase tracking-widest">Authorization</th>
+        `;
     }
 }
+
+// --- DATA LOADING ---
 
 async function loadAdminData() {
     const tbody = document.getElementById('admin-table');
@@ -135,11 +178,47 @@ async function loadPendingProjects() {
     }
 }
 
+async function loadActiveProjects() {
+    const tbody = document.getElementById('admin-table');
+    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-600 font-mono text-xs">Loading active projects...</td></tr>`;
+    try {
+        const response = await fetch('/api/v1/admin/projects/active', {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        if (!response.ok) throw new Error(response.statusText);
+        currentActiveProjects = await response.json();
+        renderActiveProjectsTable(currentActiveProjects);
+        updateStats(currentActiveProjects, 'active-projects');
+    } catch (error) {
+        console.error("Active projects error:", error);
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-error font-mono text-xs">[COMMS_FAILURE] ${error.message}</td></tr>`;
+    }
+}
+
+async function loadDeleteRequests() {
+    const tbody = document.getElementById('admin-table');
+    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-600 font-mono text-xs">Scanning deletion queue...</td></tr>`;
+    try {
+        const response = await fetch('/api/v1/super-admin/projects/pending-delete', {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        if (!response.ok) throw new Error(response.statusText);
+        currentDeleteRequests = await response.json();
+        renderDeleteRequestsTable(currentDeleteRequests);
+        updateStats(currentDeleteRequests, 'delete-requests');
+    } catch (error) {
+        console.error("Delete requests error:", error);
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-error font-mono text-xs">[COMMS_FAILURE] ${error.message}</td></tr>`;
+    }
+}
+
+// --- STATS ---
+
 function updateStats(items, type) {
     const total = items.length;
     const el = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
     const badge = document.getElementById('member-count-badge');
-    
+
     if (type === 'users') {
         const active = items.filter(u => u.enabled).length;
         const pending = items.filter(u => !u.enabled).length;
@@ -148,12 +227,28 @@ function updateStats(items, type) {
         el('stat-pending', pending);
         el('stat-suspended', 0);
         if (badge) badge.textContent = `${total} OPERATIVES`;
-    } else {
+    } else if (type === 'projects') {
         el('stat-total', total);
-        el('stat-pending', total); // All incoming projects are pending
+        el('stat-active', '—');
+        el('stat-pending', total);
+        el('stat-suspended', '—');
         if (badge) badge.textContent = `${total} REQUESTS`;
+    } else if (type === 'active-projects') {
+        el('stat-total', total);
+        el('stat-active', total);
+        el('stat-pending', '—');
+        el('stat-suspended', '—');
+        if (badge) badge.textContent = `${total} ACTIVE`;
+    } else if (type === 'delete-requests') {
+        el('stat-total', total);
+        el('stat-active', '—');
+        el('stat-pending', total);
+        el('stat-suspended', '—');
+        if (badge) badge.textContent = `${total} PENDING`;
     }
 }
+
+// --- RENDERERS ---
 
 function getRoleClass(role) {
     return ROLE_COLORS[role] || 'text-gray-400 border-gray-400/20 bg-gray-400/5';
@@ -271,7 +366,7 @@ function renderProjectApprovalTable(projects) {
     tbody.innerHTML = projects.map(p => {
         const date = p.submittedAt ? new Date(p.submittedAt).toLocaleDateString() : 'N/A';
         const techStack = p.techStack ? p.techStack.split(',').slice(0, 3).join(', ') : 'N/A';
-        
+
         return `<tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
             <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
@@ -310,16 +405,122 @@ function renderProjectApprovalTable(projects) {
     }).join('');
 }
 
+function renderActiveProjectsTable(projects) {
+    const tbody = document.getElementById('admin-table');
+    if (!tbody) return;
+
+    if (projects.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-600 font-mono text-xs">No active projects in registry.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = projects.map(p => {
+        const techStack = p.techStack ? p.techStack.split(',').slice(0, 3).join(', ') : 'N/A';
+        const views = (p.views || 0).toLocaleString();
+        const rating = p.ratingAvg ? p.ratingAvg.toFixed(1) : '0.0';
+
+        return `<tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+            <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-primary/10 border border-primary/30 flex items-center justify-center font-mono text-[11px] font-bold text-primary flex-shrink-0">
+                        <span class="material-symbols-outlined text-[16px]">deployed_code</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">${p.name || 'Untitled'}</p>
+                        <p class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">TEAM: ${p.teamId || 'N/A'}</p>
+                    </div>
+                </div>
+            </td>
+            <td class="px-6 py-4 hidden md:table-cell">
+                <span class="text-[10px] font-mono text-gray-400 uppercase tracking-widest">${techStack}</span>
+            </td>
+            <td class="px-6 py-4 hidden lg:table-cell">
+                <span class="flex items-center gap-1 font-mono text-[11px] text-gray-400">
+                    <span class="material-symbols-outlined text-[12px]">visibility</span>
+                    ${views}
+                </span>
+            </td>
+            <td class="px-6 py-4">
+                <span class="flex items-center gap-1 font-mono text-[11px] text-[#D4AF37]">
+                    <span class="material-symbols-outlined text-[12px]">star</span>
+                    ${rating}
+                </span>
+            </td>
+            <td class="px-6 py-4 text-right">
+                <div class="flex justify-end items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="prepAdminAction(${p.id}, 'REQUEST_DELETE')" title="Request Deletion" class="px-3 py-1 bg-error/10 border border-error/30 text-error font-mono text-[9px] uppercase hover:bg-error hover:text-white transition-all flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]">delete</span>
+                        Request Delete
+                    </button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function renderDeleteRequestsTable(requests) {
+    const tbody = document.getElementById('admin-table');
+    if (!tbody) return;
+
+    if (requests.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-600 font-mono text-xs">No deletion requests in queue. All projects are secure.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = requests.map(p => {
+        const techStack = p.techStack ? p.techStack.split(',').slice(0, 3).join(', ') : 'N/A';
+        const requestedAt = p.requestedAt ? new Date(p.requestedAt).toLocaleDateString() : 'N/A';
+
+        return `<tr class="border-b border-error/10 hover:bg-error/[0.02] transition-colors group">
+            <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-error/10 border border-error/30 flex items-center justify-center font-mono text-[11px] font-bold text-error flex-shrink-0">
+                        <span class="material-symbols-outlined text-[16px]">warning</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">${p.name || 'Untitled'}</p>
+                        <p class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">TEAM: ${p.teamId || 'N/A'}</p>
+                    </div>
+                </div>
+            </td>
+            <td class="px-6 py-4 hidden md:table-cell">
+                <span class="text-[10px] font-mono text-gray-400 uppercase tracking-widest">${techStack}</span>
+            </td>
+            <td class="px-6 py-4 hidden lg:table-cell">
+                <span class="text-[10px] font-mono text-gray-500 tracking-widest">${requestedAt}</span>
+            </td>
+            <td class="px-6 py-4">
+                <span class="flex items-center gap-1.5 font-mono text-[10px] tracking-widest uppercase text-error">
+                    <span class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></span>
+                    Pending Delete
+                </span>
+            </td>
+            <td class="px-6 py-4 text-right">
+                <div class="flex justify-end items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="prepAdminAction(${p.id}, 'CONFIRM_DELETE')" title="Confirm Permanent Deletion" class="px-3 py-1 bg-error/10 border border-error/30 text-error font-mono text-[9px] uppercase hover:bg-error hover:text-white transition-all">
+                        Confirm Delete
+                    </button>
+                    <button onclick="prepAdminAction(${p.id}, 'CANCEL_DELETE')" title="Cancel Deletion" class="px-3 py-1 bg-primary/10 border border-primary/30 text-primary font-mono text-[9px] uppercase hover:bg-primary hover:text-black transition-all">
+                        Cancel
+                    </button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+// --- FILTERS ---
+
 function filterAdminTable(query) {
     const q = (query || '').toLowerCase();
     const roleFilter = document.getElementById('admin-role-filter')?.value || 'ALL';
-    
+
     const filtered = currentUsers.filter(u => {
         const matchesName = (u.name || '').toLowerCase().includes(q) || (u.username || '').toLowerCase().includes(q);
         const matchesRole = roleFilter === 'ALL' || u.role === roleFilter;
         return matchesName && matchesRole;
     });
-    
+
     renderAdminTable(filtered);
 }
 
@@ -336,6 +537,8 @@ function exportAdminData() {
     showToast('Export complete.', 'success');
 }
 
+// --- MODAL & ACTIONS ---
+
 function prepAdminAction(id, action) {
     targetId = id;
     currentAction = action;
@@ -347,8 +550,8 @@ function prepAdminAction(id, action) {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
 
-    const user = currentUsers.find(u => u.id === userId);
-    const userName = user ? `<span class="text-primary">${user.name}</span>` : '#' + userId;
+    const user = currentUsers.find(u => u.id === id);
+    const userName = user ? `<span class="text-primary">${user.name}</span>` : '#' + id;
 
     const inputClass = 'w-full bg-black border border-white/20 text-white font-mono text-sm px-4 py-3 outline-none focus:border-primary transition-colors mt-2';
 
@@ -378,6 +581,20 @@ function prepAdminAction(id, action) {
         const project = currentProjects.find(p => p.id === id);
         title.textContent = 'REJECT SUBMISSION';
         content.innerHTML = `<p class="text-gray-400 text-sm leading-relaxed">Archiving submission for <span class="text-error font-bold">${project?.name}</span>. The requester will be notified of the rejection.</p>`;
+    } else if (action === 'REQUEST_DELETE') {
+        const project = currentActiveProjects.find(p => p.id === id);
+        title.textContent = 'REQUEST DELETION';
+        content.innerHTML = `<p class="text-gray-400 text-sm leading-relaxed">You are requesting deletion of <span class="text-error font-bold">${project?.name}</span>. This will submit a deletion request to the <span class="text-[#D4AF37]">Super Admin</span> for final authorization.</p>
+            <div class="bg-[#D4AF37]/10 border border-[#D4AF37]/20 p-3 font-mono text-[10px] text-[#D4AF37] uppercase tracking-widest">⚠ Project will remain active until Super Admin confirms.</div>`;
+    } else if (action === 'CONFIRM_DELETE') {
+        const project = currentDeleteRequests.find(p => p.id === id);
+        title.textContent = 'CONFIRM PERMANENT DELETION';
+        content.innerHTML = `<p class="text-gray-400 text-sm leading-relaxed">You are about to <span class="text-error font-bold">permanently delete</span> project <span class="text-error font-bold">${project?.name}</span>. This action cannot be undone. All project data, files, and records will be purged from the system.</p>
+            <div class="bg-error/10 border border-error/20 p-3 font-mono text-[10px] text-error uppercase tracking-widest">⚠ IRREVERSIBLE — ALL DATA WILL BE LOST.</div>`;
+    } else if (action === 'CANCEL_DELETE') {
+        const project = currentDeleteRequests.find(p => p.id === id);
+        title.textContent = 'CANCEL DELETION REQUEST';
+        content.innerHTML = `<p class="text-gray-400 text-sm leading-relaxed">Cancelling the deletion request for <span class="text-primary font-bold">${project?.name}</span>. The project will be restored to active status.</p>`;
     }
 }
 
@@ -391,10 +608,11 @@ function closeAdminModal() {
 async function executeAdminAction() {
     if (!targetId || !currentAction) return;
 
-    let url = `/api/v1/admin/users/${targetId}/`;
+    let url = '';
     let body = {};
 
-    if (activeTab === 'users') {
+    if (currentAction === 'BAN' || currentAction === 'UNBAN' || currentAction === 'ECONOMY' || currentAction === 'PASSWORD') {
+        url = `/api/v1/admin/users/${targetId}/`;
         if (currentAction === 'BAN') url += 'ban';
         else if (currentAction === 'UNBAN') url += 'unban';
         else if (currentAction === 'ECONOMY') {
@@ -408,10 +626,16 @@ async function executeAdminAction() {
             if (!val) return showToast('Password is required.', 'error');
             body = { newPassword: val };
         }
-    } else {
-        url = `/api/v1/admin/projects/${targetId}/`;
-        if (currentAction === 'APPROVE_PROJECT') url += 'approve';
-        else if (currentAction === 'REJECT_PROJECT') url += 'reject';
+    } else if (currentAction === 'APPROVE_PROJECT') {
+        url = `/api/v1/admin/projects/${targetId}/approve`;
+    } else if (currentAction === 'REJECT_PROJECT') {
+        url = `/api/v1/admin/projects/${targetId}/reject`;
+    } else if (currentAction === 'REQUEST_DELETE') {
+        url = `/api/v1/admin/projects/${targetId}/request-delete`;
+    } else if (currentAction === 'CONFIRM_DELETE') {
+        url = `/api/v1/super-admin/projects/${targetId}/confirm-delete`;
+    } else if (currentAction === 'CANCEL_DELETE') {
+        url = `/api/v1/super-admin/projects/${targetId}/cancel-delete`;
     }
 
     try {
@@ -429,8 +653,11 @@ async function executeAdminAction() {
         if (response.ok) {
             showToast(result.message, 'success');
             closeAdminModal();
+            // Reload the appropriate tab
             if (activeTab === 'users') loadAdminData();
-            else loadPendingProjects();
+            else if (activeTab === 'projects') loadPendingProjects();
+            else if (activeTab === 'active-projects') loadActiveProjects();
+            else if (activeTab === 'delete-requests') loadDeleteRequests();
         } else {
             showToast(result.message || 'SYSTEM FAILURE', 'error');
         }

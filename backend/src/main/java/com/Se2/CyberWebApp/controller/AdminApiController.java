@@ -125,4 +125,31 @@ public class AdminApiController {
         projectService.updateProjectStatus(id, (short) 0);
         return ResponseEntity.ok(Map.of("message", "Project rejected. Archiving records."));
     }
+
+    /** Fetch all active projects (status = 1) for management. */
+    @GetMapping("/projects/active")
+    public ResponseEntity<List<Map<String, Object>>> getActiveProjects() {
+        List<Project> active = projectService.getActiveProjects();
+        List<Map<String, Object>> response = active.stream().map(p -> {
+            Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", p.getId());
+            map.put("name", p.getName());
+            map.put("slug", p.getSlug());
+            map.put("techStack", p.getTechnologies());
+            map.put("teamId", p.getTeamId());
+            map.put("githubUrl", p.getGithubUrl());
+            map.put("views", p.getViews());
+            map.put("ratingAvg", p.getRatingAvg());
+            map.put("publishedAt", p.getPublishedAt());
+            return map;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    /** Admin requests deletion of a project (sets status = 3 PENDING_DELETE). */
+    @PostMapping("/projects/{id}/request-delete")
+    public ResponseEntity<?> requestDeleteProject(@PathVariable Integer id) {
+        projectService.updateProjectStatus(id, (short) 3);
+        return ResponseEntity.ok(Map.of("message", "Deletion request submitted. Awaiting Super Admin authorization."));
+    }
 }

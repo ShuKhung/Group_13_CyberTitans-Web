@@ -108,4 +108,20 @@ public class ProjectService {
     public Project saveProject(Project project) {
         return projectRepository.save(project);
     }
+
+    public List<Project> getActiveProjects() {
+        logger.debug("[SERVICE] Fetching active projects (status = 1)");
+        return projectRepository.findByStatus((short) 1);
+    }
+
+    public List<Project> getPendingDeleteProjects() {
+        logger.debug("[SERVICE] Fetching projects pending deletion (status = 3)");
+        return projectRepository.findByStatus((short) 3);
+    }
+
+    @Transactional
+    public void deleteProject(Integer id) {
+        logger.info("[SERVICE] Permanently deleting project ID {}", id);
+        projectRepository.deleteById(id);
+    }
 }

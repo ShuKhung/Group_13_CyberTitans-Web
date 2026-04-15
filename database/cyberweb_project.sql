@@ -29,6 +29,7 @@ CREATE TABLE `project` (
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `image` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `technologies` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Technologies by CSV',
+  `github_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'GitHub repository URL',
   `price` decimal(15,2) NOT NULL DEFAULT '0.00',
   `coin_price` int NOT NULL DEFAULT '0',
   `currency_unit` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'USD',
@@ -46,7 +47,7 @@ CREATE TABLE `project` (
   `team_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `published_at` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `user_id` int NOT NULL COMMENT 'admin create or update any fields',
-  `status` smallint NOT NULL DEFAULT '1' COMMENT '0 for inactive, 1 for active',
+  `status` smallint NOT NULL DEFAULT '1' COMMENT '0 for inactive, 1 for active, 2 for pending',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -55,7 +56,7 @@ CREATE TABLE `project` (
   KEY `idx-project-team_id` (`team_id`),
   KEY `idx-project-user_id` (`user_id`),
   CONSTRAINT `fk-category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,7 +65,12 @@ CREATE TABLE `project` (
 
 LOCK TABLES `project` WRITE;
 /*!40000 ALTER TABLE `project` DISABLE KEYS */;
-INSERT INTO `project` VALUES (1,'I am a Developer','i-am-a-developer','An application built by React Native that simulates the life of a developer from his/her born to his/her death','media/images/projects/mobile-application.png','React Native, Firebase',800.00,5000,'2',1,9527,4.50,86,NULL,NULL,NULL,NULL,NULL,1,108,'1,2','19/08/2024',1,1,'2026-03-12 03:03:31','2026-03-12 03:03:31'),(2,'I am a Developer 2','i-am-a-developer-2','An application built by React Native that simulates the life of a developer from his/her born to his/her death','media/images/projects/mobile-application.png','Android, iOS',700.00,4500,'2',9,9528,4.90,86,NULL,NULL,NULL,NULL,NULL,1,108,'1,2','19/09/2024',1,1,'2026-03-12 03:03:31','2026-03-12 03:03:31'),(3,'I am a Developer 3','i-am-a-developer-3','An application built by React Native that simulates the life of a developer from his/her born to his/her death','media/images/projects/mobile-application.png','Yii2 Advanced',900.00,5500,'2',1,9500,4.40,86,NULL,NULL,NULL,NULL,NULL,1,108,'1,2','19/08/2025',1,1,'2026-03-12 03:03:31','2026-03-12 03:03:31'),(4,'I am a Developer 4','i-am-a-developer-4','An application built by React Native that simulates the life of a developer from his/her born to his/her death','media/images/projects/mobile-application.png','Spring Boot, Hibernate, NoSQL',900.00,5000,'2',1,9530,3.20,86,NULL,NULL,NULL,NULL,NULL,1,108,'1,2','18/08/2024',1,1,'2026-03-12 03:03:31','2026-03-12 03:03:31');
+INSERT INTO `project` VALUES
+(1,'Visual Studio Code','visual-studio-code','Visual Studio Code is a lightweight but powerful source code editor which runs on your desktop. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages and runtimes.','https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/visual-studio-code-icon.png','TypeScript, Electron, Node.js','https://github.com/microsoft/vscode',0.00,0,'USD',1,172000,4.90,18000,NULL,NULL,NULL,NULL,NULL,0,0,'microsoft','11/2015',1,1,'2026-04-14 00:00:00','2026-04-14 00:00:00'),
+(2,'TensorFlow','tensorflow','An end-to-end open source platform for machine learning. TensorFlow makes it easy for beginners and experts to create machine learning models for desktop, mobile, web, and cloud.','https://images.viblo.asia/b143e7ef-0445-4f08-9a51-8a0a3d507792.jpg','Python, C++, CUDA','https://github.com/tensorflow/tensorflow',0.00,0,'USD',4,185000,4.80,22000,NULL,NULL,NULL,NULL,NULL,0,0,'tensorflow','11/2015',1,1,'2026-04-14 00:00:00','2026-04-14 00:00:00'),
+(3,'React Native','react-native','React Native brings React''s declarative UI framework to iOS and Android. With React Native, you use native UI controls and have full access to the native platform. Developed and maintained by Meta.','https://reactnative.dev/img/pwa/manifest-icon-512.png','JavaScript, Java, Objective-C, Kotlin','https://github.com/facebook/react-native',0.00,0,'USD',2,120000,4.70,15000,NULL,NULL,NULL,NULL,NULL,0,0,'facebook','03/2015',1,1,'2026-04-14 00:00:00','2026-04-14 00:00:00'),
+(4,'Godot Engine','godot-engine','Godot Engine is a feature-packed, cross-platform game engine to create 2D and 3D games from a unified interface. It provides a comprehensive set of common tools, so you can focus on making games.','https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/godot-game-engine-icon.png','C++, GDScript, C#','https://github.com/godotengine/godot',0.00,0,'USD',6,92000,4.85,12000,NULL,NULL,NULL,NULL,NULL,0,0,'godotengine','01/2014',1,1,'2026-04-14 00:00:00','2026-04-14 00:00:00'),
+(5,'Cyber Scanner Pro','cyber-scanner-pro','A pending project waiting for admin approval. This project should not appear on the project grid until approved.','https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=300','Python, Scapy, Security','https://github.com/example/cyber-scanner',0.00,0,'USD',4,0,0.00,0,NULL,NULL,NULL,NULL,NULL,0,0,'ghost-ops','04/2026',1,2,'2026-04-14 00:00:00','2026-04-14 00:00:00');
 /*!40000 ALTER TABLE `project` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -77,4 +83,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-03 14:13:25
+-- Dump completed on 2026-04-14 19:38:00
